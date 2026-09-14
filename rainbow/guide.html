@@ -1,0 +1,386 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rainbow & Echoes Guide</title>
+<meta name="description" content="How the Reference Rainbow and Echoes work: relevance votes, colors, dating, red letters and repeated phrases.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<style>
+:root{
+  --dark:0; --ground:#FAFAF7; --panel:#FFFFFF; --ink:#1B1A21; --muted:#6D6A77; --faint:#A3A0AC; --rule:#E4E2E8; --wash:#F2F1F5;
+  --ribbon:#8C6A1C; --control:#EDECF1; --control-on:#1B1A21; --on-control-on:#FAFAF7; --red-jesus:#C8102E; --red-god:#6B1119;
+  --serif:"Libre Baskerville","Baskerville","Baskerville Old Face",Georgia,serif;
+  --sans:"Schibsted Grotesk","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --dark:1; --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E; --wash:#18171F;
+    --ribbon:#D4AE63; --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11; --red-jesus:#FF6B6B; --red-god:#C9868B; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --dark:1; --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E; --wash:#18171F;
+  --ribbon:#D4AE63; --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11; --red-jesus:#FF6B6B; --red-god:#C9868B; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration-color:var(--faint);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink)}
+:focus-visible{outline:2px solid var(--ribbon);outline-offset:2px}
+.ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 28px 80px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px 56px}
+.topbar{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+.crumbs{display:flex;gap:18px;font-size:13px}
+.crumbs a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--muted)}
+.crumbs a:hover{color:var(--ink)}
+.opts{display:inline-flex;background:var(--control);border-radius:4px;padding:2px}
+.opts label{position:relative;display:block}
+.opts input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opts span{display:block;padding:3px 10px;border-radius:3px;font-size:12.5px;color:var(--muted)}
+.opts input:checked + span{background:var(--control-on);color:var(--on-control-on)}
+.opts input:focus-visible + span{outline:2px solid var(--ribbon);outline-offset:1px}
+
+nav.toc{position:sticky;top:24px;align-self:start;display:flex;flex-direction:column;gap:2px;font-size:13px}
+nav.toc p{margin:0 0 8px;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+nav.toc a{text-decoration:none;color:var(--muted);padding:4px 10px;border-left:2px solid var(--rule)}
+nav.toc a:hover{color:var(--ink)}
+nav.toc a.on{color:var(--ink);border-left-color:var(--ribbon)}
+nav.toc .sub{padding-left:22px;font-size:12.5px}
+
+article{min-width:0;max-width:70ch}
+.eyebrow{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+h1{margin:6px 0 12px;font-family:var(--serif);font-weight:400;font-size:40px;line-height:1.08;letter-spacing:-.015em;text-wrap:balance}
+.lede{margin:0;font-family:var(--serif);font-size:16px;line-height:1.7;color:var(--muted)}
+section{padding-top:44px}
+h2{margin:0 0 12px;font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.2;text-wrap:balance}
+h3{margin:26px 0 8px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+p{margin:0 0 12px}
+article p, article li{font-family:var(--serif);font-size:15px;line-height:1.75}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin-bottom:6px}
+.callout{margin:16px 0;padding:14px 16px;border-left:3px solid var(--ribbon);background:var(--wash);border-radius:0 4px 4px 0}
+.callout p{margin:0;font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums;margin:8px 0 14px}
+th{text-align:left;font-weight:600;font-size:12px;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--rule)}
+td{padding:6px 8px;border-top:1px solid var(--rule);vertical-align:top}
+td.r,th.r{text-align:right}
+.tablewrap{overflow-x:auto}
+.distbar{display:block;height:8px;border-radius:1px;background:var(--ink);opacity:.72;min-width:2px}
+tr.mark td{background:var(--wash)}
+dl.terms{margin:0 0 12px;display:grid;grid-template-columns:auto 1fr;gap:10px 18px}
+dl.terms dt{font-weight:600;font-size:14px;white-space:nowrap}
+dl.terms dd{margin:0;font-family:var(--serif);font-size:14.5px;line-height:1.65}
+.rl-j{color:var(--red-jesus)} .rl-g{color:var(--red-god)}
+.swatch{display:inline-block;width:120px;height:8px;border-radius:1px;vertical-align:1px;background:linear-gradient(90deg,#5B3FA8,#2F62D0,#1597B8,#2FA565,#C9B51C,#EB7A22,#D2323C)}
+code{font-size:13px;background:var(--wash);padding:1px 5px;border-radius:3px}
+@media (max-width: 860px){
+  .wrap{grid-template-columns:1fr;padding:18px 18px 60px}
+  nav.toc{position:static;flex-direction:row;flex-wrap:wrap;gap:4px 8px}
+  nav.toc p{flex-basis:100%}
+  nav.toc a{border-left:0;padding:2px 0}
+  nav.toc .sub{display:none}
+  h1{font-size:32px}
+}
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="crumbs">
+      <a href="index.html"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8h-10M7 4.5 3.5 8 7 11.5"/></svg> Reference Rainbow</a>
+      <a href="echoes.html">Echoes</a>
+      <a href="read.html">Read</a>
+      <a data-scriptorium>Scriptorium</a>
+    </div>
+    <div class="opts" role="radiogroup" aria-label="Theme">
+      <label><input type="radio" name="theme" value="light"><span>Light</span></label>
+      <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+      <label><input type="radio" name="theme" value="system" checked><span>System</span></label>
+    </div>
+  </div>
+
+  <nav class="toc" aria-label="On this page">
+    <p>On this page</p>
+    <a href="#reader">Read</a>
+    <a href="#votes">Relevance votes</a>
+    <a class="sub" href="#votes-source">Where votes come from</a>
+    <a class="sub" href="#votes-numbers">The numbers</a>
+    <a class="sub" href="#votes-slider">How the slider uses them</a>
+    <a class="sub" href="#votes-caveats">What votes don't tell you</a>
+    <a href="#colors">Colors</a>
+    <a href="#dating">Dating</a>
+    <a href="#axis">Axis &amp; ink</a>
+    <a href="#red-letters">Red letters</a>
+    <a href="#books">Books filter</a>
+    <a href="#translations">Translations</a>
+    <a href="#echoes">Echoes</a>
+    <a class="sub" href="#echoes-length">Repeats by length</a>
+    <a class="sub" href="#echoes-filters">Filtering the list</a>
+    <a class="sub" href="#echoes-words">Script and words</a>
+    <a class="sub" href="#echoes-matching">Matching</a>
+    <a href="#scriptorium">Scriptorium</a>
+    <a href="#sources">Sources</a>
+  </nav>
+
+  <article>
+    <p class="eyebrow">Guide</p>
+    <h1>How the Rainbow and Echoes work</h1>
+    <p class="lede">What each control measures, where the numbers come from, and what they can and can't tell you. Hover pop-ups in both pages link to the section that explains them.</p>
+
+    <section id="reader">
+      <h2>Read</h2>
+      <p><b>Read</b> is a simple Bible reader. Choose a book and chapter at the top, pick a translation, and read. <b>Compare</b> puts a second translation beside the first, verse by verse. The search box takes a passage (<i>Romans 8:28</i>) or words to find (<i>love one another</i>).</p>
+      <h3 id="reader-study">Studying a verse</h3>
+      <p>Click any verse and a study panel opens beside the text:</p>
+      <dl class="terms">
+        <dt>Original words</dt><dd>The verse in Hebrew, Aramaic or Greek, word by word, with transliteration and a short English gloss. Hover a word to underline the English words that translate it (in the King James Version or Berean Standard Bible); click a word to study it.</dd>
+        <dt>A word's meaning</dt><dd>Its dictionary form, pronunciation and grammar in plain English (for example “Verb: aorist active indicative, 3rd person singular”). Below that come the meanings from Strong's dictionary and the senses STEPBible distinguishes.</dd>
+        <dt>How it's translated</dt><dd>Every English word the KJV and BSB use for it across the Bible, with counts. Tick the renderings you want to compare: the verse list below then shows only those places, so you can see how context shapes the translation.</dd>
+        <dt>Where else it's used</dt><dd>Every verse containing the word, with a chart by book. Narrow the list with the <b>Books</b> filter, and click any verse to go there with the same word still selected.</dd>
+        <dt>Cross-references</dt><dd>The passages study Bibles link to this verse, most helpful first.</dd>
+        <dt>About the book</dt><dd>Who wrote it, when and where, with traditional and scholarly views and sources.</dd>
+      </dl>
+      <p>Words in grey appear in modern critical editions of the Greek New Testament but not in the Greek text behind the KJV; a note says so, and the reverse, when you study them. The Hebrew and Greek words, glosses and grammar come from STEPBible (Tyndale House, CC BY 4.0).</p>
+    </section>
+
+    <section id="scriptorium">
+      <h2>Scriptorium</h2>
+      <p>Scriptorium is the full database behind these pages, with a reading room of its own: 152 texts in 57 languages, interlinear reading, a Strong's concordance, a timeline of who wrote each book, and a place to run your own searches. Unlike these pages, it runs as a small program on your computer.</p>
+      <ol>
+        <li>Install Python once from <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a>. On Windows, tick <b>Add python.exe to PATH</b>.</li>
+        <li>In the project folder, double-click <b>Start Scriptorium (Windows).bat</b> or <b>Start Scriptorium (Mac).command</b>. The first time, it downloads about 350 MB and builds the database, which takes a few minutes.</li>
+        <li>Your browser opens Scriptorium at <code>http://127.0.0.1:8770</code>. Keep the black window open while you use it; close it to stop.</li>
+      </ol>
+      <p>On a Mac, if the file won't open, right-click it and choose <b>Open</b>. On Windows, if you see “Windows protected your PC”, click <b>More info</b>, then <b>Run anyway</b>.</p>
+      <p>The <b>Scriptorium</b> link on each page opens a small window that checks whether it's running: it offers <b>Open Scriptorium</b> when it is, and repeats these steps (with your project folder's location) when it isn't. Inside Scriptorium, <b>Data &amp; setup</b> explains how to stop and restart it, shows what's in your database, and has buttons to get the latest data, rebuild, refresh these pages' data, or make a copy you can share.</p>
+    </section>
+
+    <section id="votes">
+      <h2>Relevance votes</h2>
+      <p>The <b>Relevance</b> slider hides cross-references with low vote scores. The scores are not calculated by this site: they come with the cross-reference data from OpenBible.info, and the slider only chooses a cut-off.</p>
+
+      <h3 id="votes-source">Where votes come from</h3>
+      <ol>
+        <li><b>The references.</b> The 344,756 links come mainly from the <i>Treasury of Scripture Knowledge</i>, a public-domain 19th-century reference work that gathered references from Thomas Scott's commentary and the <i>Comprehensive Bible</i>.</li>
+        <li><b>Starting scores.</b> When Stephen Smith published the dataset on OpenBible.info in 2010, he gave references initial scores using two of his other projects: his <i>Topical Bible</i> (how often verses are grouped under the same topic) and <i>Twitter Bible Search</i> (how often people cited verses together).</li>
+        <li><b>Reader votes.</b> Visitors to OpenBible.info can vote each cross-reference up or down as helpful or not. A reference's score is its running net total, so it can fall below zero.</li>
+        <li><b>A snapshot.</b> Scores keep changing on OpenBible.info. The Rainbow uses the file published on <span class="num">7 September 2026</span>; a later download will differ slightly.</li>
+      </ol>
+      <div class="callout"><p>The exact seeding formula isn't published. The description above follows Stephen Smith's own notes on the dataset at <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">openbible.info/labs/cross-references</a>.</p></div>
+
+      <h3 id="votes-numbers">The numbers</h3>
+      <p>Most references have only a few votes. The median score is 3, the average about 6, and the highest is 1,291. 2,271 references sit at exactly zero and 1,243 are negative (the lowest is −86).</p>
+      <div class="tablewrap">
+        <table aria-label="Cross-references kept at each minimum vote setting">
+          <thead><tr><th>Slider setting</th><th class="r">References kept</th><th class="r">Share</th><th style="width:40%"></th></tr></thead>
+          <tbody id="voteRows"></tbody>
+        </table>
+      </div>
+      <p>The steepest drop is between 2 and 5 votes: about two-thirds of all references have fewer than 5.</p>
+      <p>The most-voted links are between very well-known verses: Jeremiah 29:11 → Isaiah 55:8 (1,291), Romans 8:29 → Ephesians 1:4 (1,280), Romans 8:29 → Jeremiah 1:5 (1,154), Philippians 4:13 → Isaiah 41:10 (1,030).</p>
+
+      <h3 id="votes-slider">How the slider uses them</h3>
+      <ul>
+        <li>Each notch is a minimum score: <b>All</b>, then 1 to 10 votes in steps of one, then 12, 15, 20, 25, 30, 40, 50, 75 and 100.</li>
+        <li>Only references scoring at or above the setting are drawn as arcs, counted at the top left, and listed in chapter and verse panels.</li>
+        <li><b>All</b> includes the zero and negative scores.</li>
+        <li><b>The slider starts at 8 votes</b>, the Harrison match below. Slide to <b>All</b> to see every reference.</li>
+        <li><b>Match Harrison's 63,779</b> picks the notch whose count is closest to the number of arcs in Chris Harrison and Christoph Römhild's 2008 image. That is 8 votes (60,635 references). Their own list of references was never published, so this matches the <i>amount</i> of detail in the original, not its actual links.</li>
+      </ul>
+
+      <h3 id="votes-caveats">What votes don't tell you</h3>
+      <ul>
+        <li><b>Popularity, not authority.</b> A high score means OpenBible.info readers found a link helpful. It is not a scholarly rating.</li>
+        <li><b>Famous verses collect votes.</b> Verses people already read often are seen, and voted on, far more. Obscure passages can hold excellent references with almost no votes.</li>
+        <li><b>A low score is often just unseen.</b> Treat low scores as “few people have looked”, not “wrong”.</li>
+        <li><b>References are one-directional.</b> Each is listed under one verse and points to another; a reverse link, if it exists, has its own score.</li>
+      </ul>
+    </section>
+
+    <section id="colors">
+      <h2>Colors</h2>
+      <p>Arc colors run through a rainbow from violet (low end of the scale) to red (high end) <span class="swatch" aria-hidden="true"></span>. What “low” and “high” mean depends on the <b>Color</b> setting.</p>
+      <dl class="terms">
+        <dt>Distance</dt><dd>How many chapters apart the two ends are, from neighbours to Genesis-to-Revelation (1,188 chapters). The scale is a square root, so short and medium distances get more of the spectrum: 100 chapters apart is already almost a third of the way along. This is Harrison's original scheme.</dd>
+        <dt>Book</dt><dd>The book the reference is listed under, Genesis (violet) through Revelation (red). Useful for seeing where one book's references travel.</dd>
+        <dt>Years</dt><dd>How many years apart the two books were written, using the dating chosen under Dating (below). Also a square-root scale; the color key's ticks show real year values.</dd>
+      </dl>
+    </section>
+
+    <section id="dating">
+      <h2>Dating</h2>
+      <p>Who wrote each book, and when, is debated for much of the Bible. Each chapter panel lists every view recorded for its book: author, date, place, who holds the view, and the ancient or modern works it rests on.</p>
+      <dl class="terms">
+        <dt>Traditional</dt><dd>Ancient Jewish and Christian attributions (for example Moses for Genesis, the apostle John for Revelation), held today by many conservative scholars.</dd>
+        <dt>Critical</dt><dd>The prevailing view in historical-critical scholarship (for example Genesis compiled from sources with a final form in the 5th century BC; Daniel completed around 167–164 BC).</dd>
+        <dt>Alternative</dt><dd>Significant minority proposals, such as Ephesus instead of Rome for Philippians.</dd>
+        <dt>Agreement</dt><dd><b>Broad agreement</b>: traditional and critical scholarship largely agree. <b>Scholars divided</b>: they differ. <b>Unsettled</b>: no agreement even among critical scholars.</dd>
+      </dl>
+      <p>For the Years coloring each book needs one number, so it is placed at the <b>middle of its date range</b> under the chosen tradition. Psalms, written over centuries, is therefore a rough average. The years are approximate by design.</p>
+      <div class="callout"><p>These summaries were compiled for this project from the works cited in each panel. Check the cited works before relying on them in your own writing.</p></div>
+    </section>
+
+    <section id="axis">
+      <h2>Axis &amp; ink</h2>
+      <dl class="terms">
+        <dt>Chapters</dt><dd>Every chapter gets the same width along the baseline, as in the original poster. Psalm 117 (2 verses) is as wide as Psalm 119 (176).</dd>
+        <dt>Verses</dt><dd>Every verse gets the same width, so long chapters take more room.</dd>
+        <dt>Ink</dt><dd>How strongly overlapping arcs build up. Each arc adds a little color; where hundreds cross, it saturates. Lower Ink to see structure in dense areas, raise it to see faint, rare links. It changes only the drawing, never which references are included.</dd>
+      </dl>
+    </section>
+
+    <section id="red-letters">
+      <h2>Red letters</h2>
+      <p>Verse text in the Rainbow and Echoes is the King James Version. When <b>Red letters</b> is on:</p>
+      <dl class="terms">
+        <dt><span class="rl-j">Red</span></dt><dd><b>Words of Jesus</b>, exactly as marked in the red-letter editions published by eBible.org. This is the long-standing editorial convention.</dd>
+        <dt><span class="rl-g">Dark red</span></dt><dd><b>Words spoken by God, detected automatically.</b> The World English Bible's quotation marks are traced to their speaker using phrases such as “God said”, “Thus says the LORD”, “the word of the LORD came… saying”, “a voice out of the sky”, or “‘…,’ says the LORD”. Words God speaks inside someone else's quotation (a prophet relaying “The LORD says…”) count too. The positions are then carried over to the KJV.</dd>
+      </dl>
+      <p>Dark red is a best effort. It misses speech introduced only by a pronoun with no clear context (“to which of the angels did he say…”), and span edges can be off by a few words. The two colors are kept distinct so you can always tell an editorial marking from a detected one.</p>
+    </section>
+
+    <section id="books">
+      <h2>Books filter</h2>
+      <p>The Rainbow and Echoes can both be narrowed to part of the Bible. Open <b>Books</b> and tick what you want. You can tick as many as you like:</p>
+      <ul>
+        <li><b>Old Testament</b> or <b>New Testament</b>: ticks or clears everything under it.</li>
+        <li><b>Categories:</b> Law, History, Wisdom / Poetry, Major Prophets and Minor Prophets; Gospels, Early Church History, Paul's Letters, General Letters and Prophecy.</li>
+        <li><b>Single books:</b> choose <b>Books</b> beside a category to tick individual books.</li>
+        <li><b>Select all</b> and <b>Deselect all</b> sit at the top. A half-filled box means only some books under it are ticked.</li>
+      </ul>
+      <dl class="terms">
+        <dt>Rainbow · Either end</dt><dd>Shows cross-references with at least one end in the chosen books, for example every link into or out of the Gospels.</dd>
+        <dt>Rainbow · Both ends</dt><dd>Shows only cross-references between chosen books. Tick the Minor Prophets and the Gospels to see just the links between them (and within each).</dd>
+        <dt>Echoes · Any place</dt><dd>Keeps phrases that occur at least once in the chosen books.</dd>
+        <dt>Echoes · Every place</dt><dd>Keeps phrases whose every occurrence is in the chosen books.</dd>
+      </dl>
+      <p>On the Rainbow, books you haven't ticked fade on the baseline and the count at the top updates. The categories follow the usual order of English Protestant Bibles: Lamentations sits with the Major Prophets, Acts is Early Church History, Hebrews is a General Letter and Revelation is Prophecy.</p>
+    </section>
+
+    <section id="translations">
+      <h2>Translations</h2>
+      <p>Verse text in the Rainbow's panels and pop-ups, and under each place in Echoes, can be shown in any of the English translations listed below. Choose one with <b>Translation</b> in the Rainbow's controls or at the top of any chapter panel, or with <b>English</b> in Echoes. Both pages remember your choice.</p>
+
+      <h3 id="translations-missing">Why the NIV, NKJV and ESV aren't here</h3>
+      <p>Most widely sold modern translations are under copyright, and their publishers don't allow whole texts to be copied into other programs. That includes the New International Version, New King James Version, English Standard Version, New American Standard Bible, New Living Translation, Christian Standard Bible and NET Bible. Every translation here is in the public domain or under an open licence that allows sharing.</p>
+      <p>Closest alternatives here: for contemporary, readable English, the <b>Berean Standard Bible</b> or <b>World English Bible</b>; for a modern word-for-word style, the <b>Literal Standard Version</b>; for the King James wording brought up to date (as the NKJV does), the <b>Updated King James Version</b>.</p>
+
+      <h3 id="translations-red">Red letters</h3>
+      <p>Words of Jesus (red) and detected words of God (dark red) are marked in the King James Version and the World English Bible. Other translations show plain text; a note says so when a passage has red letters in the KJV.</p>
+
+      <h3 id="translations-numbering">Verse numbering</h3>
+      <p>Verses are lined up by the King James Version's chapter and verse numbers, because the cross-references use them. Some translations number a few places differently: the Wycliffe Bible follows the Latin Vulgate in the Psalms, and Jewish translations follow Hebrew numbering in some chapters. There you may see a neighbouring verse, or “Not in this translation”. The notes in the table say where.</p>
+
+      <h3 id="translations-list">All translations</h3>
+      <div class="tablewrap"><table aria-label="Translations">
+        <thead><tr><th>Translation</th><th>Covers</th><th>Licence</th></tr></thead>
+        <tbody id="trRows"><tr><td colspan="3">The list loads from <code>texts/manifest.js</code>.</td></tr></tbody>
+      </table></div>
+      <p>More texts, including other languages and translations free only for non-commercial use (such as the Lexham English Bible), are available in the Scriptorium database; see the project's README.</p>
+    </section>
+
+    <section id="echoes">
+      <h2>Echoes</h2>
+      <p>Echoes finds every run of at least <b>seven consecutive words</b> that appears more than once in the text the book was written in: Hebrew and Aramaic for the Old Testament, Greek for the New. Seven is the starting point because shorter runs are dominated by stock formulas such as “and the LORD spoke to Moses, saying” (four Hebrew words). A phrase never runs across the end of a book.</p>
+      <dl class="terms">
+        <dt>Phrase</dt><dd>A run of words that occurs in two or more places, listed once at its full length.</dd>
+        <dt>Length</dt><dd>How many original-language words the phrase has. Hebrew words often include attached prefixes (“and”, “the”, “in”), so a Hebrew phrase covers more English words than its length suggests.</dd>
+        <dt>Places</dt><dd>How many passages the phrase occurs in.</dd>
+        <dt>Books</dt><dd>How many different books those places are in. One book means an internal repeat (a refrain, a list); two or more usually means a parallel account or a quotation.</dd>
+        <dt>Cross-referenced</dt><dd>At least two of the places are already linked by the Treasury of Scripture Knowledge.</dd>
+      </dl>
+
+      <h3 id="echoes-length">Repeats by length</h3>
+      <p>The chart shows, for every length from 7 words up to the longest repeat, how many phrases there are. It can count in two ways:</p>
+      <dl class="terms">
+        <dt>Listed phrases</dt><dd>Phrases at their full length, exactly as they appear in the list below the chart. A 20-word repeat counts once, at 20.</dd>
+        <dt>Every repeated run</dt><dd>Every stretch of that many words that repeats, including stretches inside longer phrases. The same 20-word repeat also contributes to the counts at 7, 8 … 19 words. This is the “start at seven and count upward until nothing repeats” view.</dd>
+      </dl>
+      <p>Click a bar to list only phrases of that length, or drag across bars to choose a range. The selected range is also shown in the list's filters, where you can type it instead.</p>
+
+      <h3 id="echoes-filters">Filtering and sorting the list</h3>
+      <ul>
+        <li><b>Length</b> from … to … words.</li>
+        <li><b>Places</b> from … to …: for example at least 3 places, to find phrases repeated again and again.</li>
+        <li><b>Books</b>: testaments, categories or single books (see <a href="#books">Books filter</a>), with <b>Any place</b> or <b>Every place</b>.</li>
+        <li><b>Spread</b>: phrases repeated within one book, across books, or both.</li>
+        <li><b>Cross-ref</b>: phrases whose places are already linked, not linked (repeats a reference work hasn't noted), or both.</li>
+        <li><b>Find</b>: a passage (“Psalm 18”) to list phrases occurring there, or an English word to search the word-by-word glosses.</li>
+        <li><b>Sort</b> by length, places or books (most or fewest first), or in Bible order.</li>
+      </ul>
+
+      <h3 id="echoes-words">Script and words</h3>
+      <dl class="terms">
+        <dt>Original</dt><dd>The phrase as written: Hebrew and Aramaic with vowel points, right to left; Greek with accents, left to right.</dd>
+        <dt>Transliteration</dt><dd>The same words spelled with English letters, showing how they sound: <i>bereshit bara elohim</i> for the opening words of Genesis. Hebrew and New Testament Greek use STEPBible's transliterations (simplified: syllable dots removed); Septuagint Greek is romanized automatically following SBL conventions (η → ē, ω → ō, χ → ch, rough breathing → h).</dd>
+        <dt>Hover a word</dt><dd>A pop-up shows the word's Strong's number, its dictionary form and a short meaning. Septuagint words have no Strong's tagging, so they show the word only.</dd>
+        <dt>Linked underlining</dt><dd>Open a phrase's places and hover a Hebrew or Greek word: it is underlined in gold together with the English words that translate it in that place. Hover an English word to find its Hebrew or Greek word the same way. The links come from the word-by-word tagging published for three translations: the King James Version and World English Bible (eBible.org Strong's tags) and the Berean Standard Bible (its interlinear tables). Other translations show the text without links.</dd>
+        <dt>Click a word</dt><dd>Or choose “Open Strong's definition” in the pop-up. A side panel opens with Strong's definition, how the King James Version translates the word, and where the word comes from. Press Esc to close it. When Echoes runs inside Scriptorium, the panel also links to the full entry with every verse.</dd>
+      </dl>
+
+      <h3 id="echoes-matching">Matching</h3>
+      <dl class="terms">
+        <dt>Exact words</dt><dd>The same words in the same order. Vowel points, cantillation marks, accents, capital letters and punctuation are ignored, since those were added or vary between manuscripts.</dd>
+        <dt>Same root words</dt><dd>The same dictionary words (Strong's numbers) in the same order, even when grammatical forms differ, so “he said” matches “they said”. Finds more and longer echoes, some of them looser.</dd>
+        <dt>Septuagint + NT</dt><dd>Searches the Greek Old Testament (the Septuagint, which New Testament writers often quoted) together with the Greek New Testament, so word-for-word quotations show up. Exact matching only; the Septuagint numbers some chapters differently, notably in the Psalms.</dd>
+      </dl>
+    </section>
+
+    <section id="sources">
+      <h2>Sources</h2>
+      <ul>
+        <li><b>Cross-references and votes:</b> <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY 4.0), from the Treasury of Scripture Knowledge.</li>
+        <li><b>Hebrew, Aramaic and Greek words:</b> STEPBible.org / Tyndale House Cambridge, TAHOT and TAGNT (CC BY 4.0).</li>
+        <li><b>Septuagint, King James Version, World English Bible,</b> and the words-of-Jesus markup: eBible.org (public domain).</li>
+        <li><b>Authorship and dating:</b> summaries of the ancient and modern works cited in each chapter panel.</li>
+        <li><b>Design:</b> after Chris Harrison and Christoph Römhild, <i>Bible Cross-References</i> (2008). An independent remake from open data, not their image.</li>
+      </ul>
+    </section>
+  </article>
+</div>
+
+<script>
+(function () {
+  const STOPS = [['All', 344756], ['1', 341242], ['2', 328003], ['3', 213253], ['4', 153182], ['5', 116267], ['6', 90277], ['7', 72964], ['8', 60635], ['9', 51474], ['10', 44493],
+    ['12', 34846], ['15', 25774], ['20', 17314], ['25', 12589], ['30', 9726], ['40', 6323], ['50', 4457], ['75', 2227], ['100', 1344]];
+  const total = 344756, fmt = n => n.toLocaleString('en-US');
+  document.getElementById('voteRows').innerHTML = STOPS.map(([s, n]) => `<tr${s === '8' ? ' class="mark"' : ''}>
+    <td>${s === 'All' ? 'All references' : s + '+ votes'}${s === '8' ? ' · Harrison match' : ''}</td><td class="r">${fmt(n)}</td><td class="r">${(n / total * 100).toFixed(1)}%</td>
+    <td><span class="distbar" style="width:${(n / total * 100).toFixed(1)}%"></span></td></tr>`).join('');
+
+  const root = document.documentElement, radios = [...document.querySelectorAll('input[name=theme]')];
+  const apply = p => { if (p === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', p); radios.forEach(r => { r.checked = r.value === p; }); };
+  let saved = null;
+  try { saved = localStorage.getItem('reference-rainbow-theme'); } catch (_) { /* storage blocked */ }
+  if (saved) apply(saved); else radios.forEach(r => { r.checked = r.value === (root.getAttribute('data-theme') || 'system'); });
+  radios.forEach(r => r.addEventListener('change', () => { apply(r.value); try { localStorage.setItem('reference-rainbow-theme', r.value); } catch (_) { /* storage blocked */ } }));
+
+  // highlight the section in view
+  const links = [...document.querySelectorAll('nav.toc a')];
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); });
+  }, { rootMargin: '0px 0px -70% 0px' });
+  document.querySelectorAll('section[id], h3[id]').forEach(s => obs.observe(s));
+})();
+</script>
+<script src="texts/manifest.js" charset="utf-8"></script>
+<script>
+(function () {
+  const list = window.RAINBOW_TRANSLATIONS || [], body = document.getElementById('trRows');
+  if (!list.length) return;
+  const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let group = '', html = '';
+  for (const t of list) {
+    if (t.group !== group) { group = t.group; html += `<tr><th colspan="3" style="padding-top:16px">${esc(group)}</th></tr>`; }
+    html += `<tr><td><b>${esc(t.name)}</b>${t.id === 'KJV' ? ' (default)' : ''}<br><span style="color:var(--muted);font-size:13px">${esc(t.blurb)}${t.note ? ' ' + esc(t.note) : ''}</span></td>
+      <td>${esc(t.coverage)}</td><td>${esc(t.license)}${t.url ? `<br><a href="${esc(t.url)}" target="_blank" rel="noopener" style="font-size:12.5px">source</a>` : ''}</td></tr>`;
+  }
+  body.innerHTML = html;
+})();
+</script>
+<script src="scriptorium-link.js" charset="utf-8"></script>

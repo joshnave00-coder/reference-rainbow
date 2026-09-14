@@ -1,0 +1,20 @@
+# --- large or rebuildable data (see README → "Build the database") ---
+bibledb/raw/
+bibledb/*.duckdb
+bibledb/*.duckdb.wal
+*.part
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# --- editors & OS ---
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

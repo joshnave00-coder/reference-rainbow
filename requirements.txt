@@ -1,0 +1,2 @@
+# Needed only to build and browse the database (bibledb/). The Rainbow, Echoes and Guide pages need no install.
+duckdb>=1.2

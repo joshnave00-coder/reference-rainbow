@@ -1,0 +1,34 @@
+name: Bug report
+description: A page, control or script doesn't work as expected.
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part?
+      options:
+        - Reference Rainbow
+        - Echoes
+        - Guide
+        - Scriptorium (database browser)
+        - download.py / build.py
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What did you do, and what happened?
+      placeholder: "1. Opened rainbow/index.html\n2. Clicked Isaiah 53\n3. The panel stayed empty"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Browser / operating system / Python version
+      placeholder: "e.g. Edge 128 on Windows 11; Python 3.11"
+  - type: textarea
+    id: output
+    attributes:
+      label: Error messages
+      description: Browser console (F12 → Console) or terminal output, if any.
+      render: text

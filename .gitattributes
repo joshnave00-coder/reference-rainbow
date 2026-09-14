@@ -1,0 +1,20 @@
+# Normalise line endings so Windows, macOS and Linux checkouts agree
+* text=auto eol=lf
+
+# Windows helpers keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Generated data bundles: committed so the pages work straight after download,
+# but hidden from diffs and GitHub language stats. Rebuild with rainbow/build_data.py and rainbow/build_echoes.py.
+rainbow/data.js        linguist-generated=true -diff
+rainbow/echoes-data.js linguist-generated=true -diff
+rainbow/texts/*.js     linguist-generated=true -diff
+rainbow/study/**/*.js  linguist-generated=true -diff
+*.command text eol=lf
+
+# Binary data (never committed, but just in case)
+*.duckdb  binary
+*.parquet binary
+*.xlsx    binary
+*.zip     binary

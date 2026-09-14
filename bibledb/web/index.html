@@ -1,0 +1,1100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scriptorium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap">
+<!-- every script in the database, so no text falls back to boxes or mismatched faces -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Syriac&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Coptic&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gothic&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Cherokee&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Armenian&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&display=swap">
+<style>
+:root{
+  --dark:0;
+  --ground:#F8F8F6; --panel:#FFFFFF; --ink:#1A1B22; --muted:#676A76; --faint:#A2A4AE; --rule:#E2E3E8; --wash:#F1F2F5;
+  --accent:#2A4F9A; --accent-soft:#E7EDF8; --on-accent:#FFFFFF;
+  --red-jesus:#C8102E; --red-god:#6B1119; --good:#2E7D4F; --warn:#9A6A12; --shadow:rgba(20,24,40,.14);
+  --serif:"Libre Baskerville",Baskerville,Georgia,serif;
+  --sans:"Schibsted Grotesk","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"Spline Sans Mono",ui-monospace,Consolas,monospace;
+  --scripture:"Libre Baskerville","Noto Serif","Noto Serif Hebrew","Noto Sans Syriac","Noto Sans Coptic","Noto Sans Gothic","Noto Sans Cherokee","Noto Sans Myanmar","Noto Serif Malayalam","Noto Serif Thai","Noto Serif Armenian","Noto Serif TC","Noto Serif JP","Noto Serif KR",Georgia,serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --dark:1; --ground:#0E0F14; --panel:#15161D; --ink:#E9EAF0; --muted:#9A9DAA; --faint:#62646F; --rule:#262833; --wash:#1B1C25;
+    --accent:#8FB0F0; --accent-soft:#1C2740; --on-accent:#0E0F14; --red-jesus:#FF6B6B; --red-god:#C9868B; --good:#6CC495; --warn:#E0B45C;
+    --shadow:rgba(0,0,0,.5); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --dark:1; --ground:#0E0F14; --panel:#15161D; --ink:#E9EAF0; --muted:#9A9DAA; --faint:#62646F; --rule:#262833; --wash:#1B1C25;
+  --accent:#8FB0F0; --accent-soft:#1C2740; --on-accent:#0E0F14; --red-jesus:#FF6B6B; --red-god:#C9868B; --good:#6CC495; --warn:#E0B45C;
+  --shadow:rgba(0,0,0,.5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+/* rail */
+.rail{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:22px;padding:22px 16px 18px;border-right:1px solid var(--rule);background:var(--panel)}
+.brand{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:3px;padding:0 8px}
+.brand b{font-family:var(--serif);font-weight:400;font-size:25px;letter-spacing:-.01em}
+.brand span{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.nav{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;flex-direction:column;padding:7px 10px;border-radius:5px;text-decoration:none;color:var(--ink)}
+.nav a small{font-size:11.5px;color:var(--muted)}
+.nav a:hover{background:var(--wash)}
+.nav a[aria-current="page"]{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.rail-foot{margin-top:auto;display:flex;flex-direction:column;gap:12px;padding:0 6px}
+.rail-link{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;text-decoration:none;color:var(--ink);padding:6px 4px;border-top:1px solid var(--rule)}
+.rail-link:hover{color:var(--accent)}
+.rail-stats{font-size:11.5px;line-height:1.55;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* shared controls */
+.eyebrow{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.opts{display:inline-flex;background:var(--wash);border-radius:4px;padding:2px;flex-wrap:wrap}
+.opts label{position:relative;display:block}
+.opts input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opts span{display:block;padding:3px 9px;border-radius:3px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.opts input:checked + span{background:var(--ink);color:var(--ground)}
+.opts input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
+.btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:12.5px;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.field{height:32px;padding:0 10px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:13px;min-width:0}
+.field:focus{outline:none;border-color:var(--accent)}
+.switch{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;cursor:pointer;user-select:none}
+.switch input{margin:0;accent-color:var(--accent);width:15px;height:15px}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid currentColor;white-space:nowrap}
+.pill.broad{color:var(--good)} .pill.divided{color:var(--warn)} .pill.open{color:var(--red-jesus)}
+.tag{display:inline-block;padding:0 6px;border-radius:3px;background:var(--wash);font-size:11px;color:var(--muted);white-space:nowrap}
+.rl-j{color:var(--red-jesus)} .rl-g{color:var(--red-god)}
+.pil{color:var(--faint);font-size:.85em}
+.mono{font-family:var(--mono);font-size:12.5px}
+.empty{font-family:var(--serif);font-style:italic;color:var(--muted);padding:24px 0}
+.err{color:var(--red-jesus);font-size:13px}
+
+/* views */
+main{min-width:0}
+.view{padding:26px 34px 60px;display:flex;flex-direction:column;gap:18px;max-width:1500px}
+.vhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+.vhead h1{margin:2px 0 0;font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em}
+.vhead p.dek{margin:6px 0 0;font-family:var(--serif);font-size:13.5px;color:var(--muted);max-width:70ch;line-height:1.6}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:10px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.toolbar .grow{flex:1}
+
+/* read */
+.refform{display:flex;gap:8px}
+.refform .field{width:230px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 4px 2px 9px;border:1px solid var(--rule);border-radius:999px;font-size:12px;background:var(--panel)}
+.chip button{border:0;background:none;padding:2px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+.chip button:hover{color:var(--ink);background:var(--wash)}
+.picker{position:absolute;z-index:30;width:380px;max-height:420px;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--rule);border-radius:6px;box-shadow:0 20px 50px var(--shadow)}
+.picker .field{margin:10px;flex:none}
+.picker ul{list-style:none;margin:0;padding:0 6px 8px;overflow:auto}
+.picker li.grp{padding:8px 8px 3px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.picker button{width:100%;display:grid;grid-template-columns:18px 90px minmax(0,1fr);gap:8px;align-items:baseline;text-align:left;border:0;background:none;padding:5px 8px;border-radius:4px;font-size:12.5px}
+.picker button:hover{background:var(--wash)}
+.picker button .t{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.passage-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--panel)}
+.pgrid{display:grid;min-width:max-content}
+.ph{position:sticky;top:0;z-index:2;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:1px;min-width:0}
+.ph b{font-size:12.5px}
+.ph span{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34ch}
+.vn{padding:10px 6px 10px 14px;font-size:11px;font-weight:600;color:var(--muted);text-align:right;border-top:1px solid var(--rule);font-variant-numeric:tabular-nums;position:relative}
+.vn .mark{position:absolute;left:4px;top:13px;width:6px;height:6px;border-radius:50%}
+.cell{padding:10px 14px;border-top:1px solid var(--rule);font-family:var(--scripture);font-size:14px;line-height:1.7;max-width:46ch;min-width:24ch}
+.cell[lang="hbo"],.cell[lang="he"]{font-family:"Noto Serif Hebrew","SBL Hebrew",serif;font-size:19px;line-height:1.75}
+.cell[lang="grc"],.cell[lang="el"]{font-family:"Noto Serif","Gentium Plus",serif;font-size:15.5px}
+.cell[lang="syr"]{font-family:"Noto Sans Syriac",serif;font-size:18px}
+.cell.missing{color:var(--faint)}
+.inter{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:6px;padding:4px 14px 14px;background:var(--wash)}
+.wc{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 8px;border:1px solid transparent;border-radius:5px;background:var(--panel);min-width:62px;text-align:center}
+.wc:hover{border-color:var(--accent)}
+.wc-o{font-family:"Noto Serif Hebrew","Noto Serif",serif;font-size:19px;line-height:1.3}
+.wc-o.gr{font-size:16px}
+.wc-t{font-size:11px;color:var(--muted);font-style:italic}
+.wc-e{font-size:12px}
+.wc-s{font-family:var(--mono);font-size:10.5px;color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+
+/* drawer */
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:40;width:min(440px,100vw);background:var(--panel);border-left:1px solid var(--rule);box-shadow:-20px 0 60px var(--shadow);overflow:auto;padding:22px 24px 40px;display:flex;flex-direction:column;gap:14px}
+.drawer .close{position:absolute;top:14px;right:14px}
+
+/* strong's */
+.split{display:grid;grid-template-columns:320px minmax(0,1fr);gap:28px;align-items:start}
+.slist{display:flex;flex-direction:column;border:1px solid var(--rule);border-radius:6px;background:var(--panel);overflow:hidden}
+.slist button{display:grid;grid-template-columns:62px minmax(0,1fr);gap:2px 10px;text-align:left;border:0;border-top:1px solid var(--rule);background:none;padding:9px 12px}
+.slist button:first-child{border-top:0}
+.slist button:hover,.slist button[aria-current="true"]{background:var(--accent-soft)}
+.slist .id{font-family:var(--mono);font-size:12px;color:var(--accent);grid-row:1 / 3}
+.slist .lm{font-family:"Noto Serif Hebrew","Noto Serif",serif;font-size:16px}
+.slist .df{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry{display:flex;flex-direction:column;gap:18px}
+.entry-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+.lemma{font-family:"Noto Serif Hebrew","Noto Serif",serif;font-size:44px;line-height:1.1}
+.xlit{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--muted)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 28px}
+.stat b{display:block;font-family:var(--serif);font-weight:400;font-size:24px;font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--muted)}
+.card{border:1px solid var(--rule);border-radius:6px;background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.card p{margin:0;font-family:var(--serif);font-size:13.5px;line-height:1.65}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.bars{display:flex;flex-direction:column;gap:4px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:12.5px}
+.bar i{display:block;height:6px;background:var(--accent);border-radius:1px;opacity:.75}
+.bar .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bar .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.bookdist{display:grid;grid-template-columns:repeat(66,minmax(0,1fr));gap:1px;align-items:end;height:60px}
+.bookdist div{background:var(--accent);opacity:.7;min-height:0}
+.bookdist-axis{position:relative;height:14px;font-size:10.5px;color:var(--muted)}
+.bookdist-axis span{position:absolute;top:0;white-space:nowrap}
+.vlist{display:flex;flex-direction:column}
+.vlist a{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.vlist a:hover .r{text-decoration:underline}
+.vlist .r{font-size:12.5px;font-weight:600;color:var(--accent)}
+.vlist .t{font-family:var(--serif);font-size:13px;line-height:1.6}
+.vlist mark{background:var(--accent-soft);color:inherit;padding:0 2px;border-radius:2px}
+.lex a{color:var(--accent)}
+
+/* books */
+.btimeline{border:1px solid var(--rule);border-radius:6px;background:var(--panel)}
+.brow-grid{display:grid;grid-template-columns:170px 118px minmax(0,1fr);align-items:center}
+.baxis{position:sticky;top:0;z-index:3;background:var(--panel);border-bottom:1px solid var(--rule);padding:8px 12px;font-size:10.5px;color:var(--muted)}
+.track{position:relative;height:30px}
+.baxis .track{height:16px}
+.tick{position:absolute;top:0;bottom:0;border-left:1px dashed var(--rule)}
+.tick span{position:absolute;top:0;left:4px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.brow{border-top:1px solid var(--rule)}
+.brow:first-of-type{border-top:0}
+.bhead{width:100%;border:0;background:none;padding:6px 12px;text-align:left}
+.bhead:hover{background:var(--wash)}
+.bname{display:flex;flex-direction:column}
+.bname b{font-weight:600;font-size:13px}
+.bname small{font-size:11px;color:var(--muted)}
+.bar-r{position:absolute;height:6px;border-radius:2px}
+.bar-r.trad{top:6px;background:var(--ink)}
+.bar-r.crit{top:17px;background:var(--accent)}
+.bar-r.cons{top:6px;height:17px;background:linear-gradient(var(--ink),var(--accent));opacity:.85}
+.bar-r.alt{top:12px;height:5px;background:transparent;border:1px dashed var(--muted)}
+.bdetail{padding:6px 12px 18px 12px;background:var(--wash)}
+.vcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.vcard{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.vcard.traditional,.vcard.consensus{box-shadow:inset 3px 0 0 var(--ink)}
+.vcard.critical{box-shadow:inset 3px 0 0 var(--accent)}
+.vcard.alternative{box-shadow:inset 3px 0 0 var(--faint)}
+.vcard h4{margin:0;font-family:var(--serif);font-weight:400;font-size:14.5px;line-height:1.5}
+.vcard dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12.5px}
+.vcard dt{color:var(--muted)}
+.vcard dd{margin:0}
+.vcard ol{margin:0;padding-left:18px;font-size:12px;color:var(--muted);line-height:1.5}
+.tl-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--muted)}
+.tl-legend i{display:inline-block;width:22px;height:6px;border-radius:2px;margin-right:6px;vertical-align:1px}
+
+/* tables & grids */
+.gridwrap{overflow:auto;border:1px solid var(--rule);border-radius:6px;background:var(--panel);max-height:70vh}
+table.grid{border-collapse:collapse;width:max-content;min-width:100%;font-size:12.5px}
+.grid th{position:sticky;top:0;z-index:1;background:var(--panel);text-align:left;font-weight:600;padding:7px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+.grid th button{border:0;background:none;padding:0;font-weight:600;display:inline-flex;gap:4px;align-items:center}
+.grid td{padding:6px 10px;border-top:1px solid var(--rule);vertical-align:top;max-width:460px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grid td.num{text-align:right;font-variant-numeric:tabular-nums}
+.grid td.wrap{white-space:normal;min-width:260px}
+.grid tr:hover td{background:var(--wash)}
+.null{color:var(--faint);font-style:italic}
+.tsplit{display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;align-items:start}
+.tlist{display:flex;flex-direction:column;gap:1px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+.tlist button{display:flex;justify-content:space-between;gap:8px;text-align:left;border:0;background:none;padding:6px 9px;border-radius:4px;font-size:12.5px}
+.tlist button small{color:var(--muted);font-variant-numeric:tabular-nums}
+.tlist button:hover,.tlist button[aria-current="true"]{background:var(--accent-soft)}
+.tlist .grp{padding:10px 9px 4px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.coldocs td:first-child{font-family:var(--mono)}
+.coldocs td:nth-child(3){white-space:normal;min-width:320px}
+.pager{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)}
+details.cols summary{cursor:pointer;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+textarea.sql{width:100%;min-height:170px;padding:12px 14px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);font-family:var(--mono);font-size:13px;line-height:1.55;resize:vertical}
+textarea.sql:focus{outline:none;border-color:var(--accent)}
+
+/* checkbox lists (every filter allows several choices) */
+.cl{position:relative;display:inline-block}
+.cl-btn.cl-on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cl-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:35;width:290px;max-height:400px;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--rule);border-radius:6px;box-shadow:0 20px 50px var(--shadow);padding:10px 12px}
+.cl-top{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--rule);margin-bottom:6px}
+.cl-top b{margin-right:auto;font-size:12.5px}
+.cl-link{border:0;background:none;padding:0;font-size:12px;color:var(--muted);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:pointer}
+.cl-link:hover{color:var(--ink)}
+.cl-q{margin:0 0 6px;width:100%}
+.cl-list{overflow:auto;display:flex;flex-direction:column}
+.cl-list label{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:3px 2px;cursor:pointer}
+.cl-list input{margin:0;width:15px;height:15px;accent-color:var(--accent);flex:none}
+
+/* data & setup */
+.setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.card h3 .pill{text-transform:none;letter-spacing:0}
+.card h3{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.copyrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.copyrow code{padding:4px 8px;background:var(--wash);border-radius:4px;word-break:break-all;font-size:12px}
+.hint-sm{font-size:12px;color:var(--muted);font-family:var(--sans)}
+.card p.hint-sm{font-family:var(--sans);font-size:12px;color:var(--muted)}
+.kv{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;word-break:break-word}
+.action{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 18px;align-items:center;padding:12px 0;border-top:1px solid var(--rule)}
+.action p{margin:2px 0}
+.log{max-height:300px;overflow:auto;margin:8px 0 0;background:var(--wash);border-radius:4px;padding:10px 12px;font-family:var(--mono);font-size:12px;line-height:1.5;white-space:pre-wrap}
+details.card summary{cursor:pointer}
+
+/* tooltip & help */
+.ctip{position:fixed;left:0;top:0;z-index:60;width:max-content;max-width:290px;pointer-events:none;background:var(--ink);color:var(--ground);border-radius:4px;padding:8px 11px 9px;box-shadow:0 10px 30px var(--shadow);display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity .12s}
+.ctip.show{opacity:1}
+.ctip b{font-size:12.5px;font-weight:600}
+.ctip span{font-size:12px;line-height:1.45;opacity:.86}
+dialog.help{width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink);box-shadow:0 30px 80px var(--shadow)}
+dialog.help::backdrop{background:rgba(10,12,20,.45)}
+.help-head{position:sticky;top:0;display:flex;align-items:baseline;justify-content:space-between;padding:22px 28px 14px;background:var(--panel);border-bottom:1px solid var(--rule)}
+.help-head h2{margin:0;font-family:var(--serif);font-weight:400;font-size:26px}
+.help-body{padding:6px 28px 28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 30px}
+.help-body section{padding-top:14px;display:flex;flex-direction:column;gap:6px}
+.help-body section.wide{grid-column:1 / -1}
+.help-body h3{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.help-body p{margin:0;font-family:var(--serif);font-size:13.5px;line-height:1.65}
+
+@media (max-width: 980px){
+  .app{grid-template-columns:1fr}
+  .rail{position:static;height:auto;flex-direction:column}
+  .nav{flex-direction:row;flex-wrap:wrap}
+  .split,.tsplit{grid-template-columns:1fr}
+  .tlist{position:static;max-height:260px}
+  .brow-grid{grid-template-columns:110px 96px minmax(0,1fr)}
+  .tick.minor span{display:none}
+  .tick span{font-size:9.5px}
+  .view{padding:20px 16px 50px}
+  .help-body{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion: reduce){.ctip{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail" aria-label="Scriptorium">
+    <a class="brand" href="#read"><b>Scriptorium</b><span>Bible data room</span></a>
+    <ul class="nav">
+      <li><a href="#read" data-view="read" data-tip-title="Read" data-tip="Any passage side by side in any translations, with the Hebrew/Greek words and red letters.">Read <small>Parallel &amp; interlinear</small></a></li>
+      <li><a href="#strongs" data-view="strongs" data-tip-title="Strong's" data-tip="Look up a Strong's number or word: definitions, how translations render it, and every verse it appears in.">Strong's <small>Concordance &amp; lexicon</small></a></li>
+      <li><a href="#books" data-view="books" data-tip-title="Books & dating" data-tip="Who wrote each book, when and where — traditional and critical views side by side with their sources.">Books &amp; dating <small>Authors, dates, places</small></a></li>
+      <li><a href="#translations" data-view="translations" data-tip-title="Translations" data-tip="Every text in the database with language, licence and coverage — plus eBible.org's catalogue of 1,500+ more.">Translations <small>Catalogue &amp; licences</small></a></li>
+      <li><a href="#tables" data-view="tables" data-tip-title="Tables" data-tip="Browse every table and view with its documented columns, filters and paging.">Tables <small>Browse the database</small></a></li>
+      <li><a href="#sql" data-view="sql" data-tip-title="SQL" data-tip="Run read-only DuckDB SQL over every table, with ready-made example queries.">SQL <small>Query console</small></a></li>
+      <li><a href="#setup" data-view="setup" data-tip-title="Data & setup" data-tip="How to start and stop Scriptorium, what's in your database, and buttons to update it or make a copy you can share.">Data &amp; setup <small>Start, stop, update</small></a></li>
+    </ul>
+    <div class="rail-foot">
+      <a class="rail-link" href="/rainbow/" target="_blank" rel="noopener" data-tip-title="Reference Rainbow" data-tip="The interactive cross-reference arc diagram (opens in a new tab).">Reference Rainbow <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
+      <a class="rail-link" href="/rainbow/read.html" target="_blank" rel="noopener" data-tip-title="Read" data-tip="The simple Bible reader with verse study (opens in a new tab).">Read <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
+      <a class="rail-link" href="/rainbow/echoes.html" target="_blank" rel="noopener" data-tip-title="Echoes" data-tip="Phrases of 7+ words repeated in the original Hebrew, Aramaic and Greek (opens in a new tab).">Echoes <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
+      <a class="rail-link" href="/rainbow/guide.html" target="_blank" rel="noopener" data-tip-title="Guide" data-tip="How every page and control works (opens in a new tab).">Guide <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
+      <div role="radiogroup" aria-label="Theme" class="opts" data-tip-title="Theme" data-tip="Light, dark, or follow your device. Remembered on this device.">
+        <label><input type="radio" name="theme" value="light"><span>Light</span></label>
+        <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+        <label><input type="radio" name="theme" value="system" checked><span>System</span></label>
+      </div>
+      <button class="btn" id="helpBtn" type="button" data-tip-title="Help" data-tip="What each part of Scriptorium does. Shortcut: ?">? Help</button>
+      <p class="rail-stats" id="railStats"></p>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- READ -->
+    <section class="view" id="view-read" hidden>
+      <header class="vhead">
+        <div><p class="eyebrow">Read</p><h1 id="readTitle">John 1</h1></div>
+        <form class="refform" id="refForm">
+          <input class="field" id="refInput" placeholder="John 3, Ps 23:1-6, Gen 1:1" aria-label="Passage" data-tip-title="Passage" data-tip="A book and chapter, or a verse range: John 3, Ps 23:1-6, Gen.1.1.">
+          <button class="btn primary" type="submit">Open</button>
+        </form>
+      </header>
+      <div class="toolbar">
+        <button class="btn" id="prevCh" type="button" data-tip-title="Previous chapter" data-tip="Go to the chapter before this one.">‹ <span></span></button>
+        <button class="btn" id="nextCh" type="button" data-tip-title="Next chapter" data-tip="Go to the chapter after this one."><span></span> ›</button>
+        <div class="chips" id="trChips"></div>
+        <div style="position:relative"><button class="btn" id="addTr" type="button" data-tip-title="Choose translations" data-tip="Pick which Bibles to read side by side: English translations such as the KJV, WEB, BSB and LSV, other languages, ancient versions and the original Hebrew and Greek.">Choose translations</button><div class="picker" id="picker" hidden></div></div>
+        <span class="grow"></span>
+        <label class="switch" data-tip-title="Interlinear" data-tip="Show every Hebrew, Aramaic or Greek word under its verse with transliteration, gloss and Strong's number. Click a word for its dictionary entry."><input type="checkbox" id="interToggle"> Interlinear</label>
+        <label class="switch" data-tip-title="Red letters" data-tip="Red: words of Jesus, as marked in red-letter editions (KJV, WEB). Dark red: words of God, detected automatically from quotations — a best effort. Other translations show a dot beside the verse number."><input type="checkbox" id="redToggle" checked> Red letters</label>
+        <span class="opts" role="radiogroup" aria-label="Layout" data-tip-title="Layout" data-tip="Columns puts translations side by side; Rows stacks them under each verse number.">
+          <label><input type="radio" name="layout" value="cols" checked><span>Columns</span></label>
+          <label><input type="radio" name="layout" value="rows"><span>Rows</span></label>
+        </span>
+      </div>
+      <div class="legend" id="readLegend"></div>
+      <div id="passage"><p class="empty">Loading…</p></div>
+    </section>
+
+    <!-- STRONG'S -->
+    <section class="view" id="view-strongs" hidden>
+      <header class="vhead">
+        <div><p class="eyebrow">Strong's concordance</p><h1>Words behind the words</h1>
+          <p class="dek">James Strong's Hebrew (1894) and Greek (1890) dictionaries, joined to every tagged word in the Hebrew, Aramaic and Greek texts and in the KJV, WEB and BSB.</p></div>
+        <input class="field" id="sQuery" style="width:320px" placeholder="H430, G26, love, ἀγάπη, shalom" aria-label="Search Strong's" data-tip-title="Search Strong's" data-tip="A number (H430, G26), an English word from the definition or KJV usage, a transliteration, or the Hebrew/Greek word itself.">
+      </header>
+      <div class="split"><div class="slist" id="sResults"></div><article class="entry" id="sEntry"><p class="empty">Choose a word on the left.</p></article></div>
+    </section>
+
+    <!-- BOOKS -->
+    <section class="view" id="view-books" hidden>
+      <header class="vhead">
+        <div><p class="eyebrow">Books &amp; dating</p><h1>Who wrote it, when, and where</h1>
+          <p class="dek">For each book: the traditional attribution, the prevailing critical view, and notable alternatives — who holds each view, and the ancient and modern works it rests on. Summaries compiled for this database; check the cited works before quoting them.</p></div>
+        <div class="toolbar" style="border:0;padding:0" id="bookFilters"></div>
+      </header>
+      <div class="tl-legend"><span><i style="background:var(--ink)"></i>Traditional date range</span><span><i style="background:var(--accent)"></i>Critical date range</span><span><i style="border:1px dashed var(--muted)"></i>Alternative view</span><span>Click a book for authors, places and sources.</span></div>
+      <div class="btimeline" id="bookRows"><p class="empty" style="padding:20px">Loading…</p></div>
+    </section>
+
+    <!-- TRANSLATIONS -->
+    <section class="view" id="view-translations" hidden>
+      <header class="vhead">
+        <div><p class="eyebrow">Translations</p><h1>Every text in the database</h1>
+          <p class="dek">Modern translations, ancient versions and original-language texts, with language, coverage, verse numbering and licence as stated by each source.</p></div>
+        <span class="opts" role="radiogroup" aria-label="Catalogue" data-tip-title="Catalogue" data-tip="Imported: texts you can read and query here. eBible.org: 1,500+ more translations that exist elsewhere, with their licences.">
+          <label><input type="radio" name="tcat" value="imported" checked><span>Imported</span></label>
+          <label><input type="radio" name="tcat" value="ebible"><span>eBible.org catalogue</span></label>
+        </span>
+      </header>
+      <div class="toolbar">
+        <input class="field" id="tFilter" style="width:280px" placeholder="Filter by name, language, licence" aria-label="Filter translations">
+        <span id="tCategory"></span><span id="tLanguage"></span><span id="tLicense"></span>
+        <label class="switch"><input type="checkbox" id="tStrongs"> Strong's-tagged only</label>
+        <span class="grow"></span><span id="tCount" class="eyebrow"></span>
+      </div>
+      <div class="gridwrap" id="tGrid"></div>
+    </section>
+
+    <!-- TABLES -->
+    <section class="view" id="view-tables" hidden>
+      <header class="vhead"><div><p class="eyebrow">Tables</p><h1>Browse the database</h1>
+        <p class="dek">Every table and view in bible.duckdb, with the documentation stored alongside it. Filter a column, sort by clicking a heading, and page through rows.</p></div></header>
+      <div class="tsplit"><div class="tlist" id="tList"></div><div id="tDetail"><p class="empty">Choose a table.</p></div></div>
+    </section>
+
+    <!-- SQL -->
+    <section class="view" id="view-sql" hidden>
+      <header class="vhead"><div><p class="eyebrow">SQL</p><h1>Query console</h1>
+        <p class="dek">DuckDB SQL over every table, read-only. Results show the first 2,000 rows. Press Ctrl+Enter to run.</p></div></header>
+      <div class="toolbar">
+        <select class="field" id="sqlExamples" aria-label="Example queries" data-tip-title="Examples" data-tip="Ready-made queries that show how the tables join together."><option value="">Example queries…</option></select>
+        <button class="btn primary" id="sqlRun" type="button" data-tip-title="Run" data-tip="Run the query (Ctrl+Enter).">Run</button>
+        <button class="btn" id="sqlCsv" type="button" disabled data-tip-title="Download CSV" data-tip="Save the current results as a CSV file.">Download CSV</button>
+        <span class="grow"></span><span id="sqlStatus" class="eyebrow"></span>
+      </div>
+      <textarea class="sql" id="sqlText" spellcheck="false" aria-label="SQL query">SELECT translation_id, text
+FROM v_passage
+WHERE osis_ref = 'John.3.16'
+ORDER BY translation_id;</textarea>
+      <div class="gridwrap" id="sqlResult"></div>
+    </section>
+
+    <!-- DATA & SETUP -->
+    <section class="view" id="view-setup" hidden>
+      <header class="vhead"><div><p class="eyebrow">Data &amp; setup</p><h1>Starting, stopping and updating</h1>
+        <p class="dek">Scriptorium is a small program running on this computer. This page shows how to start and stop it, what's in your database, and buttons to update the data or make a copy you can share.</p></div></header>
+      <div id="setupBody"><p class="empty">Loading…</p></div>
+    </section>
+  </main>
+</div>
+
+<aside class="drawer" id="drawer" hidden aria-label="Strong's entry"></aside>
+<div class="ctip" id="ctip" role="tooltip" hidden></div>
+
+<dialog class="help" id="help" aria-labelledby="helpTitle">
+  <div class="help-head"><h2 id="helpTitle">Using Scriptorium</h2><form method="dialog"><button class="btn" aria-label="Close help">Close</button></form></div>
+  <div class="help-body">
+    <section class="wide"><h3>What this is</h3><p>A reading room over one DuckDB file, <span class="mono">bible.duckdb</span>: 144 texts in 60 languages, every Hebrew, Aramaic and Greek word tagged with Strong's numbers, Strong's dictionaries, 344,756 cross-references, red letters, repeated phrases, and who wrote each book when and where. Everything is read-only here; rebuild with <span class="mono">python build.py</span>.</p></section>
+    <section><h3>Read</h3><p>Type a passage, add translations with “+ Translation”, and turn on Interlinear to see the original words. Click any original word for its Strong's entry. <span class="rl-j">Red</span> marks words of Jesus; <span class="rl-g">dark red</span> marks words of God detected from quotations.</p></section>
+    <section><h3>Strong's</h3><p>Search by number, English meaning, transliteration or the Hebrew/Greek word. Each entry shows Strong's definition, modern glosses, how the KJV, WEB and BSB translate it, where it occurs by book, and verses.</p></section>
+    <section><h3>Books &amp; dating</h3><p>A timeline of traditional (dark) and critical (blue) date ranges. Open a book for each view's author, date, place, who holds it and its sources.</p></section>
+    <section><h3>Translations</h3><p>Coverage, verse numbering system and licence for each text. Switch to the eBible.org catalogue to see what else exists. “Read” adds a translation to the Read view.</p></section>
+    <section><h3>Tables</h3><p>Each table's description and column documentation come from the database itself. Filter any column by “contains”, “equals” or “starts with”.</p></section>
+    <section><h3>SQL</h3><p>Start from an example query. The console cannot change the database or read other files.</p></section>
+    <section class="wide"><h3>Starting, stopping and updating</h3><p>Scriptorium runs while its black window is open; close that window to stop it. To start it again, double-click <b>Start Scriptorium</b> in the project folder. <a href="#setup">Data &amp; setup</a> has the details, your database's status, and buttons to update the data or make a copy you can share.</p></section>
+    <section class="wide"><h3>Keyboard</h3><p><b>?</b> help · <b>/</b> focus the search on the current page · <b>Esc</b> close panels · <b>Ctrl+Enter</b> run SQL · <b>[</b> and <b>]</b> previous / next chapter in Read.</p></section>
+  </div>
+</dialog>
+
+<script>
+(function () {
+'use strict';
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = n => n == null ? '' : Number(n).toLocaleString('en-US');
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const store = { get(k, d) { try { const v = localStorage.getItem('scriptorium-' + k); return v == null ? d : JSON.parse(v); } catch (_) { return d; } },
+                set(k, v) { try { localStorage.setItem('scriptorium-' + k, JSON.stringify(v)); } catch (_) { /* storage blocked */ } } };
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  const j = await r.json();
+  if (j.error) throw new Error(j.error);
+  return j;
+}
+const RTL = new Set(['hbo', 'he', 'syr', 'ar', 'arc']);
+const langAttr = code => `lang="${esc(code || '')}"${RTL.has(code) ? ' dir="rtl"' : ' dir="auto"'}`;
+const ICON = { x: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  check: '<svg class="ico" viewBox="0 0 16 16" aria-label="yes"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg>' };
+const shortS = s => s ? s[0] + String(parseInt(s.slice(1), 10)) : '';
+const pilcrow = html => html.replace(/¶/g, '<span class="pil" title="Paragraph mark from the printed edition">¶</span>');
+const CONS = { broad: 'Broad agreement', divided: 'Scholars divided', open: 'Unsettled' };
+const VIEWN = { consensus: 'Consensus', traditional: 'Traditional', critical: 'Critical scholarship', alternative: 'Alternative view' };
+const yr = y => y == null ? '' : (y < 0 ? `${fmt(-y)} BC` : `AD ${fmt(y)}`);
+
+let META = null;
+
+// ------------------------------------------------------------------ router
+const views = ['read', 'strongs', 'books', 'translations', 'tables', 'sql', 'setup'];
+const inited = {};
+function route() {
+  const [name, ...rest] = decodeURIComponent(location.hash.slice(1)).split('/');
+  const view = views.includes(name) ? name : 'read';
+  views.forEach(v => { $('#view-' + v).hidden = v !== view; });
+  $$('.nav a').forEach(a => { if (a.dataset.view === view) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  const arg = rest.join('/');
+  ({ read: initRead, strongs: initStrongs, books: initBooks, translations: initTranslations, tables: initTables, sql: initSql, setup: initSetup })[view](arg);
+}
+window.addEventListener('hashchange', route);
+const go = (hash) => { if (location.hash !== hash) location.hash = hash; else route(); };
+
+// ------------------------------------------------------------------ READ
+const RS = { trs: store.get('trs', ['KJV', 'BSB', 'ORIG']), inter: store.get('inter', true), red: store.get('red', true), layout: store.get('layout', 'cols'), ref: store.get('ref', 'John 1'), data: null };
+function initRead(arg) {
+  if (!inited.read) {
+    inited.read = true;
+    $('#interToggle').checked = RS.inter; $('#redToggle').checked = RS.red;
+    $$('input[name=layout]').forEach(r => { r.checked = r.value === RS.layout; r.addEventListener('change', () => { RS.layout = r.value; store.set('layout', RS.layout); renderPassage(); }); });
+    $('#interToggle').addEventListener('change', e => { RS.inter = e.target.checked; store.set('inter', RS.inter); loadPassage(RS.ref); });
+    $('#redToggle').addEventListener('change', e => { RS.red = e.target.checked; store.set('red', RS.red); renderPassage(); });
+    $('#refForm').addEventListener('submit', e => { e.preventDefault(); const v = $('#refInput').value.trim(); if (v) go('#read/' + encodeURIComponent(v)); });
+    $('#prevCh').addEventListener('click', () => RS.data?.prev && go('#read/' + encodeURIComponent(RS.data.prev)));
+    $('#nextCh').addEventListener('click', () => RS.data?.next && go('#read/' + encodeURIComponent(RS.data.next)));
+    $('#addTr').addEventListener('click', e => { e.stopPropagation(); togglePicker(); });
+    $('#trChips').addEventListener('click', e => { const b = e.target.closest('[data-rm]'); if (b) removeTr(b.dataset.rm); });
+    $('#passage').addEventListener('click', e => { const w = e.target.closest('.wc[data-s]'); if (w && w.dataset.s) openDrawer(w.dataset.s); });
+  }
+  loadPassage(arg || RS.ref);
+}
+async function loadPassage(ref) {
+  $('#refInput').value = ref;
+  try {
+    const d = await api(`/api/passage?ref=${encodeURIComponent(ref)}&tr=${encodeURIComponent(RS.trs.join(','))}&interlinear=${RS.inter ? 1 : 0}`);
+    RS.data = d;
+    RS.ref = `${d.book.name} ${d.chapter}${d.verse_from ? ':' + d.verse_from + (d.verse_to && d.verse_to !== d.verse_from ? '-' + d.verse_to : '') : ''}`;
+    store.set('ref', RS.ref);
+    $('#readTitle').textContent = RS.ref;
+    $('#refInput').value = RS.ref;
+    document.title = `${RS.ref} · Scriptorium`;
+    renderPassage();
+  } catch (err) { $('#passage').innerHTML = `<p class="err">${esc(err.message)}</p>`; }
+}
+function removeTr(id) {
+  RS.trs = RS.trs.filter(t => t !== id && !(t === 'ORIG' && id === RS.data?.original));
+  store.set('trs', RS.trs); loadPassage(RS.ref);
+}
+function redHtml(text, spans) {
+  if (!RS.red || !spans || !spans.length) return pilcrow(esc(text));
+  let out = '', pos = 0;
+  for (const [a, z, who, method] of spans) {
+    if (a > pos) out += esc(text.slice(pos, a));
+    out += `<span class="${who === 'Jesus' ? 'rl-j' : 'rl-g'}" title="${who === 'Jesus' ? 'Words of Jesus (red-letter markup)' : 'Words of God — detected (' + esc(method) + ')'}">${esc(text.slice(Math.max(a, pos), z))}</span>`;
+    pos = Math.max(pos, z);
+  }
+  return pilcrow(out + esc(text.slice(pos)));
+}
+function renderPassage() {
+  const d = RS.data;
+  if (!d) return;
+  $('#prevCh').hidden = !d.prev; $('#nextCh').hidden = !d.next;
+  $('#prevCh span').textContent = d.prev || ''; $('#nextCh span').textContent = d.next || '';
+  $('#trChips').innerHTML = d.translations.map(t => `<span class="chip" data-tip-title="${esc(t.title)}" data-tip="${esc(t.language)} · ${esc(t.category)}">${esc(t.translation_id)}<button data-rm="${esc(t.translation_id)}" aria-label="Remove ${esc(t.translation_id)}">${ICON.x}</button></span>`).join('');
+  const anyJ = d.verses.some(v => v.words_of_jesus), anyG = d.verses.some(v => v.words_of_god_detected);
+  $('#readLegend').innerHTML = RS.red && (anyJ || anyG) ? `${anyJ ? '<span><span class="dot" style="background:var(--red-jesus)"></span><span class="rl-j">Red</span> words of Jesus (red-letter markup)</span>' : ''}${anyG ? '<span><span class="dot" style="background:var(--red-god)"></span><span class="rl-g">Dark red</span> words of God, detected from quotations</span>' : ''}<span>KJV and WEB are marked word by word; other texts show a dot by the verse number.</span>` : '';
+  if (!d.translations.length) { $('#passage').innerHTML = '<p class="empty">Add a translation to start reading.</p>'; return; }
+  const trs = d.translations, orig = d.original;
+  const mark = v => RS.red && (v.words_of_jesus || v.words_of_god_detected) ? `<span class="mark" style="background:var(${v.words_of_jesus ? '--red-jesus' : '--red-god'})" title="${v.words_of_jesus ? 'Words of Jesus' : 'Words of God (detected)'}"></span>` : '';
+  const words = v => RS.inter && v.words.length ? `<div class="inter" ${orig === 'TAHOT' ? 'dir="rtl"' : ''}>${v.words.map(w => `
+      <button class="wc" data-s="${esc(w.strongs || '')}" title="${esc([w.morphology, w.gloss].filter(Boolean).join(' · '))}">
+        <span class="wc-o${w.language === 'Greek' ? ' gr' : ''}" lang="${w.language === 'Greek' ? 'grc' : 'hbo'}">${esc(w.text)}</span>
+        <span class="wc-t" dir="ltr">${esc(w.transliteration || '')}</span><span class="wc-e" dir="ltr">${esc(w.english || '')}</span>
+        <span class="wc-s" dir="ltr">${esc(shortS(w.strongs))}${w.language === 'Aramaic' ? ' · Aramaic' : ''}</span></button>`).join('')}</div>` : '';
+  let h;
+  if (RS.layout === 'cols') {
+    h = `<div class="passage-wrap"><div class="pgrid" style="grid-template-columns:3.2rem repeat(${trs.length}, minmax(17rem, 1fr))">`;
+    h += '<div class="ph"></div>' + trs.map(t => `<div class="ph"><b>${esc(t.translation_id)}</b><span>${esc(t.title)}</span></div>`).join('');
+    for (const v of d.verses) {
+      h += `<div class="vn">${mark(v)}${v.verse}</div>` + trs.map(t => {
+        const txt = v.texts[t.translation_id];
+        return txt ? `<div class="cell" ${langAttr(t.language_code)}>${redHtml(txt, v.red[t.translation_id])}</div>` : `<div class="cell missing">—</div>`;
+      }).join('') + words(v);
+    }
+    h += '</div></div>';
+  } else {
+    h = `<div class="passage-wrap" style="padding:4px 0">${d.verses.map(v => `
+      <div style="display:grid;grid-template-columns:3.2rem minmax(0,1fr);border-top:1px solid var(--rule)">
+        <div class="vn" style="border:0">${mark(v)}${v.verse}</div>
+        <div style="padding:8px 14px;display:flex;flex-direction:column;gap:6px">${trs.map(t => {
+          const txt = v.texts[t.translation_id];
+          return `<div style="display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;align-items:baseline"><span class="tag">${esc(t.translation_id)}</span><span class="cell" style="border:0;padding:0;max-width:none" ${langAttr(t.language_code)}>${txt ? redHtml(txt, v.red[t.translation_id]) : '—'}</span></div>`;
+        }).join('')}${words(v).replace('class="inter"', 'class="inter" style="grid-column:auto;padding:8px;border-radius:4px"')}</div></div>`).join('')}</div>`;
+  }
+  $('#passage').innerHTML = h;
+}
+function togglePicker() {
+  const p = $('#picker');
+  if (!p.hidden) { p.hidden = true; return; }
+  p.hidden = false;
+  p.innerHTML = `<input class="field" placeholder="Search 144 texts" aria-label="Search translations"><ul></ul>`;
+  const list = $('ul', p), input = $('input', p);
+  const draw = () => {
+    const q = input.value.toLowerCase();
+    const rows = META.translations.filter(t => !q || `${t.translation_id} ${t.title} ${t.language}`.toLowerCase().includes(q));
+    let grp = '', h = `<li><button data-add="ORIG"><span>${RS.trs.includes('ORIG') ? ICON.check : ''}</span><b>Original</b><span class="t">Hebrew/Aramaic (OT) or Greek (NT), switches by book</span></button></li>`;
+    for (const t of rows) {
+      if (t.category !== grp) { grp = t.category; h += `<li class="grp">${esc(grp)}</li>`; }
+      h += `<li><button data-add="${esc(t.translation_id)}"><span>${RS.trs.includes(t.translation_id) ? ICON.check : ''}</span><b>${esc(t.translation_id)}</b><span class="t">${esc(t.language)} · ${esc(t.title)}</span></button></li>`;
+    }
+    list.innerHTML = h;
+  };
+  draw(); input.focus();
+  input.addEventListener('input', draw);
+  list.addEventListener('click', e => {
+    const b = e.target.closest('[data-add]'); if (!b) return;
+    const id = b.dataset.add;
+    RS.trs = RS.trs.includes(id) ? RS.trs.filter(x => x !== id) : [...RS.trs, id].slice(-12);
+    store.set('trs', RS.trs); draw(); loadPassage(RS.ref);
+  });
+}
+document.addEventListener('click', e => { const p = $('#picker'); if (!p.hidden && !e.target.closest('#picker, #addTr')) p.hidden = true; });
+
+// ------------------------------------------------------------------ Strong's drawer & view
+function lexHtml(s) {
+  let h = esc(s || '');
+  h = h.replace(/&lt;(\/?)(b|i|em|strong|sup|sub)&gt;/gi, '<$1$2>').replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+  h = h.replace(/&lt;ref=&#39;([^&]+?)&#39;&gt;(.*?)&lt;\/ref&gt;/g, (m, ref, label) => `<a href="#read/${encodeURIComponent(ref.split(/[,-]/)[0])}">${label}</a>`);
+  return h.replace(/&lt;[^&]*?&gt;/g, '');
+}
+async function openDrawer(sid) {
+  const dr = $('#drawer');
+  dr.hidden = false;
+  dr.innerHTML = '<p class="empty">Loading…</p>';
+  try {
+    const d = await api('/api/strongs/' + sid), e = d.entry;
+    dr.innerHTML = `<button class="btn close" data-close aria-label="Close">${ICON.x}</button>
+      <p class="eyebrow">${esc(e.strongs_id)} · ${esc(e.language)}</p>
+      <div class="entry-head"><span class="lemma" style="font-size:36px" lang="${e.language === 'Greek' ? 'grc' : 'hbo'}">${esc(e.lemma)}</span><span class="xlit">${esc(e.transliteration || '')}</span></div>
+      <div class="stats"><div class="stat"><b>${fmt(d.counts.occurrences)}</b><span>occurrences</span></div><div class="stat"><b>${fmt(d.counts.verses)}</b><span>verses</span></div><div class="stat"><b>${fmt(d.counts.books)}</b><span>books</span></div></div>
+      <div class="card"><h3>Strong's definition</h3><p>${esc(e.definition || '')}</p>${e.kjv_usage ? `<p style="color:var(--muted);font-size:12.5px">KJV: ${esc(e.kjv_usage)}</p>` : ''}</div>
+      ${renderingsHtml(d.renderings)}
+      <a class="btn primary" href="#strongs/${esc(e.strongs_id)}">Open the full entry</a>`;
+  } catch (err) { dr.innerHTML = `<button class="btn close" data-close>${ICON.x}</button><p class="err">${esc(err.message)}</p>`; }
+}
+$('#drawer').addEventListener('click', e => { if (e.target.closest('[data-close]') || e.target.closest('a[href^="#strongs"]')) $('#drawer').hidden = true; });
+function renderingsHtml(list) {
+  const by = {};
+  list.forEach(r => (by[r.translation_id] = by[r.translation_id] || []).push(r));
+  return Object.entries(by).map(([t, rs]) => {
+    const max = Math.max(...rs.map(r => r.n));
+    return `<div class="card"><h3>Rendered in the ${esc(t)}</h3><div class="bars">${rs.map(r => `<div class="bar"><span class="lab"><span>${esc(r.rendering)}</span><i style="width:${(r.n / max * 100).toFixed(1)}%"></i></span><span class="n">${fmt(r.n)}</span></div>`).join('')}</div></div>`;
+  }).join('');
+}
+let sTimer = 0;
+function initStrongs(arg) {
+  if (!inited.strongs) {
+    inited.strongs = true;
+    $('#sQuery').addEventListener('input', e => { clearTimeout(sTimer); sTimer = setTimeout(() => searchStrongs(e.target.value), 220); });
+    $('#sResults').addEventListener('click', e => { const b = e.target.closest('[data-sid]'); if (b) go('#strongs/' + b.dataset.sid); });
+    searchStrongs('');
+  }
+  if (arg) loadStrongs(arg);
+}
+async function searchStrongs(q) {
+  try {
+    const d = await api('/api/strongs?q=' + encodeURIComponent(q));
+    $('#sResults').innerHTML = d.results.length ? d.results.map(r => `<button data-sid="${esc(r.strongs_id)}"><span class="id">${esc(shortS(r.strongs_id))}</span><span class="lm" lang="${r.language === 'Greek' ? 'grc' : 'hbo'}">${esc(r.lemma)} <small style="font-family:var(--sans);font-size:11.5px;color:var(--muted)">${esc(r.transliteration || '')}</small></span><span class="df">${esc(r.definition || '')}</span></button>`).join('')
+      : `<p class="empty" style="padding:14px">Nothing matches “${esc(q)}”. Try a number like H430 or an English word.</p>`;
+  } catch (err) { $('#sResults').innerHTML = `<p class="err" style="padding:14px">${esc(err.message)}</p>`; }
+}
+async function loadStrongs(sid) {
+  const box = $('#sEntry');
+  box.innerHTML = '<p class="empty">Loading…</p>';
+  try {
+    const d = await api('/api/strongs/' + sid), e = d.entry;
+    $$('#sResults [data-sid]').forEach(b => b.setAttribute('aria-current', String(b.dataset.sid === e.strongs_id)));
+    const maxB = Math.max(1, ...d.by_book.map(b => b.n));
+    const counts = new Array(66).fill(0); d.by_book.forEach(b => { if (b.book_id <= 66) counts[b.book_id - 1] = b.n; });
+    box.innerHTML = `
+      <div><p class="eyebrow">${esc(e.strongs_id)} · ${esc(e.language)} · ${esc(e.testament_language)}</p>
+        <div class="entry-head"><span class="lemma" lang="${e.language === 'Greek' ? 'grc' : 'hbo'}">${esc(e.lemma)}</span><span class="xlit">${esc(e.transliteration || '')}</span>${e.pronunciation ? `<span class="tag">say: ${esc(e.pronunciation)}</span>` : ''}</div></div>
+      <div class="stats"><div class="stat"><b>${fmt(d.counts.occurrences)}</b><span>times in the ${e.strongs_id[0] === 'H' ? 'Hebrew/Aramaic OT' : 'Greek NT'}</span></div><div class="stat"><b>${fmt(d.counts.verses)}</b><span>verses</span></div><div class="stat"><b>${fmt(d.counts.books)}</b><span>books</span></div></div>
+      <div class="cards">
+        <div class="card"><h3>Strong's definition</h3><p>${esc(e.definition || '—')}</p>${e.derivation ? `<p style="font-size:12.5px;color:var(--muted)">${esc(e.derivation)}</p>` : ''}</div>
+        <div class="card"><h3>KJV usage</h3><p>${esc(e.kjv_usage || '—')}</p></div>
+      </div>
+      ${d.senses.length ? `<div class="card lex"><h3>Senses (STEPBible extended Strong's)</h3>${d.senses.map(s => `<div style="border-top:1px solid var(--rule);padding-top:8px"><p><span class="mono" style="color:var(--accent)">${esc(s.extended_id)}</span> <b>${esc(s.gloss)}</b> <span class="tag">${esc(s.language)} · ${esc(s.part_of_speech)}</span>${s.relation ? ` <span class="tag">${esc(s.relation)}</span>` : ''}</p><p style="font-size:13px">${lexHtml(s.definition_html)}</p></div>`).join('')}</div>` : ''}
+      <div class="cards">${renderingsHtml(d.renderings)}</div>
+      ${d.forms.length ? `<div class="card"><h3>Forms in the text</h3><div class="chips">${d.forms.map(f => `<span class="chip" style="padding-right:9px" lang="${e.language === 'Greek' ? 'grc' : 'hbo'}">${esc(f.text)} <small style="color:var(--muted)">${fmt(f.n)}</small></span>`).join('')}</div></div>` : ''}
+      <div class="card"><h3>Where it occurs</h3><div class="bookdist" role="img" aria-label="Occurrences by book">${counts.map((n, i) => `<div style="height:${n ? Math.max(4, n / maxB * 100) : 0}%" title="${esc(META.books[i].name)}: ${fmt(n)}"></div>`).join('')}</div>
+        <div class="bookdist-axis"><span style="left:0">Genesis</span><span style="left:${(39 / 66 * 100).toFixed(1)}%">Matthew</span><span style="right:0">Revelation</span></div></div>
+      <div class="card"><h3>Verses${d.verses.length >= 80 ? ' (first 80)' : ''}</h3><div class="vlist">${d.verses.map(v => {
+        let t = esc(v.kjv || '');
+        (v.kjv_words || '').split(', ').filter(Boolean).forEach(w => { t = t.replace(new RegExp(`\\b(${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'i'), '<mark>$1</mark>'); });
+        return `<a href="#read/${encodeURIComponent(v.osis_ref)}"><span class="r">${esc(v.reference)}</span><span class="t">${pilcrow(t)}</span></a>`;
+      }).join('')}</div></div>`;
+  } catch (err) { box.innerHTML = `<p class="err">${esc(err.message)}</p>`; }
+}
+
+// ------------------------------------------------------------------ checkbox lists
+// checklist(container, {label, items: [[value, label]], onChange, tip, search}) -> {has(value), setItems(items), root}
+const CHEVRON = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="width:12px;height:12px"><path d="M4 6l4 4 4-4"/></svg>';
+function checklist(container, { label, items = [], onChange, tip, search }) {
+  const root = document.createElement('div');
+  root.className = 'cl';
+  root.innerHTML = '<button type="button" class="btn cl-btn" aria-expanded="false"></button><div class="cl-pop" role="dialog" hidden></div>';
+  container.appendChild(root);
+  const btn = root.querySelector('.cl-btn'), pop = root.querySelector('.cl-pop');
+  if (tip) { btn.dataset.tipTitle = label; btn.dataset.tip = tip; }
+  let list = [], sel = new Set(), q = '';
+  const allOn = () => list.every(([v]) => sel.has(v));
+  function drawButton() {
+    const n = list.filter(([v]) => sel.has(v)).length;
+    const one = n === 1 ? list.find(([v]) => sel.has(v))[1] : '';
+    btn.innerHTML = `${esc(label)}: ${allOn() ? 'All' : n === 0 ? 'None' : one ? esc(one) : `${n} of ${list.length}`} ${CHEVRON}`;
+    btn.classList.toggle('cl-on', !allOn());
+  }
+  function drawList() {
+    const box = pop.querySelector('.cl-list');
+    if (!box) return;
+    const shown = list.filter(([, l]) => !q || String(l).toLowerCase().includes(q));
+    box.innerHTML = shown.map(([v, l]) => `<label><input type="checkbox" value="${esc(v)}"${sel.has(v) ? ' checked' : ''}> ${esc(l)}</label>`).join('') || '<p class="empty" style="padding:6px">No matches.</p>';
+  }
+  function open(v) {
+    pop.hidden = !v; btn.setAttribute('aria-expanded', String(v));
+    if (!v) return;
+    pop.innerHTML = `<div class="cl-top"><b>${esc(label)}</b><button type="button" class="cl-link" data-all>Select all</button><button type="button" class="cl-link" data-none>Deselect all</button></div>
+      ${search ? `<input class="field cl-q" placeholder="Search ${esc(label.toLowerCase())}" aria-label="Search ${esc(label)}">` : ''}<div class="cl-list"></div>`;
+    drawList();
+    const qi = pop.querySelector('.cl-q');
+    if (qi) { qi.value = q; qi.addEventListener('input', () => { q = qi.value.toLowerCase(); drawList(); }); qi.focus(); }
+  }
+  const changed = () => { drawButton(); onChange && onChange(); };
+  btn.addEventListener('click', e => { e.stopPropagation(); document.querySelectorAll('.cl-pop').forEach(o => { if (o !== pop) o.hidden = true; }); open(pop.hidden); });
+  pop.addEventListener('click', e => {
+    e.stopPropagation();
+    if (e.target.closest('[data-all]')) { list.forEach(([v]) => sel.add(v)); drawList(); changed(); }
+    if (e.target.closest('[data-none]')) { sel.clear(); drawList(); changed(); }
+  });
+  pop.addEventListener('change', e => { const i = e.target; if (i.checked) sel.add(i.value); else sel.delete(i.value); changed(); });
+  document.addEventListener('click', e => { if (!pop.hidden && !root.contains(e.target)) open(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !pop.hidden) { open(false); btn.focus(); } });
+  const api = {
+    root,
+    has: v => allOn() || sel.has(String(v)),
+    setItems(next) { list = next.map(([v, l]) => [String(v), l]); sel = new Set(list.map(([v]) => v)); q = ''; drawButton(); if (!pop.hidden) drawList(); },
+  };
+  api.setItems(items);
+  return api;
+}
+const BOOK_CATEGORIES = ['Law', 'History', 'Wisdom / Poetry', 'Major Prophets', 'Minor Prophets', 'Gospels', 'Early Church History', "Paul's Letters", 'General Letters', 'Prophecy'];
+const BF = {};
+
+// ------------------------------------------------------------------ BOOKS
+let BOOKDATA = null;
+function initBooks(arg) {
+  if (!inited.books) {
+    inited.books = true;
+    BF.testament = checklist($('#bookFilters'), { label: 'Testament', items: [['OT', 'Old Testament'], ['NT', 'New Testament']], onChange: renderBooks });
+    BF.category = checklist($('#bookFilters'), { label: 'Category', items: BOOK_CATEGORIES.map(c => [c, c]), onChange: renderBooks });
+    BF.agreement = checklist($('#bookFilters'), { label: 'Agreement', items: [['broad', 'Broad agreement'], ['divided', 'Scholars divided'], ['open', 'Unsettled']], onChange: renderBooks,
+      tip: 'Broad: traditional and critical scholarship agree. Divided: they differ. Unsettled: no agreement even among critical scholars.' });
+    $('#bookRows').addEventListener('click', e => {
+      const h = e.target.closest('.bhead'); if (!h) return;
+      const row = h.closest('.brow'), det = $('.bdetail', row), open = det.hidden;
+      det.hidden = !open; h.setAttribute('aria-expanded', String(open));
+      if (open && !det.innerHTML) det.innerHTML = bookDetail(BOOKDATA.find(b => b.book_id === +row.dataset.b));
+    });
+    api('/api/books').then(d => { BOOKDATA = d.books; renderBooks(); if (arg) openBook(arg); }).catch(err => { $('#bookRows').innerHTML = `<p class="err" style="padding:16px">${esc(err.message)}</p>`; });
+  } else if (arg && BOOKDATA) openBook(arg);
+}
+function openBook(osis) {
+  const row = $(`.brow[data-osis="${CSS.escape(osis)}"]`);
+  if (row) { $('.bhead', row).click(); row.scrollIntoView({ block: 'center' }); }
+}
+const X0 = -1500, X1 = 150;
+const pct = y => ((clamp(y, X0, X1) - X0) / (X1 - X0) * 100);
+function renderBooks() {
+  const ticks = [-1500, -1250, -1000, -750, -500, -250, 1].map(y => `<span class="tick${y % 500 ? ' minor' : ''}" style="left:${pct(y).toFixed(2)}%"><span>${y === 1 ? 'AD 1' : fmt(-y) + ' BC'}</span></span>`).join('');
+  const rows = BOOKDATA.filter(b => BF.testament.has(b.testament) && BF.category.has(b.genre) && BF.agreement.has(b.consensus));
+  $('#bookRows').innerHTML = `<div class="baxis brow-grid"><span>Book</span><span>Agreement</span><span class="track">${ticks}</span></div>` + rows.map(b => {
+    const bars = b.views.map(v => {
+      const left = pct(v.date_from), w = Math.max(0.5, pct(v.date_to) - left);
+      const cls = v.view === 'traditional' ? 'trad' : v.view === 'critical' ? 'crit' : v.view === 'consensus' ? 'cons' : 'alt';
+      return `<i class="bar-r ${cls}" style="left:${left.toFixed(2)}%;width:max(3px, ${w.toFixed(2)}%)" title="${esc(VIEWN[v.view])}${v.section ? ' (' + esc(v.section) + ')' : ''}: ${esc(v.date_display)}"></i>`;
+    }).join('');
+    return `<div class="brow" data-b="${b.book_id}" data-osis="${esc(b.osis)}"><button class="bhead brow-grid" aria-expanded="false">
+        <span class="bname"><b>${esc(b.name)}</b><small>${esc(b.genre)}</small></span>
+        <span><span class="pill ${b.consensus}">${CONS[b.consensus]}</span></span>
+        <span class="track">${ticks.replace(/<span>[^<]*<\/span>/g, '')}${bars}</span></button><div class="bdetail" hidden></div></div>`;
+  }).join('');
+}
+function bookDetail(b) {
+  return `<p style="margin:10px 0;font-size:12.5px;color:var(--muted)">${esc(b.consensus_note)} Written in ${esc(b.original_language)}. ${b.chapters} chapters, ${fmt(b.verses)} verses. Representative years used for coloring: ${yr(Math.round(b.traditional_year))} (traditional), ${yr(Math.round(b.critical_year))} (critical).</p>
+    <div class="vcards">${b.views.map(v => `<article class="vcard ${v.view}">
+      <p class="eyebrow">${esc(VIEWN[v.view])}${v.section ? ' · ' + esc(v.section) : ''}</p>
+      <h4>${esc(v.author)}</h4>
+      <dl><dt>When</dt><dd>${esc(v.date_display)}</dd>
+          <dt>Where</dt><dd>${esc(v.place_display)}${v.latitude != null ? ` <a href="https://www.openstreetmap.org/?mlat=${v.latitude}&mlon=${v.longitude}#map=${v.precision === 'site' ? 9 : 6}/${v.latitude}/${v.longitude}" target="_blank" rel="noopener" title="${v.precision === 'site' ? 'Site' : 'Approximate centre of region'}">map</a>` : ''}</dd>
+          ${v.held_by ? `<dt>Held by</dt><dd>${esc(v.held_by)}</dd>` : ''}</dl>
+      <ol>${v.sources.map(s => `<li>${esc(s.author)}, <i>${esc(s.title)}</i> (${esc(s.date)})${s.locator ? ', ' + esc(s.locator) : ''}${s.url ? ` <a href="${esc(s.url)}" target="_blank" rel="noopener">link</a>` : ''}</li>`).join('')}</ol>
+    </article>`).join('')}</div>`;
+}
+
+// ------------------------------------------------------------------ TRANSLATIONS
+const TS = { cat: 'imported', rows: [], sort: null, dir: 1 };
+function initTranslations() {
+  if (inited.translations) return;
+  inited.translations = true;
+  $$('input[name=tcat]').forEach(r => r.addEventListener('change', () => { TS.cat = r.value; TS.sort = null; loadTranslations(); }));
+  ['#tFilter', '#tStrongs'].forEach(s => $(s).addEventListener('input', renderTranslations));
+  TS.catF = checklist($('#tCategory'), { label: 'Category', onChange: renderTranslations });
+  TS.langF = checklist($('#tLanguage'), { label: 'Language', onChange: renderTranslations, search: true });
+  TS.licF = checklist($('#tLicense'), { label: 'Licence', onChange: renderTranslations, tip: 'Licence class of each text. Public domain, attribution and share-alike texts may be shared; non-commercial ones may not be sold.' });
+  $('#tGrid').addEventListener('click', e => {
+    const s = e.target.closest('[data-sort]');
+    if (s) { TS.dir = TS.sort === s.dataset.sort ? -TS.dir : 1; TS.sort = s.dataset.sort; renderTranslations(); return; }
+    const r = e.target.closest('[data-read]');
+    if (r) { if (!RS.trs.includes(r.dataset.read)) { RS.trs = [...RS.trs, r.dataset.read].slice(-12); store.set('trs', RS.trs); } go('#read/' + encodeURIComponent(RS.ref)); }
+  });
+  loadTranslations();
+}
+async function loadTranslations() {
+  const d = await api('/api/translations' + (TS.cat === 'ebible' ? '?catalog=ebible' : ''));
+  TS.rows = d.rows;
+  const uniq = f => [...new Set(d.rows.map(f).filter(v => v != null && v !== ''))].sort();
+  TS.catF.setItems(uniq(r => r.category).map(c => [c, c]));
+  TS.catF.root.hidden = TS.cat === 'ebible';
+  TS.langF.setItems(uniq(r => r.language).map(c => [c, c]));
+  TS.licF.setItems(TS.cat === 'ebible' ? [['true', 'Redistributable'], ['false', 'Not redistributable']] : uniq(r => r.license_class).map(c => [c, c]));
+  $('#tStrongs').closest('label').hidden = TS.cat === 'ebible';
+  renderTranslations();
+}
+function renderTranslations() {
+  const q = $('#tFilter').value.toLowerCase(), st = $('#tStrongs').checked;
+  const COLS = TS.cat === 'ebible'
+    ? [['ebible_id', 'ID'], ['title', 'Title'], ['language', 'Language'], ['ot_books', 'OT books', 'num'], ['nt_books', 'NT books', 'num'], ['dc_books', 'Other books', 'num'], ['redistributable', 'Redistributable'], ['copyright', 'Copyright'], ['updated', 'Updated'], ['imported', 'Here']]
+    : [['translation_id', 'ID'], ['title', 'Title'], ['language', 'Language'], ['category', 'Category'], ['year', 'Year', 'num'], ['verse_count', 'Verses', 'num'], ['has_ot', 'OT'], ['has_nt', 'NT'], ['has_deuterocanon', 'Apoc.'], ['versification', 'Verse numbering'], ['has_strongs', "Strong's"], ['license', 'Licence'], ['damaged_verses', 'Damaged', 'num']];
+  let rows = TS.rows.filter(r => (!q || Object.values(r).join(' ').toLowerCase().includes(q)) && (TS.cat === 'ebible' || TS.catF.has(r.category)) && TS.langF.has(r.language) && TS.licF.has(TS.cat === 'ebible' ? r.redistributable : r.license_class) && (!st || r.has_strongs));
+  if (TS.sort) rows = [...rows].sort((a, b) => { const x = a[TS.sort], y = b[TS.sort]; return (x == null) - (y == null) || (x > y ? 1 : x < y ? -1 : 0) * TS.dir; });
+  $('#tCount').textContent = `${fmt(rows.length)} of ${fmt(TS.rows.length)}`;
+  const cell = (r, [k, , cls]) => {
+    const v = r[k];
+    if (typeof v === 'boolean') return `<td>${v ? ICON.check : '<span class="null">—</span>'}</td>`;
+    if (v == null || v === '') return '<td><span class="null">—</span></td>';
+    return `<td class="${cls || ''}" title="${esc(v)}">${cls === 'num' ? fmt(v) : esc(v)}</td>`;
+  };
+  $('#tGrid').innerHTML = `<table class="grid"><thead><tr>${TS.cat === 'imported' ? '<th></th>' : ''}${COLS.map(([k, l]) => `<th><button data-sort="${k}">${esc(l)}${TS.sort === k ? (TS.dir > 0 ? ' ↑' : ' ↓') : ''}</button></th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${TS.cat === 'imported' ? `<td><button class="btn" style="height:24px" data-read="${esc(r.translation_id)}" data-tip-title="Read ${esc(r.translation_id)}" data-tip="Add this text to the Read view.">Read</button></td>` : ''}${COLS.map(c => cell(r, c)).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+// ------------------------------------------------------------------ TABLES
+const TB = { list: [], name: null, offset: 0, limit: 50, order: '', dir: 'asc', col: '', op: 'contains', val: '' };
+function initTables(arg) {
+  if (!inited.tables) {
+    inited.tables = true;
+    $('#tList').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) go('#tables/' + b.dataset.t); });
+    api('/api/tables').then(d => {
+      TB.list = d.tables;
+      let h = '', kind = '';
+      for (const t of d.tables) {
+        if (t.kind !== kind) { kind = t.kind; h += `<div class="grp">${kind === 'table' ? 'Tables' : 'Views'}</div>`; }
+        h += `<button data-t="${esc(t.name)}" data-tip-title="${esc(t.name)}" data-tip="${esc(t.comment || '')}"><span>${esc(t.name)}</span><small>${t.rows != null ? fmt(t.rows) : 'view'}</small></button>`;
+      }
+      $('#tList').innerHTML = h;
+      loadTable(arg || 'verse_text');
+    });
+  } else if (arg) loadTable(arg);
+}
+async function loadTable(name, keep) {
+  if (!keep) Object.assign(TB, { name, offset: 0, order: '', dir: 'asc', col: '', val: '' });
+  $$('#tList [data-t]').forEach(b => b.setAttribute('aria-current', String(b.dataset.t === TB.name)));
+  const meta = TB.list.find(t => t.name === TB.name);
+  if (!meta) { $('#tDetail').innerHTML = `<p class="err">No table named ${esc(TB.name)}.</p>`; return; }
+  const q = new URLSearchParams({ limit: TB.limit, offset: TB.offset, order: TB.order, dir: TB.dir, col: TB.col, op: TB.op, val: TB.val });
+  let d;
+  try { d = await api(`/api/table/${encodeURIComponent(TB.name)}?${q}`); } catch (err) { $('#tDetail').innerHTML = `<p class="err">${esc(err.message)}</p>`; return; }
+  const cols = meta.columns;
+  $('#tDetail').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div><p class="eyebrow">${meta.kind}${meta.rows != null ? ' · ' + fmt(meta.rows) + ' rows' : ''}</p><h2 style="margin:2px 0 4px;font-family:var(--mono);font-weight:500;font-size:22px">${esc(meta.name)}</h2>
+        <p style="margin:0;font-family:var(--serif);font-size:13.5px;line-height:1.6;max-width:90ch">${esc(meta.comment || 'No description.')}</p></div>
+      <details class="cols"${cols.some(c => c.comment) ? ' open' : ''}><summary>${cols.length} columns</summary>
+        <div class="gridwrap" style="max-height:320px"><table class="grid coldocs"><thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>${cols.map(c => `<tr><td>${esc(c.name)}</td><td class="mono" style="color:var(--muted)">${esc(c.type)}</td><td>${c.comment ? esc(c.comment) : '<span class="null">—</span>'}</td></tr>`).join('')}</tbody></table></div></details>
+      <form class="toolbar" id="tFilterForm">
+        <select class="field" name="col" aria-label="Column"><option value="">Filter column…</option>${cols.map(c => `<option${c.name === TB.col ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
+        <select class="field" name="op" aria-label="Match"><option value="contains"${TB.op === 'contains' ? ' selected' : ''}>contains</option><option value="equals"${TB.op === 'equals' ? ' selected' : ''}>equals</option><option value="starts"${TB.op === 'starts' ? ' selected' : ''}>starts with</option></select>
+        <input class="field" name="val" value="${esc(TB.val)}" placeholder="value" aria-label="Value" style="width:220px">
+        <button class="btn primary" type="submit">Apply</button>${TB.val ? '<button class="btn" type="button" data-clear>Clear</button>' : ''}
+        <span class="grow"></span>
+        <span class="pager">${d.total ? `${fmt(d.offset + 1)}–${fmt(Math.min(d.offset + d.limit, d.total))} of ${fmt(d.total)}` : 'No rows'} · ${d.ms} ms
+          <button class="btn" type="button" data-page="-1"${d.offset === 0 ? ' disabled' : ''}>‹ Prev</button><button class="btn" type="button" data-page="1"${d.offset + d.limit >= d.total ? ' disabled' : ''}>Next ›</button></span>
+      </form>
+      <div class="gridwrap" id="tRows">${gridHtml(d.columns, d.rows, true)}</div>
+    </div>`;
+  const f = $('#tFilterForm');
+  f.addEventListener('submit', e => { e.preventDefault(); TB.col = f.col.value; TB.op = f.op.value; TB.val = f.val.value; TB.offset = 0; loadTable(TB.name, true); });
+  f.addEventListener('click', e => {
+    if (e.target.closest('[data-clear]')) { TB.val = ''; TB.col = ''; TB.offset = 0; loadTable(TB.name, true); }
+    const p = e.target.closest('[data-page]');
+    if (p) { TB.offset = Math.max(0, TB.offset + (+p.dataset.page) * TB.limit); loadTable(TB.name, true); }
+  });
+  $('#tRows').addEventListener('click', e => {
+    const s = e.target.closest('[data-sort]');
+    if (s) { TB.dir = TB.order === s.dataset.sort && TB.dir === 'asc' ? 'desc' : 'asc'; TB.order = s.dataset.sort; TB.offset = 0; loadTable(TB.name, true); }
+  });
+}
+function gridHtml(columns, rows, sortable) {
+  const isNum = v => typeof v === 'number';
+  return `<table class="grid"><thead><tr>${columns.map(c => `<th>${sortable ? `<button data-sort="${esc(c)}">${esc(c)}${TB.order === c ? (TB.dir === 'asc' ? ' ↑' : ' ↓') : ''}</button>` : esc(c)}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${r.map(v => v == null ? '<td><span class="null">NULL</span></td>'
+      : isNum(v) ? `<td class="num">${esc(v)}</td>`
+      : typeof v === 'boolean' ? `<td>${v}</td>`
+      : `<td dir="auto" title="${esc(String(v).slice(0, 1500))}"${String(v).length > 80 ? ' class="wrap"' : ''}>${pilcrow(esc(String(v).length > 600 ? String(v).slice(0, 600) + '…' : v))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+// ------------------------------------------------------------------ SQL
+const EXAMPLES = [
+  ['John 3:16 in every text', "SELECT translation_id, translation, language, text\nFROM v_passage\nWHERE osis_ref = 'John.3.16'\nORDER BY language, translation_id;"],
+  ['Genesis 1:1 word by word (Hebrew)', "SELECT word_pos, text, transliteration, english, strongs, morphology\nFROM original_words\nWHERE source = 'TAHOT' AND verse_id = (SELECT verse_id FROM verses WHERE osis_ref = 'Gen.1.1')\nORDER BY word_pos;"],
+  ['How KJV, WEB and BSB translate agapē (G26)', "SELECT translation_id, rendering, occurrences\nFROM v_strongs_renderings\nWHERE strongs = 'G0026'\nORDER BY translation_id, occurrences DESC;"],
+  ['Verses with ḥesed (H2617) in the Spanish Reina-Valera', "SELECT v.reference, t.text\nFROM verse_strongs s\nJOIN verses v USING (verse_id)\nJOIN verse_text t ON t.verse_id = s.verse_id AND t.translation_id = 'SpaRV'\nWHERE s.strongs = 'H2617'\nORDER BY s.verse_id\nLIMIT 50;"],
+  ['Every Aramaic passage', "SELECT v.reference, count(*) AS aramaic_words\nFROM original_words w JOIN verses v USING (verse_id)\nWHERE w.language = 'Aramaic'\nGROUP BY v.reference, w.verse_id\nORDER BY w.verse_id;"],
+  ['Words of Jesus vs words of God, by book', "SELECT b.name, count(*) FILTER (words_of_jesus) AS jesus_verses,\n       count(*) FILTER (words_of_god_detected) AS god_verses_detected\nFROM verses v JOIN books b USING (book_id)\nGROUP BY b.book_id, b.name\nHAVING jesus_verses + god_verses_detected > 0\nORDER BY b.book_id;"],
+  ['Red-letter spans in a chapter (how each was found)', "SELECT verse, speaker, method, text\nFROM speech_spans\nWHERE translation_id = 'WEB' AND book_id = 2 AND chapter = 3\nORDER BY verse, start_char;"],
+  ['Chunk counts: repeated Hebrew phrases by length', "SELECT length_words, distinct_phrases, occurrences\nFROM phrase_length_stats\nWHERE corpus = 'ot' AND match_mode = 'exact'\nORDER BY length_words;"],
+  ['Old Testament passages quoted word for word in the New (Septuagint)', "SELECT r.length_words, string_agg(o.reference, ' · ' ORDER BY o.book_id) AS places, r.phrase_text\nFROM phrase_repeats r JOIN phrase_occurrences o USING (repeat_id)\nWHERE r.corpus = 'gk'\nGROUP BY r.repeat_id, r.length_words, r.phrase_text\nHAVING bool_or(o.book_id BETWEEN 40 AND 66) AND bool_or(o.book_id < 40 OR o.book_id > 66)\nORDER BY r.length_words DESC;"],
+  ['Most cross-referenced verses', "SELECT v.reference, count(*) AS times_referenced, sum(votes) AS votes\nFROM cross_references x JOIN verses v ON v.verse_id = x.to_verse_start_id\nGROUP BY v.reference, v.verse_id\nORDER BY times_referenced DESC\nLIMIT 25;"],
+  ['Authorship views for Daniel, with sources', "SELECT view, section, author, date_display, place_display, held_by, sources\nFROM v_book_authorship\nWHERE book = 'Daniel';"],
+  ['Books where the two dating traditions differ most', "SELECT b.name, d.consensus, round(d.traditional_year) AS traditional, round(d.critical_year) AS critical,\n       round(abs(d.traditional_year - d.critical_year)) AS years_apart\nFROM book_dating d JOIN books b USING (book_id)\nORDER BY years_apart DESC;"],
+  ['Texts by language', "SELECT language, count(*) AS texts, string_agg(translation_id, ', ') AS ids\nFROM translations\nGROUP BY language\nORDER BY texts DESC;"],
+];
+let lastResult = null;
+function initSql() {
+  if (inited.sql) return;
+  inited.sql = true;
+  $('#sqlExamples').innerHTML += EXAMPLES.map(([l], i) => `<option value="${i}">${esc(l)}</option>`).join('');
+  $('#sqlExamples').addEventListener('change', e => { if (e.target.value !== '') { $('#sqlText').value = EXAMPLES[+e.target.value][1]; runSql(); } });
+  $('#sqlRun').addEventListener('click', runSql);
+  $('#sqlText').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runSql(); } });
+  $('#sqlCsv').addEventListener('click', () => {
+    if (!lastResult) return;
+    const cell = v => v == null ? '' : /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+    const csv = [lastResult.columns.map(cell).join(','), ...lastResult.rows.map(r => r.map(cell).join(','))].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'scriptorium-query.csv'; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+  runSql();
+}
+async function runSql() {
+  $('#sqlStatus').textContent = 'Running…';
+  try {
+    const d = await api('/api/sql', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sql: $('#sqlText').value }) });
+    lastResult = d;
+    $('#sqlStatus').textContent = `${fmt(d.rows.length)} row${d.rows.length === 1 ? '' : 's'}${d.truncated ? ' (first 2,000)' : ''} · ${d.ms} ms`;
+    $('#sqlResult').innerHTML = d.columns.length ? gridHtml(d.columns, d.rows, false) : '<p class="empty" style="padding:14px">Query ran; it returned no table.</p>';
+    $('#sqlCsv').disabled = !d.rows.length;
+  } catch (err) {
+    lastResult = null; $('#sqlCsv').disabled = true;
+    $('#sqlStatus').textContent = 'Error';
+    $('#sqlResult').innerHTML = `<p class="err" style="padding:14px;white-space:pre-wrap;font-family:var(--mono)">${esc(err.message)}</p>`;
+  }
+}
+
+// ------------------------------------------------------------------ theme, tooltips, help, keys
+const themeRadios = $$('input[name=theme]');
+function applyTheme(pref) { if (pref === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', pref); themeRadios.forEach(r => { r.checked = r.value === pref; }); }
+applyTheme(store.get('theme', 'system'));
+themeRadios.forEach(r => r.addEventListener('change', () => { applyTheme(r.value); store.set('theme', r.value); }));
+
+const ctip = $('#ctip');
+let ctipTimer = 0, ctipFor = null;
+function showCtip(el) {
+  if (!el.dataset.tip) return;
+  ctip.innerHTML = `<b>${esc(el.dataset.tipTitle || '')}</b><span>${esc(el.dataset.tip)}</span>`;
+  ctip.hidden = false; ctip.classList.remove('show');
+  const r = el.getBoundingClientRect(), w = ctip.offsetWidth, h = ctip.offsetHeight;
+  let y = r.top - h - 10; if (y < 8) y = r.bottom + 10;
+  const x = clamp(r.left + r.width / 2 - w / 2, 8, innerWidth - w - 8);
+  ctip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+  ctipFor = el; requestAnimationFrame(() => ctip.classList.add('show'));
+}
+function hideCtip() { clearTimeout(ctipTimer); ctipFor = null; ctip.classList.remove('show'); ctip.hidden = true; }
+document.addEventListener('pointerover', e => { const el = e.target.closest('[data-tip]'); if (el === ctipFor) return; hideCtip(); if (el && e.pointerType !== 'touch') ctipTimer = setTimeout(() => showCtip(el), 320); });
+document.addEventListener('focusin', e => { if (ctip.contains(e.target)) return; const el = e.target.closest('[data-tip]'); hideCtip(); if (el && e.target.matches(':focus-visible')) showCtip(el); });
+document.addEventListener('focusout', hideCtip);
+document.addEventListener('pointerdown', hideCtip, true);
+window.addEventListener('scroll', hideCtip, true);
+
+const help = $('#help');
+$('#helpBtn').addEventListener('click', () => help.showModal());
+help.addEventListener('click', e => { if (e.target === help) help.close(); });
+document.addEventListener('keydown', e => {
+  if (help.open) return;
+  const typing = e.target.matches('input, textarea, select');
+  if (e.key === 'Escape') { $('#drawer').hidden = true; $('#picker').hidden = true; return; }
+  if (typing) return;
+  if (e.key === '?') { e.preventDefault(); help.showModal(); }
+  if (e.key === '/') { const f = $('.view:not([hidden]) input.field'); if (f) { e.preventDefault(); f.focus(); } }
+  if (!$('#view-read').hidden && RS.data) {
+    if (e.key === '[' && RS.data.prev) go('#read/' + encodeURIComponent(RS.data.prev));
+    if (e.key === ']' && RS.data.next) go('#read/' + encodeURIComponent(RS.data.next));
+  }
+});
+
+// ------------------------------------------------------------------ DATA & SETUP
+let setupData = null, jobTimer = 0;
+const onMac = /Mac/.test(navigator.platform || navigator.userAgent);
+const bytes = b => b == null ? '' : b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? Math.round(b / 1e6) + ' MB' : Math.round(b / 1e3) + ' KB';
+const when = s => s ? new Date(s).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+const ACTIONS = [
+  ['pages', "Refresh the pages' data", 'Regenerates what the Rainbow, Read and Echoes pages load (cross-references, translations, word study) from this database. Use it after rebuilding, or if a page says its data is missing.', 'About 3 minutes'],
+  ['rebuild', 'Rebuild the database', 'Builds a fresh database from the data already downloaded, switches to it, then refreshes the pages. Scriptorium keeps working while it builds.', 'About 5 minutes'],
+  ['update', 'Get the latest data and rebuild', 'Downloads anything missing plus the latest OpenBible.info cross-reference votes and eBible.org catalogue, then rebuilds and refreshes the pages.', 'About 10 minutes · needs an internet connection'],
+  ['shareable', 'Make a shareable copy', 'Builds bible-shareable.duckdb without the texts whose licences forbid passing them on, so you can give it to others. Your own database is not changed.', 'About 3 minutes'],
+];
+function initSetup() { loadSetup(); }
+async function loadSetup() {
+  try {
+    setupData = await api('/api/setup');
+    renderSetup();
+    if (setupData.job.running) pollJob();
+  } catch (err) { $('#setupBody').innerHTML = `<p class="err">${esc(err.message)}</p>`; }
+}
+function renderSetup() {
+  const d = setupData, launcher = d.launchers[onMac ? 1 : 0], other = d.launchers[onMac ? 0 : 1], full = d.restricted.length > 0;
+  $('#setupBody').innerHTML = `
+  <div class="setup-grid">
+    <div class="card"><h3>Scriptorium is running</h3>
+      <p>You're using it now at <b class="mono">${esc(d.url)}</b>. Bookmark that address to come back while it's running.</p>
+      <p><b>To stop it:</b> close the black “Scriptorium” window, or press Ctrl+C in it. This page stops working until you start it again.</p>
+      <p><b>To start it next time:</b> open the project folder and double-click <b>${esc(launcher)}</b>. It won't need to download or build again.</p>
+      <div class="copyrow"><code class="mono">${esc(d.root)}</code><button class="btn" type="button" data-copy="${esc(d.root)}">Copy folder path</button></div>
+      <p class="hint-sm">On ${onMac ? 'Windows' : 'a Mac'}, use <b>${esc(other)}</b> instead. Python ${esc(d.python)}${d.version ? ' · Reference Rainbow ' + esc(d.version) : ''}.</p>
+    </div>
+    <div class="card"><h3>Your database <span class="pill ${full ? 'divided' : 'broad'}">${full ? 'Full: for your own use' : 'Shareable'}</span></h3>
+      <dl class="kv"><dt>File</dt><dd class="mono">${esc(d.db.path)}</dd><dt>Size</dt><dd>${bytes(d.db.size)}</dd><dt>Built</dt><dd>${when(d.db.modified)}</dd>
+        <dt>Contents</dt><dd>${fmt(d.counts.translations)} texts in ${fmt(d.counts.languages)} languages · ${fmt(d.counts.original_words)} Hebrew/Greek words · ${fmt(d.counts.cross_references)} cross-references · ${fmt(d.counts.repeated_phrases)} repeated phrases</dd></dl>
+      <p>${full ? `It includes ${d.restricted.length} texts whose licences don't allow passing them on (${esc(d.restricted.slice(0, 6).map(r => r.translation_id).join(', '))}${d.restricted.length > 6 ? '…' : ''}). Use it freely yourself; to give a copy to someone else, use <b>Make a shareable copy</b> below.` : 'It contains only texts that may be shared.'}</p>
+      ${d.shareable.exists ? `<p>Shareable copy: <span class="mono">${esc(d.shareable.path)}</span> (${bytes(d.shareable.size)}, made ${when(d.shareable.modified)}).</p>` : ''}
+      <p><a href="#translations">Every text and its licence</a> · <a href="/rainbow/guide.html#sources" target="_blank" rel="noopener">Licences explained</a></p>
+    </div>
+    <div class="card"><h3>Pages in this project</h3>
+      ${[['/rainbow/read.html', 'Read', 'A simple Bible reader; click any verse to study its Hebrew or Greek.'], ['/rainbow/', 'Reference Rainbow', 'Every cross-reference in the Bible as an arc.'], ['/rainbow/echoes.html', 'Echoes', 'Phrases repeated in the original languages.'], ['/rainbow/guide.html', 'Guide', 'How everything works.']]
+        .map(([h, n, t]) => `<p><a href="${h}" target="_blank" rel="noopener"><b>${n}</b></a>: ${t}</p>`).join('')}
+      <p class="hint-sm">These pages also work without Scriptorium: double-click <b>Read the Bible.html</b> or <b>Open Reference Rainbow.html</b> in the project folder.</p>
+      <p class="hint-sm">Page data last refreshed: ${d.pages.map(p => `${esc(p.name)} ${p.exists ? when(p.modified) : '(missing)'}`).join(' · ')}</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Update and rebuild</h3>
+    <p>Each button runs on this computer and shows its progress below. Only one can run at a time; you can keep using Scriptorium meanwhile.</p>
+    ${ACTIONS.map(([id, title, desc, time]) => `<div class="action"><div><b>${esc(title)}</b><p>${esc(desc)}</p><span class="hint-sm">${esc(time)}</span></div><button class="btn primary" type="button" data-job="${id}">${esc(title)}</button></div>`).join('')}
+    <div id="jobPanel" hidden></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Where the data comes from</h3>
+    <div class="gridwrap" style="max-height:none">${gridHtml(['Dataset', 'Provider', 'Licence', 'Used for', 'Link'], d.sources.map(r => [r.dataset, r.provider, r.license, r.used_for, r.url]), false)}</div>
+  </div>
+  <details class="card" style="margin-top:14px"><summary><b>For developers: command line and API</b></summary>
+    <p>Everything on this page can also be run from a terminal in the project folder:</p>
+    <pre class="log">python bibledb/download.py [--refresh]
+python bibledb/build.py [--open-only] [--output FILE]
+python rainbow/build_data.py
+python rainbow/build_echoes.py
+python rainbow/build_texts.py
+python rainbow/build_study.py
+python bibledb/scriptorium.py [--port 8770] [--no-browser]</pre>
+    <p>JSON endpoints used by this page: <span class="mono">/api/meta · /api/passage?ref=John 3&amp;tr=KJV,BSB&amp;interlinear=1 · /api/strongs?q=love · /api/strongs/G26 · /api/books · /api/translations · /api/tables · /api/table/NAME · POST /api/sql · /api/setup · /api/jobs · /api/ping</span>. More in docs/TECHNICAL.md.</p>
+  </details>`;
+  if (d.job.name) renderJob(d.job);
+}
+function renderJob(j) {
+  const panel = $('#jobPanel');
+  if (!panel) return;
+  $$('[data-job]').forEach(b => { b.disabled = !!j.running; });
+  panel.hidden = !j.name;
+  if (!j.name) return;
+  const pill = j.running ? '<span class="pill divided">Running</span>' : j.ok ? '<span class="pill broad">Done</span>' : '<span class="pill open">Stopped</span>';
+  panel.innerHTML = `<div class="action" style="grid-template-columns:1fr"><p style="margin:0">${pill} <b>${esc(j.title)}</b> · ${j.running ? esc(j.step) + '…' : j.ok ? 'finished ' + when(j.finished) : 'stopped at: ' + esc(j.step)}</p>
+    ${j.log ? `<pre class="log" id="jobLog">${esc(j.log.join('\n'))}</pre>` : ''}
+    ${!j.running && j.ok === false ? '<p class="hint-sm">The log above shows where it stopped. Check your internet connection and free disk space, close anything else using the project\'s files, then try again: finished steps are kept.</p>' : ''}</div>`;
+  const lg = $('#jobLog');
+  if (lg) lg.scrollTop = lg.scrollHeight;
+}
+async function pollJob() {
+  clearTimeout(jobTimer);
+  try {
+    const j = await api('/api/jobs');
+    renderJob(j);
+    if (j.running) jobTimer = setTimeout(pollJob, 1500);
+    else if (setupData && setupData.job.running) { loadSetup(); api('/api/meta').then(m => { META = m; }).catch(() => {}); }
+  } catch (_) { jobTimer = setTimeout(pollJob, 3000); }
+}
+$('#view-setup').addEventListener('click', async e => {
+  const c = e.target.closest('[data-copy]');
+  if (c) {
+    try { await navigator.clipboard.writeText(c.dataset.copy); c.textContent = 'Copied'; } catch (_) { c.textContent = 'Select and copy the path'; }
+    setTimeout(() => { c.textContent = 'Copy folder path'; }, 1800);
+    return;
+  }
+  const b = e.target.closest('[data-job]');
+  if (!b) return;
+  const a = ACTIONS.find(x => x[0] === b.dataset.job);
+  if (!confirm(`${a[1]}?\n\n${a[2]}\n\n${a[3]}.`)) return;
+  try {
+    await api('/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Scriptorium': '1' }, body: JSON.stringify({ job: a[0] }) });
+    setupData.job.running = true;
+    pollJob();
+  } catch (err) { alert(err.message); }
+});
+
+api('/api/meta').then(m => {
+  META = m;
+  const c = m.counts;
+  $('#railStats').innerHTML = `${fmt(c.translations)} texts · ${fmt(c.languages)} languages<br>${fmt(c.verse_rows)} verse rows<br>${fmt(c.original_words)} Hebrew/Greek words<br>${fmt(c.strongs)} Strong's entries<br>${fmt(c.repeated_phrases)} repeated phrases`;
+  route();
+}).catch(err => { $('#main').innerHTML = `<p class="err" style="padding:40px">Scriptorium could not reach its database: ${esc(err.message)}. Start it by double-clicking <b>Start Scriptorium</b> in the project folder, then reload this page.</p>`; });
+})();
+</script>
+</body>
+</html>

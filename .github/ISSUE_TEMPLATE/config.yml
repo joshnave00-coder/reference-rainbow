@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Cross-reference data (OpenBible.info)
+    url: https://www.openbible.info/labs/cross-references/
+    about: Wrong or missing cross-references and votes come from OpenBible.info.
+  - name: Hebrew and Greek word data (STEPBible)
+    url: https://github.com/STEPBible/STEPBible-Data/issues
+    about: Errors in the tagged Hebrew/Greek texts or lexicons belong upstream at STEPBible.

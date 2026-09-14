@@ -1,0 +1,1134 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Echoes</title>
+<meta name="description" content="Phrases of seven or more words repeated in the original Hebrew, Aramaic and Greek of the Bible: quotations, refrains and parallel passages.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --dark:0;
+  --ground:#FAFAF7; --panel:#FFFFFF; --ink:#1B1A21; --muted:#6D6A77; --faint:#A3A0AC; --rule:#E4E2E8; --wash:#F2F1F5;
+  --ribbon:#8C6A1C; --control:#EDECF1; --control-on:#1B1A21; --on-control-on:#FAFAF7;
+  --bar:#3A3843; --bar-off:#D3D1D9;
+  --red-jesus:#C8102E; --red-god:#6B1119; --shadow:rgba(27,20,40,.14);
+  --serif:"Libre Baskerville","Baskerville","Baskerville Old Face",Georgia,serif;
+  --sans:"Schibsted Grotesk","Segoe UI",system-ui,-apple-system,sans-serif;
+  --hebrew:"Noto Serif Hebrew","SBL Hebrew","Ezra SIL","Times New Roman",serif;
+  --greek:"Noto Serif","Gentium Plus","Times New Roman",Georgia,serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --dark:1; --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E; --wash:#18171F;
+    --ribbon:#D4AE63; --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11; --bar:#CFCDD8; --bar-off:#34323D;
+    --red-jesus:#FF6B6B; --red-god:#C9868B; --shadow:rgba(0,0,0,.5); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --dark:1; --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E; --wash:#18171F;
+  --ribbon:#D4AE63; --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11; --bar:#CFCDD8; --bar-off:#34323D;
+  --red-jesus:#FF6B6B; --red-god:#C9868B; --shadow:rgba(0,0,0,.5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ribbon);outline-offset:2px}
+.ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.eyebrow{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.page{max-width:1240px;margin:0 auto;padding:22px 28px 70px;display:flex;flex-direction:column;gap:24px}
+
+/* header */
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px 30px;align-items:start}
+.brand{display:flex;flex-direction:column;gap:8px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);text-decoration:none;margin-bottom:6px;align-self:flex-start}
+.back:hover{color:var(--ink)}
+h1{margin:0;font-family:var(--serif);font-weight:400;font-size:44px;line-height:1;letter-spacing:-.015em}
+.dek{margin:0;font-family:var(--serif);font-size:14px;line-height:1.65;color:var(--muted);max-width:66ch}
+.top-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+
+/* shared controls */
+.ctl{display:flex;align-items:center;gap:9px}
+.ctl-label{font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.opts{display:inline-flex;background:var(--control);border-radius:4px;padding:2px;flex-wrap:wrap}
+.opts label{position:relative;display:block}
+.opts input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opts span{display:block;padding:3px 10px;border-radius:3px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.opts input:checked + span{background:var(--control-on);color:var(--on-control-on)}
+.opts input:focus-visible + span{outline:2px solid var(--ribbon);outline-offset:1px}
+.opts input:disabled + span{opacity:.4;cursor:not-allowed}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 10px;border:1px solid var(--rule);border-radius:4px;background:transparent;font-size:12.5px;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--ink)}
+.num-in{width:58px;height:30px;padding:0 6px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:13px;font-variant-numeric:tabular-nums;text-align:center}
+.num-in:focus{outline:none;border-color:var(--ink)}
+select.sel{height:30px;padding:0 8px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:12.5px}
+.find input{width:280px;height:32px;padding:0 10px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:13px}
+.find input:focus{outline:none;border-color:var(--ink)}
+.find input::placeholder{color:var(--faint)}
+
+.scope{display:flex;flex-wrap:wrap;align-items:center;gap:12px 26px;padding:14px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+
+/* summary */
+.summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 28px}
+.stat{display:flex;align-items:baseline;gap:7px}
+.stat b{font-family:var(--serif);font-weight:400;font-size:28px;font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em}
+.stat span{font-size:12.5px;color:var(--muted)}
+.note{margin:0;font-size:12.5px;color:var(--muted);flex-basis:100%}
+
+/* sections */
+h2{margin:0;font-family:var(--serif);font-weight:400;font-size:22px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.sec-note{margin:6px 0 0;font-size:12.5px;line-height:1.55;color:var(--muted);max-width:80ch}
+.card{border:1px solid var(--rule);border-radius:6px;background:var(--panel);padding:16px 18px}
+
+.arcs{position:relative;border:1px solid var(--rule);border-radius:6px;background:var(--panel)}
+.arcs canvas{display:block;width:100%;height:240px;cursor:crosshair}
+.arcs-cap{position:absolute;left:14px;top:10px;display:flex;flex-direction:column;gap:3px;pointer-events:none}
+.arcs-cap .key{display:flex;align-items:center;gap:8px;margin:0;font-size:11px;color:var(--muted)}
+.arcs-cap .key i{display:block;width:120px;height:6px;border-radius:1px;background:linear-gradient(90deg,#5B3FA8,#2F62D0,#1597B8,#2FA565,#C9B51C,#EB7A22,#D2323C)}
+
+/* repeats by length chart */
+.lengths{display:flex;flex-direction:column;gap:10px}
+.chart-wrap{position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
+.chart-wrap svg{display:block;width:100%;height:210px;cursor:pointer}
+.chart-wrap text{font-family:var(--sans);font-size:10.5px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.chart-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:12.5px;color:var(--muted)}
+.chart-foot b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+details.tbl summary{cursor:pointer;font-size:12.5px;color:var(--muted);margin-top:4px}
+.tablewrap{overflow:auto;max-height:340px;margin-top:8px;border:1px solid var(--rule);border-radius:4px}
+table.lt{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-numeric:tabular-nums}
+.lt th{position:sticky;top:0;background:var(--panel);text-align:right;padding:6px 10px;border-bottom:1px solid var(--rule);font-weight:600;white-space:nowrap}
+.lt th:first-child,.lt td:first-child{text-align:left}
+.lt th button{border:0;background:none;padding:0;font-weight:600}
+.lt td{text-align:right;padding:5px 10px;border-top:1px solid var(--rule)}
+.lt tr.in td{background:var(--wash)}
+.lt tr{cursor:pointer}
+.lt tr:hover td{background:var(--wash)}
+.lt .sub{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+
+/* filters + list */
+.filters{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:12px 0;background:var(--ground);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.range{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.active{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:0}
+.fchip{display:inline-flex;align-items:center;gap:6px;padding:2px 4px 2px 10px;border:1px solid var(--rule);border-radius:999px;font-size:12px;background:var(--panel)}
+.fchip button{border:0;background:none;display:grid;place-items:center;padding:3px;border-radius:50%;color:var(--muted)}
+.fchip button:hover{color:var(--ink);background:var(--wash)}
+.linkish{border:0;background:none;padding:0;font-size:12.5px;color:var(--muted);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.linkish:hover{color:var(--ink)}
+
+.rep{border-top:1px solid var(--rule);padding:16px 0}
+.rep:first-child{border-top:0}
+.rep-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.metric{display:inline-flex;align-items:baseline;gap:5px;padding:2px 9px;border-radius:3px;background:var(--wash);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.metric b{color:var(--ink);font-size:13px;font-weight:600}
+.badge{display:inline-flex;align-items:center;padding:1px 8px;border-radius:999px;border:1px solid var(--rule);font-size:11px}
+.badge.gold{border-color:var(--ribbon);color:var(--ribbon)}
+.rep-t{margin:8px 0 4px;font-size:15px;line-height:1.85}
+.rep-t.he{font-family:var(--hebrew);font-size:21px;line-height:1.75;direction:rtl;text-align:right}
+.rep-t.gr{font-family:var(--greek);font-size:17px}
+.rep-t.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rep-g{margin:0 0 8px;font-size:12.5px;line-height:1.55;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.refs{display:flex;flex-wrap:wrap;gap:5px}
+.ref{display:inline-flex;align-items:center;padding:2px 8px;border:1px solid var(--rule);border-radius:3px;font-size:12px;font-variant-numeric:tabular-nums;text-decoration:none;white-space:nowrap}
+.ref:hover{border-color:var(--ink)}
+.ref.nt{border-color:var(--ribbon)}
+.rep-toggle{margin-top:10px}
+.occ-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
+.occ{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 16px;padding:10px 12px;background:var(--wash);border-radius:4px}
+.occ-ref{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.occ-ref a{text-decoration:none}
+.occ-ref a:hover{text-decoration:underline}
+.occ-ref small{display:block;font-weight:400;color:var(--muted)}
+.occ-body{display:flex;flex-direction:column;gap:5px;min-width:0}
+.occ-orig{margin:0}
+.occ-orig.he{font-family:var(--hebrew);font-size:19px;line-height:1.7;direction:rtl;text-align:right}
+.occ-orig.gr{font-family:var(--greek);font-size:16px;line-height:1.6}
+.occ-kjv{margin:0;font-family:var(--serif);font-size:13px;line-height:1.65}
+.occ-kjv sup{font-family:var(--sans);font-size:9.5px;font-weight:600;color:var(--ribbon);margin-right:3px}
+.rl-j{color:var(--red-jesus)} .rl-g{color:var(--red-god)}
+.more{margin-top:16px}
+.ew{border-radius:2px;cursor:pointer}
+.w.hl,.ew.hl{background:var(--wash);box-shadow:0 2px 0 -1px var(--ribbon)}
+.align-note{margin:12px 0 0;font-size:12px;color:var(--muted)}
+.checks{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;border:0;margin:0;padding:0;min-width:0}
+.checks legend{float:left;padding:0;margin-right:2px}
+.checks label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.checks input{margin:0;width:15px;height:15px;accent-color:var(--ribbon)}
+.tr-sel{max-width:240px}
+.tr-missing{font-style:italic;color:var(--faint)}
+/* words: hover for Strong's, click for the definition */
+.w{border-radius:2px;cursor:pointer;transition:background .1s}
+.w:hover,.w.on{background:var(--wash);box-shadow:0 2px 0 -1px var(--ribbon)}
+.w.nos{cursor:default}
+.tr{font-family:var(--serif)!important;font-style:italic;direction:ltr!important;text-align:left!important}
+.rep-t.tr{font-size:16px;line-height:1.8}
+.occ-orig.tr{font-size:14.5px;line-height:1.7}
+.wt{display:flex;flex-direction:column;gap:3px}
+.ctip .wt-id{font-size:11px;font-weight:600;letter-spacing:.04em;opacity:.75}
+.ctip .wt-o{font-family:var(--hebrew);font-size:24px;line-height:1.35;font-weight:400;opacity:1}
+.ctip .wt-o.gr{font-family:var(--greek);font-size:19px}
+.ctip .wt-t{font-family:var(--serif);font-style:italic;font-size:14px;opacity:1}
+.ctip .wt-g{font-size:12.5px;opacity:1}
+button.ctip-more{background:none;border:0;padding:0;cursor:pointer;font:inherit;font-size:12px;font-weight:600}
+/* Strong's side panel */
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:45;width:min(420px,100vw);overflow:auto;background:var(--panel);border-left:1px solid var(--rule);box-shadow:-18px 0 50px var(--shadow);padding:22px 24px 40px;display:flex;flex-direction:column;gap:14px}
+.drawer .close{position:absolute;top:14px;right:14px;min-height:28px}
+.dr-lemma{margin:0;font-family:var(--hebrew);font-size:44px;line-height:1.15;font-weight:400}
+.dr-lemma.gr{font-family:var(--greek);font-size:36px}
+.dr-xlit{margin:0;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--muted)}
+.dr-sec{display:flex;flex-direction:column;gap:5px;padding-top:12px;border-top:1px solid var(--rule)}
+.dr-sec p{margin:0;font-family:var(--serif);font-size:14px;line-height:1.65}
+.dr-sec p.eyebrow{font-family:var(--sans);font-size:10.5px;line-height:1.4}
+.dr-note{margin:0;font-size:11.5px;color:var(--muted);line-height:1.5}
+.empty{font-family:var(--serif);font-style:italic;color:var(--muted);padding:20px 0}
+.loading{font-family:var(--serif);font-style:italic;color:var(--muted);padding:40px 0}
+
+/* pop-ups */
+.atip{position:fixed;z-index:40;pointer-events:none;background:var(--panel);border:1px solid var(--rule);border-radius:4px;box-shadow:0 8px 28px var(--shadow);padding:7px 10px;font-size:12px;max-width:320px;font-variant-numeric:tabular-nums}
+.atip b{font-weight:600}
+.ctip{position:fixed;left:0;top:0;z-index:50;width:max-content;max-width:290px;pointer-events:none;background:var(--ink);color:var(--ground);border-radius:4px;padding:8px 11px 9px;box-shadow:0 10px 30px var(--shadow);display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity .12s}
+.ctip.show{opacity:1}
+.ctip b{font-size:12.5px;font-weight:600}
+.ctip span{font-size:12px;line-height:1.45;opacity:.86}
+.ctip.has-link{pointer-events:auto}
+.ctip.has-link::before{content:"";position:absolute;left:0;right:0;height:14px}
+.ctip.has-link[data-side="top"]::before{bottom:-14px}
+.ctip.has-link[data-side="bottom"]::before{top:-14px}
+.ctip-more{margin-top:5px;align-self:flex-start;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}
+dialog.help{width:min(720px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink);box-shadow:0 30px 80px var(--shadow)}
+dialog.help::backdrop{background:rgba(12,11,17,.45)}
+.help-head{position:sticky;top:0;display:flex;align-items:center;gap:10px;padding:20px 28px 14px;background:var(--panel);border-bottom:1px solid var(--rule)}
+.help-head h2{font-size:25px;margin-right:auto}
+.help-body{padding:6px 28px 28px;display:flex;flex-direction:column;gap:14px}
+.help-body h3{margin:14px 0 6px;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.help-body p{margin:0;font-family:var(--serif);font-size:13.5px;line-height:1.65}
+.help-body dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13px}
+.help-body dt{font-weight:600;white-space:nowrap}
+.help-body dd{margin:0;color:var(--muted)}
+
+@media (max-width: 900px){
+  .top{grid-template-columns:1fr}
+  .top-tools{justify-content:flex-start}
+  .occ{grid-template-columns:1fr}
+  .find{flex:1 1 240px}
+  .find input{width:100%}
+  .filters{position:static}
+  h1{font-size:36px}
+}
+@media (prefers-reduced-motion: reduce){.ctip{transition:none}}
+</style>
+
+<div class="page">
+  <header class="top">
+    <div class="brand">
+      <a class="back" href="index.html"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8h-10M7 4.5 3.5 8 7 11.5"/></svg> Reference Rainbow</a>
+      <p class="eyebrow">Repeated phrases in the original languages</p>
+      <h1>Echoes</h1>
+      <p class="dek">Every run of seven or more words that appears more than once in the Hebrew, Aramaic or Greek text: quotations, refrains, laws and lists repeated word for word, and histories told twice.</p>
+    </div>
+    <div class="top-tools">
+      <div class="ctl" role="radiogroup" aria-label="Theme">
+        <span class="opts">
+          <label data-tip-title="Light" data-tip="Light page. Shared with the Rainbow on this device."><input type="radio" name="theme" value="light"><span>Light</span></label>
+          <label data-tip-title="Dark" data-tip="Dark page. Shared with the Rainbow on this device."><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+          <label data-tip-title="System" data-tip="Follow your device's setting."><input type="radio" name="theme" value="system" checked><span>System</span></label>
+        </span>
+      </div>
+      <a class="btn" href="read.html" data-tip-title="Read" data-more="guide.html#reader" data-tip="The Bible reader: read any chapter and study its words.">Read</a>
+      <a class="btn" data-scriptorium data-tip-title="Scriptorium" data-more="guide.html#scriptorium" data-tip="The full database reading room: 152 texts, a Strong's concordance and more. It must be running first: double-click Start Scriptorium in the project folder, then use this link.">Scriptorium</a>
+      <a class="btn" href="guide.html#echoes" data-tip-title="Guide" data-tip="The full explanation of Echoes, the counts and the filters." data-more="guide.html#echoes">Guide</a>
+      <button class="btn" id="helpBtn" type="button" data-tip-title="Help" data-tip="A quick summary of how to use this page." data-more="guide.html#echoes">? Help</button>
+    </div>
+  </header>
+
+  <section class="scope" aria-label="What to search">
+    <div class="ctl" role="radiogroup" aria-labelledby="lblCorpus">
+      <span class="ctl-label" id="lblCorpus" data-tip-title="Text" data-tip="Which original-language text to search for repeated phrases." data-more="guide.html#echoes">Text</span>
+      <span class="opts">
+        <label data-tip-title="Hebrew & Aramaic Old Testament" data-tip="The Leningrad Codex as tagged by STEPBible (TAHOT), 305,000 words. Finds repeats inside the Old Testament." data-more="guide.html#echoes-matching"><input type="radio" name="corpus" value="ot" checked><span>Hebrew OT</span></label>
+        <label data-tip-title="Greek New Testament" data-tip="The Nestle-Aland text as tagged by STEPBible (TAGNT), 137,000 words. Finds repeats inside the New Testament, such as parallel sayings in the Gospels." data-more="guide.html#echoes-matching"><input type="radio" name="corpus" value="nt"><span>Greek NT</span></label>
+        <label data-tip-title="Septuagint + New Testament" data-tip="The Greek Old Testament searched together with the Greek New Testament, so word-for-word New Testament quotations of the Old Testament show up." data-more="guide.html#echoes-matching"><input type="radio" name="corpus" value="gk"><span>Septuagint + NT</span></label>
+      </span>
+    </div>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblMode">
+      <span class="ctl-label" id="lblMode" data-tip-title="Match" data-tip="How closely two runs of words must agree to count as the same phrase." data-more="guide.html#echoes-matching">Match</span>
+      <span class="opts">
+        <label data-tip-title="Exact words" data-tip="The same words in the same order, ignoring vowel points, accents, capitals and punctuation." data-more="guide.html#echoes-matching"><input type="radio" name="mode" value="exact" checked><span>Exact words</span></label>
+        <label data-tip-title="Same root words" data-tip="The same dictionary words (Strong's numbers) in the same order, even when grammatical forms differ. Not available for the Septuagint." data-more="guide.html#echoes-matching"><input type="radio" name="mode" value="lemma"><span>Same root words</span></label>
+      </span>
+    </div>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblScript">
+      <span class="ctl-label" id="lblScript" data-tip-title="Script" data-tip="Show the phrases in the original Hebrew, Aramaic or Greek letters, or in transliteration: the same words spelled with English letters, as they sound. Hover any word for its Strong's number." data-more="guide.html#echoes-words">Script</span>
+      <span class="opts">
+        <label data-tip-title="Original script" data-tip="The words as written: Hebrew and Aramaic right to left, Greek left to right." data-more="guide.html#echoes-words"><input type="radio" name="script" value="orig" checked><span>Original</span></label>
+        <label data-tip-title="Transliteration" data-tip="The same words in English letters, showing how they sound: bereshit bara elohim for בְּרֵאשִׁית בָּרָא אֱלֹהִים." data-more="guide.html#echoes-words"><input type="radio" name="script" value="translit"><span>Transliteration</span></label>
+      </span>
+    </div>
+    <label class="ctl" data-tip-title="English translation" data-more="guide.html#translations" data-tip="Which English Bible is shown under each place when you open a phrase. Shared with the Reference Rainbow.">
+      <span class="ctl-label">English</span>
+      <select class="sel tr-sel" id="trSel" aria-label="English Bible translation"><option value="KJV">King James Version</option></select>
+    </label>
+    <div class="ctl find">
+      <input id="q" type="search" placeholder="Find: Isaiah 53, Ps 18, or a word in the gloss" aria-label="Find by passage or word" spellcheck="false"
+        data-tip-title="Find" data-tip="Type a book, chapter or verse to keep phrases that occur there, or an English word to search the word-by-word glosses." data-more="guide.html#echoes-filters">
+    </div>
+  </section>
+
+  <section class="summary" id="summary" aria-live="polite"><p class="loading">Reading the texts…</p></section>
+
+  <section class="arcs" aria-label="Where the listed phrases are">
+    <canvas id="arcs"></canvas>
+    <div class="arcs-cap"><p class="eyebrow">Where the listed phrases are</p><p class="key"><span id="keyMin">9</span><i></i><span id="keyMax">55</span> words</p></div>
+  </section>
+
+  <section class="card lengths" aria-labelledby="lenTitle">
+    <div class="sec-head">
+      <div>
+        <h2 id="lenTitle">Repeats by length</h2>
+        <p class="sec-note">One bar for each phrase length, in original-language words. <b>Click a bar</b> to list only phrases of that length, or <b>drag across bars</b> to pick a range.</p>
+      </div>
+      <div class="ctl" role="radiogroup" aria-labelledby="lblCount">
+        <span class="ctl-label" id="lblCount" data-tip-title="Count" data-tip="Listed phrases: each phrase once, at its full length — what the list below shows. Every repeated run: also counts shorter stretches inside longer phrases." data-more="guide.html#echoes-length">Count</span>
+        <span class="opts">
+          <label data-tip-title="Listed phrases" data-tip="Each phrase counted once at its full length, matching the list below. Follows your other filters." data-more="guide.html#echoes-length"><input type="radio" name="count" value="listed" checked><span>Listed phrases</span></label>
+          <label data-tip-title="Every repeated run" data-tip="Every stretch of that many words that repeats, including stretches inside longer phrases. Covers the whole text; other filters don't apply." data-more="guide.html#echoes-length"><input type="radio" name="count" value="all"><span>Every repeated run</span></label>
+        </span>
+      </div>
+    </div>
+    <div class="chart-wrap" id="chartWrap"><svg id="chart" role="img" aria-label="Number of phrases at each length"></svg></div>
+    <div class="chart-foot" id="chartFoot"></div>
+    <details class="tbl" id="lenDetails"><summary>Show the numbers as a table</summary><div class="tablewrap" id="lenTable"></div></details>
+  </section>
+
+  <section aria-labelledby="listTitle">
+    <div class="sec-head" style="margin-bottom:10px">
+      <h2 id="listTitle">Repeated phrases</h2>
+      <span class="eyebrow" id="listCount"></span>
+    </div>
+    <div class="filters" id="filters">
+      <label class="range" data-tip-title="Length" data-tip="Keep phrases with this many original-language words. The chart above sets this too." data-more="guide.html#echoes-length">
+        <span class="ctl-label">Length</span>
+        <input class="num-in" id="lenMin" type="number" min="7" aria-label="Shortest length in words"> to
+        <input class="num-in" id="lenMax" type="number" min="7" aria-label="Longest length in words"> words
+      </label>
+      <label class="range" data-tip-title="Places" data-tip="Keep phrases that occur in this many passages, for example at least 3 to find phrases repeated again and again." data-more="guide.html#echoes-filters">
+        <span class="ctl-label">Places</span>
+        <input class="num-in" id="plMin" type="number" min="2" aria-label="Fewest places"> to
+        <input class="num-in" id="plMax" type="number" min="2" aria-label="Most places">
+      </label>
+      <div class="ctl">
+        <span class="ctl-label" data-tip-title="Books" data-more="guide.html#books" data-tip="Keep phrases found in the books you tick: whole testaments, categories such as Gospels or Minor Prophets, or single books.">Books</span>
+        <span id="booksFilter"></span>
+        <span class="opts" role="radiogroup" aria-label="Which places must be in the chosen books" data-tip-title="Which places" data-more="guide.html#books" data-tip="Any place: at least one place is in the chosen books. Every place: all of them are.">
+          <label><input type="radio" name="bookPlaces" value="any" checked><span>Any place</span></label>
+          <label><input type="radio" name="bookPlaces" value="every"><span>Every place</span></label>
+        </span>
+      </div>
+      <fieldset class="checks" data-tip-title="Spread" data-more="guide.html#echoes-filters" data-tip="Within one book: refrains, lists and repeated laws. Across books: parallel accounts and quotations. Tick one or both.">
+        <legend class="ctl-label">Spread</legend>
+        <label><input type="checkbox" name="spread" value="single" checked> Within one book</label>
+        <label><input type="checkbox" name="spread" value="multi" checked> Across books</label>
+      </fieldset>
+      <fieldset class="checks" data-tip-title="Cross-referenced" data-more="guide.html#echoes" data-tip="Whether the Treasury of Scripture Knowledge already links at least two of a phrase's places. Tick one or both.">
+        <legend class="ctl-label">Cross-ref</legend>
+        <label><input type="checkbox" name="xref" value="yes" checked> Linked</label>
+        <label><input type="checkbox" name="xref" value="no" checked> Not linked</label>
+      </fieldset>
+      <label class="ctl" data-tip-title="Sort" data-tip="Order of the list." data-more="guide.html#echoes-filters">
+        <span class="ctl-label">Sort</span>
+        <select class="sel" id="sort" aria-label="Sort the list">
+          <option value="len-desc">Longest first</option>
+          <option value="len-asc">Shortest first</option>
+          <option value="pl-desc">Most places first</option>
+          <option value="pl-asc">Fewest places first</option>
+          <option value="bk-desc">Most books first</option>
+          <option value="pos">Bible order</option>
+        </select>
+      </label>
+      <button class="linkish" id="resetAll" type="button">Reset filters</button>
+      <div class="active" id="active" style="flex-basis:100%"></div>
+    </div>
+    <div id="results"></div>
+    <button class="btn more" id="more" type="button" hidden>Show more</button>
+  </section>
+</div>
+
+<div class="ctip" id="ctip" role="tooltip" hidden></div>
+<div class="atip" id="atip" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Strong's definition" tabindex="-1"></aside>
+
+<dialog class="help" id="help" aria-labelledby="helpTitle">
+  <div class="help-head"><h2 id="helpTitle">How Echoes works</h2><a class="btn" href="guide.html#echoes">Full guide</a><form method="dialog"><button class="btn" aria-label="Close help">Close</button></form></div>
+  <div class="help-body">
+    <section>
+      <h3>What counts as an echo</h3>
+      <p>A run of at least seven consecutive words, in the language the book was written in, that appears in more than one place. Shorter runs are mostly stock formulas. Phrases never run across the end of a book.</p>
+    </section>
+    <section>
+      <h3>Using the page</h3>
+      <dl>
+        <dt>1 · Text &amp; Match</dt><dd>Choose the Hebrew OT, the Greek NT, or the Septuagint with the NT, and how strictly words must agree.</dd>
+        <dt>2 · Repeats by length</dt><dd>See how many phrases there are at each length. Click a bar for one length, drag for a range.</dd>
+        <dt>3 · Filters</dt><dd>Narrow the list by length, number of places, books (testaments, categories or single books), spread and cross-references. Tick as many options as you like; sort it; remove any filter with its × chip.</dd>
+        <dt>4 · A phrase</dt><dd>Open “Show every place” for the original words and the KJV at each place. Arcs above join the places of every listed phrase; click one to open it.</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>Words</h3>
+      <p>Switch <b>Script</b> between the original letters and transliteration. Hover any word to see its Strong's number and meaning. In an open place, the English words that translate it are underlined too (KJV, WEB and BSB). Click a word, or “Open Strong's definition”, for the full entry in a side panel. <a href="guide.html#echoes-words">More in the guide</a>.</p>
+    </section>
+    <section>
+      <h3>Two ways of counting</h3>
+      <p><b>Listed phrases</b> counts each phrase once, at its full length, exactly as listed. <b>Every repeated run</b> also counts the shorter stretches inside longer phrases, so a 20-word repeat adds to every length from 7 to 20. <a href="guide.html#echoes-length">More in the guide</a>.</p>
+    </section>
+    <section>
+      <h3>Sources</h3>
+      <p>Hebrew and Greek words: STEPBible TAHOT and TAGNT (Tyndale House, CC BY 4.0). Septuagint: eBible.org (public domain). English: your chosen translation (King James Version unless you pick another), with <span class="rl-j">words of Jesus</span> and <span class="rl-g">words of God (detected)</span>. Cross-references: OpenBible.info (CC BY 4.0).</p>
+    </section>
+  </div>
+</dialog>
+
+<script src="data.js" charset="utf-8"></script>
+<script src="texts/manifest.js" charset="utf-8"></script>
+<script src="translations.js" charset="utf-8"></script>
+<script src="bookfilter.js" charset="utf-8"></script>
+<script src="echoes-data.js" charset="utf-8"></script>
+<script>
+(async function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const fmt = n => Number(n).toLocaleString('en-US');
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const plural = (n, one, many) => `${fmt(n)} ${n === 1 ? one : many}`;
+const root = document.documentElement;
+const ICON = {
+  right: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5 12.5 8 9 11.5"/></svg>',
+  x: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+};
+const D = window.RAINBOW_DATA, E = window.ECHOES_DATA;
+if (!D || !E) { $('#summary').innerHTML = '<p class="empty">The data files (data.js, echoes-data.js) did not load. Keep them in the same folder as this page.</p>'; return; }
+if (typeof DecompressionStream === 'undefined') { $('#summary').innerHTML = '<p class="empty">This browser cannot unpack the data. Open the page in a current version of Chrome, Edge, Firefox or Safari.</p>'; return; }
+
+function b64bytes(s) { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+const inflate = s => new Response(new Blob([b64bytes(s)]).stream().pipeThrough(new DecompressionStream('gzip')));
+
+// ------------------------------------------------------------ Bible structure (from the Rainbow's data)
+const BOOKS = D.books, NB = 66;
+const chBook = [], chNum = [], chCount = [], chStart = [], bookCh0 = [];
+{
+  let g = 0;
+  BOOKS.forEach((b, bi) => {
+    b.short = b.osis.replace(/^(\d)/, '$1 ');
+    b.key = b.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    bookCh0[bi] = chBook.length;
+    b.chapters.forEach((n, ci) => { chBook.push(bi); chNum.push(ci + 1); chCount.push(n); chStart.push(g); g += n; });
+  });
+  bookCh0[NB] = chBook.length; chStart.push(g);
+}
+const NC = chBook.length, NV = chStart[NC];
+const verseCh = new Uint16Array(NV);
+for (let c = 0; c < NC; c++) verseCh.fill(c, chStart[c], chStart[c + 1]);
+
+const [payload, textAll, refsBufs, redBufs] = await Promise.all([
+  inflate(E.z).text(),
+  inflate(D.text).text(),
+  Promise.all([D.fromDelta, D.toDiff].map(s => inflate(s).arrayBuffer())),
+  D.red ? Promise.all([D.red.gid, D.red.start, D.red.end, D.red.kind].map(s => inflate(s).arrayBuffer())) : Promise.resolve(null),
+]);
+const DATA = JSON.parse(payload);
+// shortest phrase length in the data (7 words)
+// word links (KJV, WEB, BSB): translation -> Map(verse index -> [[start, end, strongs]])
+const ALIGN = {};
+for (const [tid, al] of Object.entries(DATA.align || {})) {
+  const m = new Map();
+  let g = 0;
+  for (let i = 0; i < al.g.length; i++) {
+    g += al.g[i];
+    if (!m.has(g)) m.set(g, []);
+    m.get(g).push([al.s[i], al.s[i] + al.l[i], DATA.alignIds[al.k[i]]]);
+  }
+  ALIGN[tid] = m;
+}
+const MINW = Math.min(...Object.values(DATA.sets).map(s => s.stats.length ? s.stats[0][0] : 7));
+let verses = textAll.split('\n');
+let RED = new Map();
+const TX = window.RainbowTexts;
+let TR = TX ? TX.byId('KJV') : null;
+if (redBufs) {
+  const [G, A, Z, K] = [new Uint16Array(redBufs[0]), new Uint16Array(redBufs[1]), new Uint16Array(redBufs[2]), new Uint8Array(redBufs[3])];
+  for (let i = 0; i < G.length; i++) { if (!RED.has(G[i])) RED.set(G[i], []); RED.get(G[i]).push([A[i], Z[i], K[i]]); }
+}
+// cross-reference neighbours per verse, both directions, sorted for range lookups
+const XR = (() => {
+  const fd = new Uint16Array(refsBufs[0]), td = new Int16Array(refsBufs[1]);
+  const N = fd.length, from = new Uint16Array(N), to = new Uint16Array(N);
+  for (let i = 0, f = 0; i < N; i++) { f += fd[i]; from[i] = f; to[i] = f + td[i]; }
+  const off = new Uint32Array(NV + 1);
+  for (let i = 0; i < N; i++) { off[from[i] + 1]++; off[to[i] + 1]++; }
+  for (let v = 0; v < NV; v++) off[v + 1] += off[v];
+  const nb = new Uint16Array(off[NV]), ptr = off.slice(0, NV);
+  for (let i = 0; i < N; i++) { nb[ptr[from[i]]++] = to[i]; nb[ptr[to[i]]++] = from[i]; }
+  for (let v = 0; v < NV; v++) nb.subarray(off[v], off[v + 1]).sort();
+  return { off, nb };
+})();
+function linked(a1, a2, b1, b2) {
+  for (let v = a1; v <= a2; v++) {
+    const s = XR.nb.subarray(XR.off[v], XR.off[v + 1]);
+    let lo = 0, hi = s.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (s[m] < b1) lo = m + 1; else hi = m; }
+    if (lo < s.length && s[lo] <= b2) return true;
+  }
+  return false;
+}
+
+// ------------------------------------------------------------ helpers
+const bookName = id => id <= NB ? BOOKS[id - 1].name : (DATA.books[id] || `Book ${id}`);
+const refLabel = o => {
+  const [b, c1, v1, c2, v2] = o;
+  let s = `${bookName(b)} ${c1}:${v1}`;
+  if (c2 !== c1) s += `–${c2}:${v2}`; else if (v2 !== v1) s += `–${v2}`;
+  return s;
+};
+const osisHash = o => o[0] <= NB ? `${BOOKS[o[0] - 1].osis}.${o[1]}.${o[2]}` : '';
+// aligned = true: English words that translate a Strong's-tagged original word get <span class="ew" data-s="H0430">
+function verseHtml(g, aligned) {
+  const t = verses[g] || '';
+  if (!t) return `<span class="tr-missing">Not in the ${esc(TR ? TR.short : 'chosen translation')}</span>`;
+  const red = RED.get(g) || [];
+  const words = aligned && TR && ALIGN[TR.id] ? (ALIGN[TR.id].get(g) || []) : [];
+  if (!red.length && !words.length) return esc(t);
+  const cuts = new Set([0, t.length]);
+  for (const [x, y] of red) { cuts.add(x); cuts.add(y); }
+  for (const [x, y] of words) { cuts.add(x); cuts.add(y); }
+  const pts = [...cuts].filter(x => x >= 0 && x <= t.length).sort((x, y) => x - y);
+  let out = '';
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const x = pts[i], y = pts[i + 1];
+    const rk = red.find(([p0, p1]) => p0 <= x && y <= p1);
+    const ids = [...new Set(words.filter(([p0, p1]) => p0 <= x && y <= p1).map(w => w[2]))];
+    const cls = [rk ? (rk[2] === 1 ? 'rl-j' : 'rl-g') : '', ids.length ? 'ew' : ''].filter(Boolean).join(' ');
+    const piece = esc(t.slice(x, y));
+    out += cls ? `<span class="${cls}"${ids.length ? ` data-s="${ids.join(' ')}"` : ''}>${piece}</span>` : piece;
+  }
+  return out;
+}
+const RAMP = ['#5B3FA8', '#2F62D0', '#1597B8', '#2FA565', '#C9B51C', '#EB7A22', '#D2323C'].map(h => [1, 3, 5].map(k => parseInt(h.substr(k, 2), 16)));
+function ramp(t, a = 1) {
+  t = clamp(t, 0, 1) * 6; const i = Math.min(5, Math.floor(t)); let f = t - i; f = f * f * (3 - 2 * f);
+  const c = RAMP[i].map((v, k) => Math.round(v + (RAMP[i + 1][k] - v) * f));
+  return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+}
+const stripMarks = s => s.normalize('NFD').replace(/[̀-֑ͯ-ׇ]/g, '').toLowerCase();
+const cssVar = n => getComputedStyle(root).getPropertyValue(n).trim();
+
+// reference search
+const ALIASES = { psalm: 18, psa: 18, jn: 42, mt: 39, mk: 40, lk: 41, sos: 21, songofsongs: 21, phm: 56, jas: 58, revelations: 65 };
+function findBook(q) {
+  const key = q.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!key) return -1;
+  if (key in ALIASES) return ALIASES[key];
+  let i = BOOKS.findIndex(b => b.key === key || b.osis.toLowerCase() === key);
+  if (i < 0) i = BOOKS.findIndex(b => b.key.startsWith(key) || b.osis.toLowerCase().startsWith(key));
+  return i;
+}
+function parseRef(q) {
+  const m = q.trim().match(/^((?:[1-3]\s*)?[a-z][a-z .]*?)\.?\s*(\d+)?(?:\s*[:. ]\s*(\d+))?\s*$/i);
+  if (!m) return null;
+  const b = findBook(m[1]);
+  if (b < 0) return null;
+  return { book: b, ch: m[2] ? +m[2] : null, v: m[3] ? +m[3] : null };
+}
+const guessCorpus = q => { const r = parseRef(q); return r ? (r.book < 39 ? 'ot' : 'nt') : null; };
+
+// ------------------------------------------------------------ state
+let bookFilter = null;  // Books checkbox filter, created with the controls
+const ST = {
+  corpus: 'ot', mode: 'exact', sort: 'len-desc', count: 'listed',
+  q: '', lenMin: 7, lenMax: 7, plMin: 2, plMax: 2, spread: new Set(['single', 'multi']), xref: new Set(['yes', 'no']), bookPlaces: 'any',
+  shown: 50, open: new Set(), hover: -1, script: 'orig',
+};
+try {
+  const saved = JSON.parse(localStorage.getItem('echoes-state') || '{}');
+  for (const k of ['corpus', 'mode', 'sort', 'count', 'script']) if (typeof saved[k] === 'string') ST[k] = saved[k];
+} catch (_) { /* storage blocked */ }
+const save = () => { try { localStorage.setItem('echoes-state', JSON.stringify({ corpus: ST.corpus, mode: ST.mode, sort: ST.sort, count: ST.count, script: ST.script })); } catch (_) { /* storage blocked */ } };
+const setKey = () => `${ST.corpus}/${ST.corpus === 'gk' ? 'exact' : ST.mode}`;
+
+// per-set derived facts: length, places, books, first position, cross-referenced
+const INFO = {};
+function info() {
+  const key = setKey();
+  if (INFO[key]) return INFO[key];
+  const set = DATA.sets[key];
+  const reps = set.repeats.map((r, i) => {
+    const occs = r[4];
+    const withV = occs.filter(o => o[5] >= 0);
+    let xref = false;
+    outer: for (let a = 0; a < withV.length; a++) for (let b = a + 1; b < withV.length; b++) {
+      if (key.startsWith('gk') && (withV[a][0] < 40) !== (withV[b][0] < 40)) continue; // Septuagint numbering ≠ the KJV numbering the cross-references use
+      if (linked(withV[a][5], withV[a][6], withV[b][5], withV[b][6])) { xref = true; break outer; }
+    }
+    const first = occs[0];
+    const pos = first[5] >= 0 ? first[5] : (first[0] <= NB ? chStart[bookCh0[first[0] - 1]] : 1e9 + first[0]);
+    const ntQuote = key.startsWith('gk') && occs.some(o => o[0] >= 40 && o[0] <= 66) && occs.some(o => o[0] < 40 || o[0] > 66);
+    return { i, r, n: r[0], places: occs.length, books: r[1], pos, xref, ntQuote };
+  });
+  const maxLen = set.stats.length ? set.stats[set.stats.length - 1][0] : MINW;
+  const maxPlaces = Math.max(2, ...reps.map(x => x.places));
+  return (INFO[key] = { set, reps, maxLen, maxPlaces });
+}
+
+function resetFilters(keepQuery) {
+  const I = info();
+  Object.assign(ST, { lenMin: MINW, lenMax: I.maxLen, plMin: 2, plMax: I.maxPlaces, shown: 50 });
+  ST.spread = new Set(['single', 'multi']); ST.xref = new Set(['yes', 'no']);
+  if (bookFilter) bookFilter.reset();
+  if (!keepQuery) { ST.q = ''; $('#q').value = ''; }
+  ST.open.clear();
+}
+function clampFilters() {
+  const I = info();
+  ST.lenMin = clamp(ST.lenMin | 0 || MINW, MINW, I.maxLen); ST.lenMax = clamp(ST.lenMax | 0 || I.maxLen, ST.lenMin, I.maxLen);
+  ST.plMin = clamp(ST.plMin | 0 || 2, 2, I.maxPlaces); ST.plMax = clamp(ST.plMax | 0 || I.maxPlaces, ST.plMin, I.maxPlaces);
+}
+
+// ------------------------------------------------------------ filtering
+function matchesQuery(x) {
+  if (!ST.q.trim()) return true;
+  const r = parseRef(ST.q);
+  if (r) {
+    return x.r[4].some(o => o[0] === r.book + 1 && (r.ch == null || (o[1] <= r.ch && o[3] >= r.ch)) &&
+      (r.v == null || ((o[1] < r.ch || o[2] <= r.v) && (o[3] > r.ch || o[4] >= r.v))));
+  }
+  const q = stripMarks(ST.q.trim());
+  return stripMarks(x.r[3] || '').includes(q) || stripMarks(x.r[2]).includes(q) || stripMarks(x.r[5] || '').includes(q);
+}
+const passOthers = x => x.places >= ST.plMin && x.places <= ST.plMax &&
+  ST.spread.has(x.books > 1 ? 'multi' : 'single') &&
+  ST.xref.has(x.xref ? 'yes' : 'no') && passBooks(x) && matchesQuery(x);
+function passBooks(x) {
+  if (!bookFilter || bookFilter.all()) return true;
+  const ok = o => o[0] <= 66 ? bookFilter.has(o[0] - 1) : bookFilter.hasExtra('deutero');
+  return ST.bookPlaces === 'every' ? x.r[4].every(ok) : x.r[4].some(ok);
+}
+const passLength = x => x.n >= ST.lenMin && x.n <= ST.lenMax;
+const SORTS = {
+  'len-desc': (a, b) => b.n - a.n || b.places - a.places || a.pos - b.pos,
+  'len-asc': (a, b) => a.n - b.n || b.places - a.places || a.pos - b.pos,
+  'pl-desc': (a, b) => b.places - a.places || b.n - a.n || a.pos - b.pos,
+  'pl-asc': (a, b) => a.places - b.places || b.n - a.n || a.pos - b.pos,
+  'bk-desc': (a, b) => b.books - a.books || b.places - a.places || b.n - a.n,
+  pos: (a, b) => a.pos - b.pos || b.n - a.n,
+};
+let beforeLength = [], filtered = [];
+function applyFilters() {
+  const I = info();
+  beforeLength = I.reps.filter(passOthers);
+  filtered = beforeLength.filter(passLength).sort(SORTS[ST.sort] || SORTS['len-desc']);
+}
+
+// ------------------------------------------------------------ render
+function render() {
+  const I = info();
+  clampFilters();
+  $$('input[name=corpus]').forEach(x => { x.checked = x.value === ST.corpus; });
+  $$('input[name=mode]').forEach(x => { x.checked = x.value === (ST.corpus === 'gk' ? 'exact' : ST.mode); x.disabled = ST.corpus === 'gk' && x.value === 'lemma'; });
+  $$('input[name=count]').forEach(x => { x.checked = x.value === ST.count; });
+  $$('input[name=script]').forEach(x => { x.checked = x.value === ST.script; });
+  $$('input[name=spread]').forEach(x => { x.checked = ST.spread.has(x.value); });
+  $$('input[name=xref]').forEach(x => { x.checked = ST.xref.has(x.value); });
+  $$('input[name=bookPlaces]').forEach(x => { x.checked = x.value === ST.bookPlaces; });
+  if (bookFilter) bookFilter.setVisibleExtras(ST.corpus === 'gk' ? ['deutero'] : []);
+  $('#sort').value = ST.sort;
+  for (const [id, key, max] of [['#lenMin', 'lenMin', I.maxLen], ['#lenMax', 'lenMax', I.maxLen], ['#plMin', 'plMin', I.maxPlaces], ['#plMax', 'plMax', I.maxPlaces]]) {
+    const el = $(id); el.max = max; if (document.activeElement !== el) el.value = ST[key];
+  }
+  $('#keyMin').textContent = MINW; $('#keyMax').textContent = I.maxLen;
+  applyFilters();
+  renderSummary(I);
+  renderChart(I);
+  renderLengthTable(I);
+  renderActive(I);
+  renderList();
+  drawArcs();
+}
+
+function renderSummary(I) {
+  const places = filtered.reduce((n, x) => n + x.places, 0);
+  const longest = filtered.reduce((m, x) => Math.max(m, x.n), 0);
+  const label = { ot: 'Hebrew & Aramaic Old Testament', nt: 'Greek New Testament', gk: 'Septuagint and Greek New Testament' }[ST.corpus];
+  const quotes = ST.corpus === 'gk' ? filtered.filter(x => x.ntQuote).length : null;
+  const isFiltered = filtered.length !== I.reps.length;
+  $('#summary').innerHTML = `
+    <div class="stat"><b>${fmt(filtered.length)}</b><span>${filtered.length === 1 ? 'phrase' : 'phrases'}${isFiltered ? ` of ${fmt(I.reps.length)}` : ''}</span></div>
+    <div class="stat"><b>${fmt(places)}</b><span>places</span></div>
+    <div class="stat"><b>${fmt(longest)}</b><span>words in the longest</span></div>
+    ${quotes != null ? `<div class="stat"><b>${fmt(quotes)}</b><span>Old Testament passages quoted in the New</span></div>` : ''}
+    <p class="note">${label} · ${ST.corpus === 'gk' || ST.mode === 'exact' ? 'exact words' : 'same root words'}. The longest repeat in this text is ${fmt(I.maxLen)} words.</p>`;
+}
+
+// ---- repeats-by-length chart
+let chartGeo = null, drag = null;
+function lengthCounts(I) {
+  const L = [];
+  for (let n = MINW; n <= I.maxLen; n++) L.push({ n, listed: 0, listedPlaces: 0, runs: 0, runPlaces: 0 });
+  for (const x of beforeLength) { const c = L[x.n - MINW]; c.listed++; c.listedPlaces += x.places; }
+  for (const [n, d, o] of I.set.stats) { const c = L[n - MINW]; if (c) { c.runs = d; c.runPlaces = o; } }
+  return L;
+}
+function renderChart(I) {
+  const svg = $('#chart'), W = $('#chartWrap').clientWidth || 800, H = 210;
+  const m = { l: 46, r: 10, t: 14, b: 30 }, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const L = lengthCounts(I), val = c => ST.count === 'all' ? c.runs : c.listed;
+  const maxV = Math.max(1, ...L.map(val));
+  const y = v => v <= 0 ? m.t + ih : m.t + ih - (Math.log10(v / 0.5) / Math.log10(maxV / 0.5)) * ih;
+  const bw = iw / L.length, barW = Math.max(1, Math.min(bw * 0.72, 22));
+  const on = cssVar('--bar'), off = cssVar('--bar-off'), rule = cssVar('--rule'), accent = cssVar('--ribbon');
+  const sel = drag ? [Math.min(drag.a, drag.b), Math.max(drag.a, drag.b)] : [ST.lenMin, ST.lenMax];
+  const full = sel[0] === MINW && sel[1] === I.maxLen;
+  let h = '';
+  for (let p = 1; p <= maxV; p *= 10) {
+    const yy = y(p).toFixed(1);
+    h += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="${rule}" stroke-width="1"/><text x="${m.l - 6}" y="${yy}" text-anchor="end" dominant-baseline="middle">${fmt(p)}</text>`;
+  }
+  h += `<text x="4" y="${m.t - 3}" text-anchor="start">${ST.count === 'all' ? 'runs' : 'phrases'} · log scale</text>`;
+  const step = [1, 2, 5, 10, 20].find(s => bw * s >= 26) || 20;
+  L.forEach((c, k) => {
+    const x0 = m.l + k * bw, cx = x0 + bw / 2, v = val(c), inSel = c.n >= sel[0] && c.n <= sel[1];
+    h += `<rect x="${x0.toFixed(1)}" y="${m.t}" width="${bw.toFixed(1)}" height="${ih}" fill="transparent" data-n="${c.n}"/>`;
+    if (v > 0) h += `<rect x="${(cx - barW / 2).toFixed(1)}" y="${y(v).toFixed(1)}" width="${barW.toFixed(1)}" height="${(m.t + ih - y(v)).toFixed(1)}" rx="1" fill="${full || inSel ? on : off}" pointer-events="none"/>`;
+    if (c.n === MINW || c.n === I.maxLen || (c.n % step === 0 && c.n - MINW >= Math.max(2, step * 0.6) && I.maxLen - c.n >= Math.max(2, step * 0.6))) h +=`<text x="${cx.toFixed(1)}" y="${H - 12}" text-anchor="middle">${c.n}</text>`;
+  });
+  if (!full) {
+    const xs = m.l + (sel[0] - MINW) * bw, xe = m.l + (sel[1] - MINW + 1) * bw;
+    h += `<rect x="${xs.toFixed(1)}" y="${m.t + ih + 2}" width="${(xe - xs).toFixed(1)}" height="3" fill="${accent}" pointer-events="none"/>`;
+  }
+  h += `<text x="${(m.l + iw / 2).toFixed(1)}" y="${H - 1}" text-anchor="middle">phrase length (words)</text>`;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = h;
+  chartGeo = { m, bw, W, L };
+  const listedSel = L.filter(c => c.n >= sel[0] && c.n <= sel[1]);
+  const phrases = listedSel.reduce((n, c) => n + c.listed, 0), places = listedSel.reduce((n, c) => n + c.listedPlaces, 0);
+  $('#chartFoot').innerHTML = `${full ? 'All lengths' : `Lengths <b>${sel[0]}${sel[1] !== sel[0] ? '–' + sel[1] : ''}</b> words`}: <b>${plural(phrases, 'phrase', 'phrases')}</b> in <b>${fmt(places)}</b> places
+    ${full ? '' : '<button class="linkish" id="lenReset" type="button">Show all lengths</button>'}
+    ${ST.count === 'all' ? '<span>Bars show every repeated run in the whole text; the list and these totals follow your filters.</span>' : ''}`;
+}
+function chartLength(evt) {
+  if (!chartGeo) return null;
+  const r = $('#chart').getBoundingClientRect(), x = (evt.clientX - r.left) * (chartGeo.W / r.width);
+  const k = Math.floor((x - chartGeo.m.l) / chartGeo.bw);
+  return chartGeo.L[clamp(k, 0, chartGeo.L.length - 1)].n;
+}
+const atip = $('#atip');
+const chart = $('#chart');
+chart.addEventListener('pointerdown', e => {
+  const n = chartLength(e); if (n == null) return;
+  try { chart.setPointerCapture(e.pointerId); } catch (_) { /* pointer already released */ }
+  drag = { a: n, b: n, moved: false };
+  renderChart(info());
+});
+chart.addEventListener('pointermove', e => {
+  const n = chartLength(e); if (n == null) return;
+  if (drag) { if (n !== drag.b) { drag.b = n; drag.moved = true; renderChart(info()); } }
+  const c = chartGeo.L[n - MINW];
+  atip.innerHTML = `<b>${n} words</b><br>${plural(c.listed, 'listed phrase', 'listed phrases')} in ${fmt(c.listedPlaces)} places<br><span style="color:var(--muted)">${plural(c.runs, 'repeated run', 'repeated runs')} of ${n} words in the whole text</span>`;
+  atip.hidden = false;
+  atip.style.left = Math.min(e.clientX + 14, innerWidth - atip.offsetWidth - 8) + 'px';
+  atip.style.top = (e.clientY + 16) + 'px';
+});
+chart.addEventListener('pointerleave', () => { atip.hidden = true; });
+function endDrag(e) {
+  if (!drag) return;
+  const I = info(), a = Math.min(drag.a, drag.b), b = Math.max(drag.a, drag.b);
+  if (!drag.moved && ST.lenMin === a && ST.lenMax === a) { ST.lenMin = MINW; ST.lenMax = I.maxLen; }  // clicking the selected bar again clears it
+  else { ST.lenMin = a; ST.lenMax = b; }
+  drag = null; ST.shown = 50;
+  render();
+}
+chart.addEventListener('pointerup', endDrag);
+chart.addEventListener('pointercancel', () => { drag = null; renderChart(info()); });
+$('#chartFoot').addEventListener('click', e => { if (e.target.closest('#lenReset')) { const I = info(); ST.lenMin = MINW; ST.lenMax = I.maxLen; ST.shown = 50; render(); } });
+
+// ---- the same numbers as a sortable table
+const LT = { key: 'n', dir: 1 };
+function renderLengthTable(I) {
+  if (!$('#lenDetails').open) return;
+  const L = lengthCounts(I).sort((a, b) => ((a[LT.key] > b[LT.key]) - (a[LT.key] < b[LT.key])) * LT.dir || a.n - b.n);
+  const th = (k, label, sub) => `<th><button data-lt="${k}">${label}${LT.key === k ? (LT.dir > 0 ? ' ↑' : ' ↓') : ''}</button>${sub ? `<span class="sub">${sub}</span>` : ''}</th>`;
+  $('#lenTable').innerHTML = `<table class="lt"><thead><tr>${th('n', 'Length', 'words')}${th('listed', 'Listed phrases', 'match your filters')}${th('listedPlaces', 'Their places')}${th('runs', 'Every repeated run', 'whole text')}${th('runPlaces', 'Their places')}</tr></thead>
+    <tbody>${L.map(c => `<tr data-n="${c.n}" class="${c.n >= ST.lenMin && c.n <= ST.lenMax && !(ST.lenMin === MINW && ST.lenMax === I.maxLen) ? 'in' : ''}" title="List phrases of ${c.n} words">
+      <td>${c.n}</td><td>${fmt(c.listed)}</td><td>${fmt(c.listedPlaces)}</td><td>${fmt(c.runs)}</td><td>${fmt(c.runPlaces)}</td></tr>`).join('')}</tbody></table>`;
+}
+$('#lenDetails').addEventListener('toggle', () => renderLengthTable(info()));
+$('#lenTable').addEventListener('click', e => {
+  const s = e.target.closest('[data-lt]');
+  if (s) { LT.dir = LT.key === s.dataset.lt ? -LT.dir : (s.dataset.lt === 'n' ? 1 : -1); LT.key = s.dataset.lt; renderLengthTable(info()); return; }
+  const r = e.target.closest('tr[data-n]');
+  if (r) { const n = +r.dataset.n; ST.lenMin = n; ST.lenMax = n; ST.shown = 50; render(); }
+});
+
+// ---- active filter chips
+function renderActive(I) {
+  const chips = [];
+  if (ST.lenMin !== MINW || ST.lenMax !== I.maxLen) chips.push(['len', `Length ${ST.lenMin}${ST.lenMax !== ST.lenMin ? '–' + ST.lenMax : ''} words`]);
+  if (ST.plMin !== 2 || ST.plMax !== I.maxPlaces) chips.push(['pl', ST.plMax === I.maxPlaces ? `${ST.plMin}+ places` : `Places ${ST.plMin}–${ST.plMax}`]);
+  if (bookFilter && !bookFilter.all()) chips.push(['bookcats', bookFilter.summary() + (ST.bookPlaces === 'every' ? ', every place' : '')]);
+  if (ST.spread.size < 2) chips.push(['spread', ST.spread.size ? (ST.spread.has('multi') ? 'Across books only' : 'Within one book only') : 'Spread: nothing ticked']);
+  if (ST.xref.size < 2) chips.push(['xref', ST.xref.size ? (ST.xref.has('yes') ? 'Already cross-referenced' : 'Not cross-referenced') : 'Cross-ref: nothing ticked']);
+  if (ST.q.trim()) chips.push(['q', `Find: ${ST.q.trim()}`]);
+  $('#active').innerHTML = chips.map(([k, l]) => `<span class="fchip">${esc(l)}<button data-clear="${k}" aria-label="Remove filter: ${esc(l)}">${ICON.x}</button></span>`).join('');
+  $('#active').hidden = !chips.length;
+  $('#resetAll').hidden = !chips.length;
+}
+$('#active').addEventListener('click', e => {
+  const b = e.target.closest('[data-clear]'); if (!b) return;
+  const I = info();
+  ({ len: () => { ST.lenMin = MINW; ST.lenMax = I.maxLen; }, pl: () => { ST.plMin = 2; ST.plMax = I.maxPlaces; }, bookcats: () => { bookFilter.reset(); }, spread: () => { ST.spread = new Set(['single', 'multi']); }, xref: () => { ST.xref = new Set(['yes', 'no']); },
+     q: () => { ST.q = ''; $('#q').value = ''; writeHash(); } })[b.dataset.clear]();
+  ST.shown = 50; render();
+});
+$('#resetAll').addEventListener('click', () => { resetFilters(false); writeHash(); render(); });
+
+// ---- list
+const langClass = () => ST.script === 'translit' ? 'tr' : ST.corpus === 'ot' ? 'he' : 'gr';
+const langCode = () => (ST.corpus === 'ot' ? 'hbo' : 'grc') + (ST.script === 'translit' ? '-Latn' : '');
+const LEX = DATA.lex || {};
+const shortS = sid => sid[0] + String(parseInt(sid.slice(1), 10));
+// one <span class="w"> per word; hover shows the Strong's number, click opens the definition
+function wordsHtml(text, translit, strongs) {
+  const o = String(text || '').split(/\s+/).filter(Boolean), t = String(translit || '').split(' '), sn = String(strongs || '').split(' ');
+  const show = ST.script === 'translit' && t.length === o.length ? t : o;
+  return show.map((w, k) => {
+    const sid = sn.length === o.length && sn[k] && sn[k] !== '-' ? sn[k] : '';
+    return `<span class="w${sid ? '' : ' nos'}" data-k="${k}"${sid ? ` data-s="${sid}"` : ''} data-o="${esc(o[k])}" data-t="${esc(t[k] && t[k] !== '-' ? t[k] : '')}">${esc(w === '-' ? o[k] : w)}</span>`;
+  }).join(' ');
+}
+const occStrongs = (r, o) => o[9] ?? r[4][0][9];
+function renderList() {
+  const I = info();
+  $('#listCount').textContent = filtered.length ? `Showing ${fmt(Math.min(ST.shown, filtered.length))} of ${plural(filtered.length, 'phrase', 'phrases')}` : '';
+  if (!filtered.length) {
+    $('#results').innerHTML = `<p class="empty">No phrases match these filters. Remove a filter above, or <button class="linkish" data-reset-all type="button">reset all filters</button>.</p>`;
+    $('#more').hidden = true; return;
+  }
+  $('#results').innerHTML = filtered.slice(0, ST.shown).map(repHtml).join('');
+  $('#more').hidden = filtered.length <= ST.shown;
+  $('#more').textContent = `Show ${fmt(Math.min(50, filtered.length - ST.shown))} more`;
+}
+function repHtml(x) {
+  const { i, r } = x, open = ST.open.has(i);
+  const occs = r[4];
+  const refs = occs.slice(0, 10).map(o => o[0] <= NB
+    ? `<a class="ref${ST.corpus === 'gk' && o[0] >= 40 ? ' nt' : ''}" href="index.html#${osisHash(o)}" data-tip-title="${esc(refLabel(o))}" data-tip="Open this verse in the Reference Rainbow.">${esc(refLabel(o))}</a>`
+    : `<span class="ref">${esc(refLabel(o))}</span>`).join('') + (occs.length > 10 ? `<span class="ref">+${occs.length - 10} more</span>` : '');
+  return `<article class="rep" data-i="${i}">
+    <div class="rep-h">
+      <span class="metric"><b>${x.n}</b> words</span><span class="metric"><b>${x.places}</b> places</span><span class="metric"><b>${x.books}</b> ${x.books === 1 ? 'book' : 'books'}</span>
+      ${x.ntQuote ? '<span class="badge gold" data-tip-title="Old Testament quoted in the New" data-tip="The phrase occurs in both the Septuagint and the Greek New Testament." data-more="guide.html#echoes-matching">OT quoted in NT</span>' : ''}
+      ${x.xref ? '<span class="badge" data-tip-title="Cross-referenced" data-tip="The Treasury of Scripture Knowledge already links at least two of these places." data-more="guide.html#echoes">Cross-referenced</span>' : ''}
+    </div>
+    <p class="rep-t ${langClass()}${open ? '' : ' clamp'}" lang="${langCode()}">${wordsHtml(r[2], r[5], r[4][0][9])}</p>
+    ${r[3] ? `<p class="rep-g">${esc(r[3])}</p>` : ''}
+    <div class="refs">${refs}</div>
+    <button class="btn rep-toggle" data-toggle="${i}" aria-expanded="${open}" type="button">${open ? 'Hide the places' : 'Show every place with the ' + esc(TR ? TR.short : 'KJV')}</button>
+    ${open ? occList(r) : ''}
+  </article>`;
+}
+function occList(r) {
+  const note = TR && !ALIGN[TR.id] ? `<p class="align-note">Hover a Hebrew or Greek word to underline the English words that translate it. That works in the King James Version, World English Bible and Berean Standard Bible; the ${esc(TR.short)} has no word-by-word links.</p>` : '';
+  return note + `<ol class="occ-list">${r[4].map(o => {
+    const lxx = ST.corpus === 'gk' && (o[0] < 40 || o[0] > 66);
+    let kjv = '';
+    if (o[5] >= 0 && o[0] <= NB) {
+      const parts = [];
+      for (let g = o[5]; g <= Math.min(o[6], o[5] + 8); g++) parts.push(`<sup>${g - chStart[verseCh[g]] + 1}</sup>${verseHtml(g, true)}`);
+      kjv = parts.join(' ') + (o[6] > o[5] + 8 ? ' …' : '');
+    }
+    return `<li class="occ"><div class="occ-ref">${o[0] <= NB ? `<a href="index.html#${osisHash(o)}">${esc(refLabel(o))}</a>` : esc(refLabel(o))}${lxx ? '<small>Septuagint numbering</small>' : ''}</div>
+      <div class="occ-body"><p class="occ-orig ${langClass()}" lang="${langCode()}">${wordsHtml(o[7] ?? r[2], o[8] ?? r[5], occStrongs(r, o))}</p>${kjv ? `<p class="occ-kjv">${kjv}</p>` : ''}</div></li>`;
+  }).join('')}</ol>`;
+}
+$('#results').addEventListener('click', e => {
+  if (e.target.closest('[data-reset-all]')) { resetFilters(false); writeHash(); render(); return; }
+  const t = e.target.closest('[data-toggle]');
+  if (!t) return;
+  const i = +t.dataset.toggle;
+  if (ST.open.has(i)) ST.open.delete(i); else ST.open.add(i);
+  t.closest('.rep').outerHTML = repHtml(info().reps[i]);
+  drawArcs();
+});
+$('#more').addEventListener('click', () => { ST.shown += 50; renderList(); });
+
+// ---- arcs
+const cv = $('#arcs'), cx = cv.getContext('2d');
+let arcGeo = [];
+const axisRange = () => ST.corpus === 'ot' ? [0, bookCh0[39]] : ST.corpus === 'nt' ? [bookCh0[39], NC] : [0, NC];
+function drawArcs() {
+  const dpr = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight;
+  if (!W) return;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
+  const ink = cssVar('--ink'), faint = cssVar('--faint'), rule = cssVar('--rule'), muted = cssVar('--muted');
+  const [c0, c1] = axisRange(), padX = 16, base = H - 34, span = c1 - c0;
+  const xOfG = g => padX + ((verseCh[g] - c0) + (g - chStart[verseCh[g]] + 0.5) / chCount[verseCh[g]]) / span * (W - 2 * padX);
+  cx.fillStyle = rule; cx.fillRect(padX, base, W - 2 * padX, 1);
+  cx.font = '600 9.5px "Schibsted Grotesk", system-ui, sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  if ('letterSpacing' in cx) cx.letterSpacing = '1px';
+  for (let b = 0; b < NB; b++) {
+    if (bookCh0[b] < c0 || bookCh0[b] >= c1) continue;
+    const xs = padX + (bookCh0[b] - c0) / span * (W - 2 * padX), xe = padX + (bookCh0[b + 1] - c0) / span * (W - 2 * padX);
+    cx.fillStyle = rule; cx.fillRect(Math.round(xs), base + 1, 1, 5);
+    for (const label of [BOOKS[b].name.toUpperCase(), BOOKS[b].short.toUpperCase()]) {
+      if (cx.measureText(label).width <= xe - xs - 4) { cx.fillStyle = muted; cx.fillText(label, (xs + xe) / 2, base + 16); break; }
+    }
+  }
+  if ('letterSpacing' in cx) cx.letterSpacing = '0px';
+  const maxLen = info().maxLen;
+  arcGeo = [];
+  const hi = new Set(ST.hover >= 0 ? [ST.hover] : []);
+  ST.open.forEach(i => hi.add(i));
+  const draw = (x, strong) => {
+    const t = Math.sqrt((x.n - MINW) / Math.max(1, maxLen - MINW));
+    const pts = x.r[4].filter(o => o[5] >= 0 && o[0] <= NB).map(o => xOfG(o[5])).sort((a, b) => a - b);
+    for (let k = 0; k + 1 < pts.length; k++) {
+      const a = pts[k], b = pts[k + 1], rad = Math.max((b - a) / 2, 0.8), mid = (a + b) / 2;
+      const ry = rad * Math.min(1, (base - 16) / Math.max(rad, 1));
+      cx.beginPath(); cx.ellipse(mid, base, rad, ry, 0, Math.PI, 2 * Math.PI);
+      cx.strokeStyle = strong ? ink : ramp(t, 0.55); cx.lineWidth = strong ? 2 : 1.1; cx.stroke();
+      if (!strong) arcGeo.push({ i: x.i, mid, rad, ry });
+    }
+  };
+  for (const x of filtered) if (!hi.has(x.i)) draw(x, false);
+  for (const x of filtered) if (hi.has(x.i)) draw(x, true);
+  if (!filtered.length) { cx.fillStyle = faint; cx.font = 'italic 13px "Libre Baskerville", Georgia, serif'; cx.fillText('No phrases match these filters', W / 2, base / 2); }
+}
+function pickArc(x, y) {
+  const base = cv.clientHeight - 34;
+  let best = -1, bd = 5;
+  for (const a of arcGeo) {
+    if (y > base + 2 || x < a.mid - a.rad - 5 || x > a.mid + a.rad + 5) continue;
+    const dx = (x - a.mid) / a.rad, dy = (base - y) / a.ry;
+    const d = Math.abs(Math.sqrt(dx * dx + dy * dy) - 1) * Math.min(a.rad, a.ry);
+    if (d < bd) { bd = d; best = a.i; }
+  }
+  return best;
+}
+cv.addEventListener('pointermove', e => {
+  const r = cv.getBoundingClientRect(), i = pickArc(e.clientX - r.left, e.clientY - r.top);
+  if (i !== ST.hover) { ST.hover = i; drawArcs(); }
+  if (i >= 0) {
+    const x = info().reps[i];
+    atip.innerHTML = `<b>${x.n} words</b> · ${x.places} places<br>${esc(x.r[4].slice(0, 4).map(refLabel).join(' · '))}${x.places > 4 ? ' …' : ''}`;
+    atip.hidden = false;
+    atip.style.left = Math.min(e.clientX + 14, innerWidth - atip.offsetWidth - 8) + 'px';
+    atip.style.top = (e.clientY + 14) + 'px';
+    cv.style.cursor = 'pointer';
+  } else { atip.hidden = true; cv.style.cursor = 'crosshair'; }
+});
+cv.addEventListener('pointerleave', () => { atip.hidden = true; if (ST.hover >= 0) { ST.hover = -1; drawArcs(); } });
+cv.addEventListener('click', e => {
+  const r = cv.getBoundingClientRect(), i = pickArc(e.clientX - r.left, e.clientY - r.top);
+  if (i < 0) return;
+  ST.open.add(i);
+  const idx = filtered.findIndex(x => x.i === i);
+  if (idx >= ST.shown) ST.shown = idx + 1;
+  renderList(); drawArcs();
+  document.querySelector(`.rep[data-i="${i}"]`)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+});
+new ResizeObserver(() => { drawArcs(); renderChart(info()); }).observe($('#chartWrap'));
+
+// ------------------------------------------------------------ controls
+$$('input[name=corpus]').forEach(x => x.addEventListener('change', () => { ST.corpus = x.value; save(); resetFilters(true); render(); }));
+$$('input[name=mode]').forEach(x => x.addEventListener('change', () => { ST.mode = x.value; save(); resetFilters(true); render(); }));
+$$('input[name=count]').forEach(x => x.addEventListener('change', () => { ST.count = x.value; save(); renderChart(info()); }));
+$$('input[name=script]').forEach(x => x.addEventListener('change', () => { ST.script = x.value; save(); renderList(); }));
+$$('input[name=spread]').forEach(x => x.addEventListener('change', () => { if (x.checked) ST.spread.add(x.value); else ST.spread.delete(x.value); ST.shown = 50; render(); }));
+$$('input[name=xref]').forEach(x => x.addEventListener('change', () => { if (x.checked) ST.xref.add(x.value); else ST.xref.delete(x.value); ST.shown = 50; render(); }));
+$$('input[name=bookPlaces]').forEach(x => x.addEventListener('change', () => { ST.bookPlaces = x.value; ST.shown = 50; render(); }));
+bookFilter = window.RainbowBooks ? RainbowBooks.filter($('#booksFilter'), {
+  names: BOOKS.map(b => b.name), extras: [{ id: 'deutero', name: 'Deuterocanonical books (Septuagint only)' }],
+  onChange: () => { ST.shown = 50; render(); },
+}) : null;
+$('#sort').addEventListener('change', e => { ST.sort = e.target.value; ST.shown = 50; save(); render(); });
+for (const [id, key] of [['#lenMin', 'lenMin'], ['#lenMax', 'lenMax'], ['#plMin', 'plMin'], ['#plMax', 'plMax']]) {
+  $(id).addEventListener('change', e => {
+    ST[key] = parseInt(e.target.value, 10);
+    if (key === 'lenMin' && ST.lenMin > ST.lenMax) ST.lenMax = ST.lenMin;
+    if (key === 'lenMax' && ST.lenMax < ST.lenMin) ST.lenMin = ST.lenMax;
+    if (key === 'plMin' && ST.plMin > ST.plMax) ST.plMax = ST.plMin;
+    if (key === 'plMax' && ST.plMax < ST.plMin) ST.plMin = ST.plMax;
+    ST.shown = 50; render();
+  });
+}
+function writeHash() { try { history.replaceState(null, '', ST.q ? '#ref=' + encodeURIComponent(ST.q) : location.pathname + location.search); } catch (_) { /* sandboxed */ } }
+let qTimer = 0;
+$('#q').addEventListener('input', e => {
+  clearTimeout(qTimer);
+  qTimer = setTimeout(() => {
+    ST.q = e.target.value; ST.shown = 50;
+    const c = guessCorpus(ST.q);
+    if (c && ST.corpus !== 'gk' && c !== ST.corpus) { ST.corpus = c; resetFilters(true); }
+    writeHash(); render();
+  }, 200);
+});
+
+// theme (shared with the Rainbow)
+const themeRadios = $$('input[name=theme]');
+function applyTheme(pref) {
+  if (pref === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pref);
+  themeRadios.forEach(r => { r.checked = r.value === pref; });
+  drawArcs(); renderChart(info());
+}
+{
+  let saved = null;
+  try { saved = localStorage.getItem('reference-rainbow-theme'); } catch (_) { /* storage blocked */ }
+  if (saved === 'light' || saved === 'dark' || saved === 'system') { if (saved === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', saved); themeRadios.forEach(r => { r.checked = r.value === saved; }); }
+  else { const st = root.getAttribute('data-theme'); themeRadios.forEach(r => { r.checked = r.value === (st || 'system'); }); }
+}
+themeRadios.forEach(r => r.addEventListener('change', () => { applyTheme(r.value); try { localStorage.setItem('reference-rainbow-theme', r.value); } catch (_) { /* storage blocked */ } }));
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { drawArcs(); renderChart(info()); });
+
+// pop-ups with optional "Learn more" links that stay open while the pointer moves onto them
+const ctip = $('#ctip');
+let ctipTimer = 0, ctipHide = 0, ctipFor = null;
+const TIP_SEL = '[data-tip], .w';
+function wordTipHtml(el) {
+  const sid = el.dataset.s, e = sid ? LEX[sid] : null, greek = sid ? sid[0] === 'G' : ST.corpus !== 'ot';
+  const orig = `<span class="wt-o${greek ? ' gr' : ''}" lang="${greek ? 'grc' : 'hbo'}">${esc(el.dataset.o)}</span>`;
+  const tr = el.dataset.t ? `<span class="wt-t">${esc(el.dataset.t)}</span>` : '';
+  if (!sid) return `<div class="wt"><span class="wt-id">Septuagint word · no Strong's number in this text</span>${orig}${tr}</div>`;
+  const gloss = e ? (e[7] || e[4] || '').split(/[;,]/)[0] : '';
+  return `<div class="wt"><span class="wt-id">Strong's ${shortS(sid)}${e ? ' · ' + esc(e[2]) : ''}</span>${orig}${tr}
+    ${e ? `<span class="wt-g">${esc(e[0])}${e[1] ? ' · ' + esc(e[1]) : ''}${gloss ? ' — ' + esc(gloss) : ''}</span>` : ''}</div>
+    <button class="ctip-more" type="button" data-open-strongs="${sid}">Open Strong's definition ${ICON.right}</button>`;
+}
+function showCtip(el) {
+  clearTimeout(ctipHide);
+  const more = el.dataset.more;
+  const isWord = el.matches('.w');
+  ctip.innerHTML = isWord ? wordTipHtml(el)
+    : `<b>${esc(el.dataset.tipTitle || '')}</b><span>${esc(el.dataset.tip)}</span>` + (more ? `<a class="ctip-more" href="${esc(more)}">Learn more ${ICON.right}</a>` : '');
+  ctip.classList.toggle('has-link', isWord ? !!el.dataset.s : !!more);
+  ctip.hidden = false; ctip.classList.remove('show');
+  const r = el.getBoundingClientRect(), w = ctip.offsetWidth, h = ctip.offsetHeight;
+  let side = 'top', y = r.top - h - 10;
+  if (y < 8) { side = 'bottom'; y = r.bottom + 10; }
+  const x = clamp(r.left + r.width / 2 - w / 2, 8, innerWidth - w - 8);
+  ctip.dataset.side = side;
+  ctip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+  ctipFor = el; requestAnimationFrame(() => ctip.classList.add('show'));
+}
+function hideCtip() { clearTimeout(ctipTimer); clearTimeout(ctipHide); ctipFor = null; ctip.classList.remove('show'); ctip.hidden = true; }
+document.addEventListener('pointerover', e => {
+  if (e.pointerType === 'touch') return;
+  if (ctip.contains(e.target)) { clearTimeout(ctipHide); clearTimeout(ctipTimer); return; }
+  const el = e.target.closest(TIP_SEL);
+  if (el && el === ctipFor) { clearTimeout(ctipHide); return; }
+  clearTimeout(ctipTimer);
+  if (!el) { if (ctipFor) { clearTimeout(ctipHide); ctipHide = setTimeout(hideCtip, 250); } return; }
+  ctipTimer = setTimeout(() => showCtip(el), ctipFor ? 150 : 300);
+});
+document.addEventListener('focusin', e => { if (ctip.contains(e.target)) return; const el = e.target.closest(TIP_SEL); hideCtip(); if (el && e.target.matches(':focus-visible')) showCtip(el); });
+document.addEventListener('focusout', e => { if (!ctip.contains(e.relatedTarget)) hideCtip(); });
+document.addEventListener('pointerdown', e => { if (!ctip.contains(e.target)) hideCtip(); }, true);
+window.addEventListener('scroll', hideCtip, true);
+
+// linked underlining between original words and English words
+let hlOn = [];
+function clearHl() { hlOn.forEach(x => x.classList.remove('hl')); hlOn = []; }
+document.addEventListener('pointerover', e => {
+  if (ctip.contains(e.target)) return;
+  const w = e.target.closest('.w[data-s], .ew[data-s]');
+  clearHl();
+  if (!w) return;
+  const ids = w.dataset.s.split(' ');
+  const scope = w.closest('.occ') || w.closest('.rep');
+  if (!scope) return;
+  scope.querySelectorAll('.w[data-s], .ew[data-s]').forEach(x => {
+    if (x.dataset.s.split(' ').some(id => ids.includes(id))) { x.classList.add('hl'); hlOn.push(x); }
+  });
+});
+
+// Strong's side panel
+const drawer = $('#drawer');
+function openStrongs(sid, wordEl) {
+  const e = LEX[sid];
+  hideCtip();
+  $$('.w.on').forEach(w => w.classList.remove('on'));
+  if (wordEl) wordEl.classList.add('on');
+  const greek = sid[0] === 'G';
+  const scriptorium = location.protocol.startsWith('http') && location.pathname.startsWith('/rainbow/');
+  drawer.innerHTML = `<button class="btn close" type="button" data-close-drawer aria-label="Close">${ICON.x}</button>
+    <p class="eyebrow">Strong's ${shortS(sid)}${e ? ' · ' + esc(e[2]) : ''}</p>
+    ${e ? `<p class="dr-lemma${greek ? ' gr' : ''}" lang="${greek ? 'grc' : 'hbo'}">${esc(e[0])}</p>
+      <p class="dr-xlit">${esc(e[1] || '')}${e[6] ? ` · say “${esc(e[6])}”` : ''}</p>
+      ${wordEl ? `<p class="dr-note">In this phrase: <span lang="${greek ? 'grc' : 'hbo'}">${esc(wordEl.dataset.o)}</span>${wordEl.dataset.t ? ' (' + esc(wordEl.dataset.t) + ')' : ''}</p>` : ''}
+      ${e[7] ? `<div class="dr-sec"><p class="eyebrow">Short meaning</p><p>${esc(e[7])}</p></div>` : ''}
+      <div class="dr-sec"><p class="eyebrow">Strong's definition</p><p>${esc(e[3] || '—')}</p></div>
+      ${e[4] ? `<div class="dr-sec"><p class="eyebrow">How the King James Version translates it</p><p>${esc(e[4])}</p></div>` : ''}
+      ${e[5] ? `<div class="dr-sec"><p class="eyebrow">Origin</p><p>${esc(e[5])}</p></div>` : ''}
+      ${scriptorium ? `<a class="btn" href="../#strongs/${sid}" target="_blank" rel="noopener">Full entry in Scriptorium, with every verse ${ICON.right}</a>` : ''}
+      <p class="dr-note">Strong's dictionary: Open Scriptures edition (CC BY-SA). Short meaning: STEPBible lexicon (CC BY 4.0).</p>`
+    : `<p class="empty">${shortS(sid)} is not in Strong's dictionary.</p>`}`;
+  drawer.hidden = false;
+  drawer.focus({ preventScroll: true });
+}
+function closeDrawer() { drawer.hidden = true; $$('.w.on').forEach(w => w.classList.remove('on')); }
+drawer.addEventListener('click', e => { if (e.target.closest('[data-close-drawer]')) closeDrawer(); });
+ctip.addEventListener('click', e => {
+  const b = e.target.closest('[data-open-strongs]');
+  if (b) openStrongs(b.dataset.openStrongs, ctipFor && ctipFor.matches('.w') ? ctipFor : null);
+});
+document.addEventListener('click', e => {
+  const w = e.target.closest('.w[data-s], .ew[data-s]');
+  if (w && !ctip.contains(e.target)) openStrongs(w.dataset.s.split(' ')[0], w.matches('.w') ? w : null);
+});
+
+// help
+const help = $('#help');
+$('#helpBtn').addEventListener('click', () => { hideCtip(); help.showModal(); });
+help.addEventListener('click', e => { if (e.target === help) help.close(); });
+document.addEventListener('keydown', e => {
+  if (help.open) return;
+  if (e.key === 'Escape' && !drawer.hidden) { closeDrawer(); return; }
+  hideCtip();
+  const typing = e.target.matches('input, select');
+  if (e.key === '?' && !typing) { e.preventDefault(); help.showModal(); }
+  if (e.key === '/' && !typing) { e.preventDefault(); $('#q').focus(); }
+});
+
+// English translation under each place (shared with the Rainbow)
+function useTranslation(id) {
+  if (!TX) return;
+  TX.load(id).then(t => { verses = t.verses; RED = t.red; TR = t.info; $('#trSel').value = t.id; renderList(); })
+    .catch(err => { console.warn(err); if (id !== 'KJV') { TX.save('KJV'); useTranslation('KJV'); } });
+}
+if (TX) {
+  $('#trSel').innerHTML = TX.optionsHtml(TX.saved());
+  $('#trSel').addEventListener('change', e => { TX.save(e.target.value); useTranslation(e.target.value); });
+  if (TX.saved() !== 'KJV') useTranslation(TX.saved());
+} else $('#trSel').closest('label').hidden = true;
+
+// start: a passage from the Rainbow (#ref=Isaiah 53) or the saved text
+function readHash() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  const m = h.match(/(?:^|&)ref=([^&]+)/), c = h.match(/(?:^|&)text=(ot|nt|gk)/);
+  if (m) { ST.q = m[1]; $('#q').value = ST.q; ST.corpus = guessCorpus(ST.q) || ST.corpus; }
+  if (c) ST.corpus = c[1];
+}
+window.addEventListener('hashchange', () => { readHash(); resetFilters(true); render(); });
+if (!DATA.sets[setKey()]) { ST.corpus = 'ot'; ST.mode = 'exact'; }
+readHash();
+resetFilters(true);
+render();
+})();
+</script>
+<script src="scriptorium-link.js" charset="utf-8"></script>

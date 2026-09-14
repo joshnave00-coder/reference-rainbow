@@ -1,0 +1,38 @@
+name: Data correction
+description: Something in the text, authorship, dating, red letters or phrases looks wrong.
+labels: ["data"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: What kind of data?
+      options:
+        - Authorship, date or place of writing
+        - Words of God (dark red) — detected
+        - Words of Jesus (red)
+        - Hebrew / Aramaic / Greek word, gloss or Strong's number
+        - Repeated phrase (Echoes)
+        - Cross-reference or vote
+        - Translation text or licence
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Passage or book
+      placeholder: "e.g. Exodus 3:5, or Daniel"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is shown, and what should it be?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: For authorship, dates and places, cite an ancient text with a locator or a published work with page numbers.
+      placeholder: "e.g. Eusebius, Ecclesiastical History 3.39.15; or R. E. Brown, An Introduction to the New Testament (1997), p. 164"

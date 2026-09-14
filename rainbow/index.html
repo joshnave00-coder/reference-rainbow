@@ -1,0 +1,1487 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference Rainbow</title>
+<meta name="description" content="Every cross-reference in the Treasury of Scripture Knowledge drawn as an arc between the chapters it joins, after Chris Harrison and Christoph Römhild.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<style>
+:root{
+  --dark:0;
+  --ground:#FAFAF7; --panel:#FFFFFF; --ink:#1B1A21; --muted:#6D6A77; --faint:#A3A0AC; --rule:#E4E2E8;
+  --bar-a:#D9D7DF; --bar-b:#AFACB9; --bar-mark:#1B1A21;
+  --ribbon:#8C6A1C; --on-ribbon:#FFFFFF;
+  --red-jesus:#C8102E; --red-god:#6B1119;
+  --veil:rgba(250,250,247,.86); --control:#EDECF1; --control-on:#1B1A21; --on-control-on:#FAFAF7;
+  --shadow:rgba(27,20,40,.14);
+  --serif:"Libre Baskerville","Baskerville","Baskerville Old Face",Georgia,serif;
+  --sans:"Schibsted Grotesk","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --dark:1;
+    --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E;
+    --bar-a:#2C2A35; --bar-b:#4D4A5A; --bar-mark:#ECEAF2;
+    --ribbon:#D4AE63; --on-ribbon:#1A1408; --red-jesus:#FF6B6B; --red-god:#C9868B;
+    --veil:rgba(12,11,17,.82); --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11;
+    --shadow:rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --dark:1;
+  --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E;
+  --bar-a:#2C2A35; --bar-b:#4D4A5A; --bar-mark:#ECEAF2;
+  --ribbon:#D4AE63; --on-ribbon:#1A1408; --red-jesus:#FF6B6B; --red-god:#C9868B;
+  --veil:rgba(12,11,17,.82); --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11;
+  --shadow:rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ribbon);outline-offset:2px}
+
+.app{position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:minmax(0,1fr) auto;background:var(--ground)}
+
+/* ---------- stage ---------- */
+.stage{grid-column:1;grid-row:1;position:relative;overflow:hidden;cursor:crosshair;touch-action:none;user-select:none;-webkit-user-select:none}
+.stage.dragging{cursor:grabbing}
+.stage.on-arc{cursor:pointer}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+.eyebrow{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+
+.title-block{position:absolute;top:22px;left:26px;max-width:290px;display:flex;flex-direction:column;gap:8px;pointer-events:none;background:var(--veil);box-shadow:0 0 22px 16px var(--veil);border-radius:14px}
+.title-block h1{margin:0;font-family:var(--serif);font-weight:400;font-size:31px;line-height:1.05;letter-spacing:-.012em;text-wrap:balance}
+.title-block h1 em{font-style:italic}
+.dek{margin:0;font-family:var(--serif);font-size:12.5px;line-height:1.6;color:var(--muted)}
+.count{margin:2px 0 0;font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.count b{color:var(--ink);font-weight:600}
+.hint{margin:0;font-size:11.5px;color:var(--faint)}
+
+.key{position:absolute;top:20px;right:22px;width:268px;display:flex;flex-direction:column;gap:14px;background:var(--veil);box-shadow:0 0 22px 16px var(--veil);border-radius:14px}
+.search{position:relative;margin:0}
+.search input{width:100%;height:34px;padding:0 34px 0 11px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);font-size:13px}
+.search input::placeholder{color:var(--faint)}
+.search input:focus{outline:none;border-color:var(--ink)}
+.search kbd{position:absolute;right:8px;top:8px;font:500 11px/16px var(--sans);padding:0 5px;border:1px solid var(--rule);border-radius:3px;color:var(--faint)}
+.search-msg{margin:6px 0 0;font-size:12px;color:var(--ribbon)}
+.scale{display:flex;flex-direction:column;gap:5px}
+.scale-top{display:flex;justify-content:space-between;align-items:baseline}
+.scale canvas{position:static;width:100%;height:9px;border-radius:1px}
+.ticks{position:relative;height:15px;font-size:10.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ticks span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.ticks span:first-child{transform:none}
+.ticks span:last-child{transform:translateX(-100%)}
+.ticks span::before{content:"";position:absolute;left:50%;top:-5px;width:1px;height:4px;background:var(--faint)}
+.ticks span:first-child::before{left:0}
+.ticks span:last-child::before{left:auto;right:0}
+
+.loading{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-style:italic;color:var(--muted);pointer-events:none}
+
+.tip{position:absolute;left:0;top:0;z-index:4;width:max-content;max-width:310px;pointer-events:none;background:var(--panel);border:1px solid var(--rule);border-radius:4px;box-shadow:0 8px 28px var(--shadow);padding:9px 12px 10px;display:flex;flex-direction:column;gap:4px}
+.tip-refs{font-weight:600;font-size:13px;font-variant-numeric:tabular-nums;display:flex;gap:7px;align-items:center}
+.tip-refs i{font-style:normal;color:var(--faint);font-weight:400}
+.tip-meta{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tip-text{margin:2px 0 0;font-family:var(--serif);font-size:12px;line-height:1.55;color:var(--ink)}
+.tip-text + .tip-text{padding-top:5px;border-top:1px solid var(--rule)}
+.tip-text b{font-family:var(--sans);font-size:10.5px;font-weight:600;color:var(--ribbon);margin-right:4px}
+
+/* ---------- controls ---------- */
+.controls{grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:10px 26px;padding:10px 22px 12px;border-top:1px solid var(--rule);background:var(--ground)}
+.ctl{display:flex;align-items:center;gap:9px}
+.ctl-label{font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.opts{display:inline-flex;background:var(--control);border-radius:4px;padding:2px}
+.opts label{position:relative;display:block}
+.opts input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opts span{display:block;padding:3px 10px;border-radius:3px;font-size:12.5px;color:var(--muted)}
+.opts input:checked + span{background:var(--control-on);color:var(--on-control-on)}
+.opts input:focus-visible + span{outline:2px solid var(--ribbon);outline-offset:1px}
+.ctl input[type=range]{width:128px;accent-color:var(--ribbon);margin:0}
+.ctl output{font-size:12.5px;font-variant-numeric:tabular-nums;min-width:128px;color:var(--ink)}
+.linkish{background:none;border:0;padding:0;font-size:12.5px;color:var(--muted);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.linkish:hover{color:var(--ink)}
+.iconbtn{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--rule);border-radius:4px;background:transparent;font-size:15px;line-height:1;padding:0}
+.iconbtn.wide{width:auto;padding:0 9px;font-size:12.5px}
+.iconbtn:hover{border-color:var(--ink)}
+.credit{margin:0 0 0 auto;font-size:11px;color:var(--faint);max-width:330px;text-align:right;line-height:1.4}
+
+/* ---------- margin column ---------- */
+.margin{grid-column:2;grid-row:1 / 3;width:min(400px,36vw);background:var(--panel);border-left:1px solid var(--rule);overflow-y:auto;overscroll-behavior:contain;position:relative}
+.m-head{padding:24px 26px 18px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--rule)}
+.m-title{margin:0;font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.1;letter-spacing:-.01em;text-wrap:balance;padding-right:30px}
+.m-stats{margin:0;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.m-stats b{color:var(--ink);font-weight:600}
+.m-close{position:absolute;top:16px;right:16px}
+.m-nav{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.m-verse{margin:6px 0 2px;font-family:var(--serif);font-size:16.5px;line-height:1.65}
+.crumb{background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ribbon);text-decoration:underline;text-underline-offset:3px}
+.m-sec{padding:18px 26px 20px;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:10px}
+.m-sec:last-child{border-bottom:0}
+.m-sec h3{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
+.m-sec h3 span{letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+.hist{display:grid;grid-template-columns:repeat(66,minmax(0,1fr));gap:1px;align-items:end;height:58px}
+.hist div{background:var(--bar-b);min-height:1px}
+.hist div.nt{background:var(--faint)}
+.hist div.cur{background:var(--ribbon)}
+.hist-axis{position:relative;height:14px;font-size:10.5px;color:var(--muted)}
+.hist-axis span{position:absolute;top:0;white-space:nowrap}
+.empty{margin:0;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--muted)}
+
+.vb{display:flex;flex-direction:column;gap:7px;padding:12px 0;border-top:1px solid var(--rule)}
+.vb:first-of-type{border-top:0;padding-top:2px}
+.vb-head{display:block;text-align:left;background:none;border:0;padding:0;font-family:var(--serif);font-size:13.5px;line-height:1.62;color:var(--ink)}
+.vb-head:hover .vt{text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.vn{font-family:var(--sans);font-size:10.5px;font-weight:600;color:var(--ribbon);vertical-align:.45em;margin-right:4px;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 8px 2px 7px;border:1px solid var(--rule);border-radius:3px;background:transparent;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c,var(--faint));flex:none}
+.chip:hover{border-color:var(--ink)}
+.chip.more{color:var(--muted)}
+.chip.more::before{display:none}
+
+.xrefs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.xref{width:100%;display:flex;flex-direction:column;gap:3px;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:11px 0}
+.xrefs li:first-child .xref{border-top:0;padding-top:0}
+.x-top{display:flex;align-items:center;gap:8px;font-size:12.5px;font-variant-numeric:tabular-nums}
+.x-top b{font-weight:600}
+.x-dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.x-dir{color:var(--faint)}
+.x-votes{margin-left:auto;color:var(--muted);font-size:11.5px}
+.x-text{font-family:var(--serif);font-size:13px;line-height:1.6;color:var(--ink)}
+.xref:hover b{text-decoration:underline;text-underline-offset:3px}
+.legend-line{margin:0;font-size:11.5px;color:var(--muted)}
+
+.fail{position:absolute;inset:0;display:grid;place-items:center;padding:40px;text-align:center;font-family:var(--serif);color:var(--muted)}
+
+/* ---------- control tooltips ---------- */
+.ctip{position:fixed;left:0;top:0;z-index:50;width:max-content;max-width:280px;pointer-events:none;background:var(--ink);color:var(--ground);border-radius:4px;padding:8px 11px 9px;box-shadow:0 10px 30px var(--shadow);display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity .12s}
+.ctip.show{opacity:1}
+.ctip b{font-size:12.5px;font-weight:600}
+.ctip span{font-size:12px;line-height:1.45;opacity:.86}
+.ctip kbd{font:600 10.5px/1 var(--sans);padding:1px 4px;border:1px solid currentColor;border-radius:3px;opacity:.8}
+.ctip::after{content:"";position:absolute;left:var(--ax,50%);width:8px;height:8px;background:var(--ink);transform:translate(-50%,0) rotate(45deg)}
+.ctip[data-side="top"]::after{bottom:-4px}
+.ctip[data-side="bottom"]::after{top:-4px}
+.ctip.has-link{pointer-events:auto}
+.ctip.has-link::before{content:"";position:absolute;left:0;right:0;height:14px}
+.ctip.has-link[data-side="top"]::before{bottom:-14px}
+.ctip.has-link[data-side="bottom"]::before{top:-14px}
+.ctip-more{margin-top:5px;align-self:flex-start;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.ctip-more:hover{opacity:.8}
+
+/* ---------- help ---------- */
+.help-btn{font-weight:600}
+.tr-sel{height:28px;max-width:240px;padding:0 6px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);color:var(--ink);font-size:12.5px}
+.m-tr{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px}
+.tr-missing{font-style:italic;color:var(--faint)}
+.rl-j{color:var(--red-jesus)}
+.rl-g{color:var(--red-god)}
+.toggle{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink);cursor:pointer;user-select:none}
+.toggle input{margin:0;accent-color:var(--red-jesus);width:15px;height:15px}
+.rl-legend{margin:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--muted)}
+.rl-legend i{font-style:normal;font-weight:600}
+.echo-link{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-size:12.5px;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:1px}
+.echo-link:hover{border-bottom-color:var(--ink)}
+.ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.iconbtn .ico{width:14px;height:14px}
+.tip-refs i .ico,.x-dir .ico{width:12px;height:12px}
+dialog.help{width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink);box-shadow:0 30px 80px var(--shadow)}
+dialog.help::backdrop{background:rgba(12,11,17,.45)}
+.help-head{position:sticky;top:0;z-index:1;display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:22px 28px 16px;background:var(--panel);border-bottom:1px solid var(--rule)}
+.help-head h2{margin:0;font-family:var(--serif);font-weight:400;font-size:26px}
+.help-body{padding:8px 28px 28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 34px}
+.help-body section{display:flex;flex-direction:column;gap:8px;padding-top:18px}
+.help-body section.wide{grid-column:1 / -1}
+.help-body h3{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.help-body p{margin:0;font-family:var(--serif);font-size:13.5px;line-height:1.65}
+.help-body dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13px;line-height:1.45}
+.help-body dt{font-weight:600;white-space:nowrap}
+.help-body dd{margin:0;color:var(--muted)}
+.help-body kbd{font:600 11px/1 var(--sans);padding:2px 5px;border:1px solid var(--rule);border-radius:3px;background:var(--control);color:var(--ink)}
+.help-legend{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+.help-legend i{flex:1;height:8px;border-radius:1px;background:linear-gradient(90deg,#5B3FA8,#2F62D0,#1597B8,#2FA565,#C9B51C,#EB7A22,#D2323C)}
+@media (max-width:640px){.help-body{grid-template-columns:1fr}}
+
+/* ---------- written (authorship) ---------- */
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:10.5px;letter-spacing:.02em;text-transform:none;font-weight:600;border:1px solid currentColor}
+.pill.broad{color:var(--muted)}
+.pill.divided,.pill.open{color:var(--ribbon)}
+.views{display:flex;flex-direction:column;gap:12px}
+.view{display:flex;flex-direction:column;gap:5px;padding-left:12px;border-left:2px solid var(--rule)}
+.view.traditional,.view.consensus{border-left-color:var(--ink)}
+.view-k{margin:0;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.view-a{margin:0;font-family:var(--serif);font-size:13.5px;line-height:1.5}
+.view dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12px;line-height:1.45}
+.view dt{color:var(--faint)}
+.view dd{margin:0;color:var(--ink)}
+.view .cite{margin:0;font-size:11px;line-height:1.45;color:var(--muted)}
+.written-note{margin:0;font-size:11.5px;color:var(--muted)}
+details.written summary{cursor:pointer;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);list-style-position:outside}
+details.written[open] summary{margin-bottom:10px}
+
+@media (max-width: 900px){
+  .credit{display:none}
+}
+@media (max-width: 760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .title-block{top:14px;left:16px;right:16px;max-width:none}
+  .title-block h1{font-size:24px}
+  .dek,.hint{display:none}
+  .key{top:auto;bottom:14px;left:16px;right:16px;width:auto}
+  .scale{display:none}
+  .controls{gap:10px 16px;padding:10px 14px;max-height:52vh;overflow-y:auto}
+  .ctl-toggle{display:inline-grid!important}
+  .controls:not(.open) > :not(.ctl-toggle){display:none!important}
+  .ctl{flex-wrap:wrap}
+  .ctl output{min-width:0}
+  .margin{position:fixed;left:0;right:0;bottom:0;top:auto;height:58vh;width:auto;border-left:0;border-top:1px solid var(--rule);border-radius:12px 12px 0 0;box-shadow:0 -10px 40px var(--shadow);z-index:10}
+}
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important} }
+</style>
+
+<div class="app" id="app">
+  <main class="stage" id="stage" aria-label="Arc diagram of Bible cross-references">
+    <canvas id="gl"></canvas>
+    <canvas id="ov"></canvas>
+
+    <div class="title-block">
+      <p class="eyebrow">After Chris Harrison &amp; Christoph Römhild, 2008</p>
+      <h1>Reference <em>Rainbow</em></h1>
+      <p class="dek">Every cross-reference in the Treasury of Scripture Knowledge, drawn as an arc between the two verses it joins. The bars beneath are the 1,189 chapters, Genesis to Revelation, each as long as its verse count.</p>
+      <p class="count"><b id="shown">60,635</b> of <span id="total">344,756</span> cross-references</p>
+      <p class="hint">Click a chapter bar or an arc. Scroll to zoom, drag to pan. Press <b>?</b> for help.</p>
+    </div>
+
+    <div class="key">
+      <form class="search" id="searchForm" autocomplete="off">
+        <input id="q" type="search" placeholder="Go to a passage, e.g. Isaiah 53" aria-label="Go to a passage" spellcheck="false"
+          data-tip-title="Go to a passage" data-tip="Type a book, chapter or verse — Isaiah 53, Ps 23, John 3:16 — and press Enter. A book name alone zooms to that book." data-kbd="/">
+        <kbd aria-hidden="true">/</kbd>
+        <p class="search-msg" id="searchMsg" hidden></p>
+      </form>
+      <a class="echo-link" href="echoes.html" id="echoLink" data-tip-title="Echoes" data-more="guide.html#echoes" data-tip="A companion page: every run of 7 or more words repeated elsewhere in the original Hebrew, Aramaic or Greek — quotations, refrains and parallel passages.">Echoes: repeated phrases <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5 12.5 8 9 11.5"/></svg></a>
+      <a class="echo-link" href="read.html" data-tip-title="Read" data-more="guide.html#reader" data-tip="A simple Bible reader in 29 translations. Click any verse to study its Hebrew or Greek words, their meanings and cross-references.">Read the Bible <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5 12.5 8 9 11.5"/></svg></a>
+      <a class="echo-link" data-scriptorium data-tip-title="Scriptorium" data-more="guide.html#scriptorium" data-tip="The full database reading room: 152 texts, a Strong's concordance and more. It must be running first: double-click Start Scriptorium in the project folder, then use this link.">Scriptorium <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
+      <div class="scale" data-tip-title="Color key" data-more="guide.html#colors" data-tip="What the arc colors mean for the current Color setting. Ticks mark real values on the scale.">
+        <div class="scale-top"><span class="eyebrow" id="scaleCap">Chapters apart</span></div>
+        <canvas id="keyc" width="536" height="18"></canvas>
+        <div class="ticks" id="ticks"></div>
+      </div>
+    </div>
+
+    <div class="loading" id="loading">Setting the arcs…</div>
+    <div class="tip" id="tip" hidden></div>
+  </main>
+
+  <footer class="controls" id="controls">
+    <button class="iconbtn wide ctl-toggle" id="ctlToggle" type="button" aria-expanded="false" aria-controls="controls" style="display:none">Controls</button>
+    <label class="ctl" data-tip-title="Translation" data-more="guide.html#translations" data-tip="Which English Bible the verse text in the panels and pop-ups is shown in: 29 freely licensed translations, from the KJV and Geneva Bible to the BSB, WEB and LSV. Remembered on this device.">
+      <span class="ctl-label">Translation</span>
+      <select class="tr-sel" id="trSel" aria-label="Bible translation"><option value="KJV">King James Version</option></select>
+    </label>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblColor">
+      <span class="ctl-label" id="lblColor" data-tip-title="Color" data-more="guide.html#colors" data-tip="Choose what an arc's color measures. Violet is the low end of the scale, red the high end.">Color</span>
+      <span class="opts">
+        <label data-tip-title="Color by distance" data-more="guide.html#colors" data-tip="How many chapters apart the two ends of the arc are: violet for neighbours, red for Genesis-to-Revelation leaps. This is Harrison's original scheme."><input type="radio" name="color" value="0" checked><span>Distance</span></label>
+        <label data-tip-title="Color by book" data-more="guide.html#colors" data-tip="The book the reference is listed under, from Genesis (violet) to Revelation (red). Shows where each book's references travel."><input type="radio" name="color" value="1"><span>Book</span></label>
+        <label data-tip-title="Color by years apart" data-more="guide.html#dating" data-tip="How many years apart the two books were written, using the dating chosen under Dating. Each book is placed at the middle of its date range."><input type="radio" name="color" value="2"><span>Years</span></label>
+      </span>
+    </div>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblDating" id="datingCtl" hidden>
+      <span class="ctl-label" id="lblDating" data-tip-title="Dating" data-more="guide.html#dating" data-tip="Which scholarly tradition supplies each book's date. Open a chapter to see the views, who holds them, and their sources.">Dating</span>
+      <span class="opts">
+        <label data-tip-title="Traditional dating" data-more="guide.html#dating" data-tip="Dates from ancient Jewish and Christian tradition, kept by many conservative scholars — e.g. Genesis by Moses, c. 1446–1406 BC."><input type="radio" name="dating" value="0" checked><span>Traditional</span></label>
+        <label data-tip-title="Critical dating" data-more="guide.html#dating" data-tip="Dates from mainstream critical scholarship — e.g. Genesis compiled from sources, final form c. 5th century BC; Daniel c. 167–164 BC."><input type="radio" name="dating" value="1"><span>Critical</span></label>
+      </span>
+    </div>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblAxis">
+      <span class="ctl-label" id="lblAxis" data-tip-title="Axis" data-more="guide.html#axis" data-tip="How the baseline is divided between chapters.">Axis</span>
+      <span class="opts">
+        <label data-tip-title="Equal chapters" data-more="guide.html#axis" data-tip="Every chapter gets the same width, as in the original poster."><input type="radio" name="axis" value="0" checked><span>Chapters</span></label>
+        <label data-tip-title="Equal verses" data-more="guide.html#axis" data-tip="Every verse gets the same width, so long chapters like Psalm 119 take more room and short ones shrink."><input type="radio" name="axis" value="1"><span>Verses</span></label>
+      </span>
+    </div>
+    <div class="ctl" id="booksCtl">
+      <span class="ctl-label" data-tip-title="Books" data-more="guide.html#books" data-tip="Show only cross-references touching the books you tick: whole testaments, categories such as Gospels or Minor Prophets, or single books. Tick as many as you like.">Books</span>
+      <span id="booksFilter"></span>
+      <span class="opts" role="radiogroup" aria-label="Which arcs to show" data-tip-title="Which arcs" data-more="guide.html#books" data-tip="Either end: arcs with at least one end in the chosen books. Both ends: only arcs that join two chosen books.">
+        <label><input type="radio" name="bookEnds" value="either" checked><span>Either end</span></label>
+        <label><input type="radio" name="bookEnds" value="both"><span>Both ends</span></label>
+      </span>
+    </div>
+    <div class="ctl">
+      <label class="ctl-label" for="rel" data-tip-title="Relevance" data-more="guide.html#votes" data-tip="Hide references with low vote scores. Each score comes with the OpenBible.info data: starting scores from its topical and citation data, then readers' up and down votes. Slide right to keep only higher-scoring links.">Relevance</label>
+      <input id="rel" type="range" min="0" max="19" step="1" value="8" data-tip-title="Relevance" data-more="guide.html#votes" data-tip="Each notch is a minimum vote score (1, 2 … 10, 12, 15 … 100). The count at top left updates as you slide. Scores reflect reader popularity, not scholarly authority.">
+      <output id="relOut" for="rel">8+ votes</output>
+      <button class="linkish" id="harrison" type="button" data-tip-title="Match the original" data-more="guide.html#votes-slider" data-tip="Set relevance so about as many arcs remain as the 63,779 in Harrison & Römhild's 2008 image.">Match Harrison’s 63,779</button>
+    </div>
+    <div class="ctl">
+      <label class="ctl-label" for="ink" data-tip-title="Ink" data-more="guide.html#axis" data-tip="How strongly overlapping arcs build up — darker on a light page, brighter on a dark page. Lower it to see structure in dense areas.">Ink</label>
+      <input id="ink" type="range" min="0" max="100" step="1" value="45" data-tip-title="Ink" data-more="guide.html#axis" data-tip="Left for fainter arcs, right for heavier ones.">
+    </div>
+    <div class="ctl">
+      <button class="iconbtn" id="zout" type="button" aria-label="Zoom out" data-tip-title="Zoom out" data-tip="Zoom out around the centre. You can also scroll over the diagram." data-kbd="-"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg></button>
+      <button class="iconbtn" id="zin" type="button" aria-label="Zoom in" data-tip-title="Zoom in" data-tip="Zoom in around the centre. Scroll over the diagram to zoom where you point; drag to pan." data-kbd="+"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9M8 3.5v9"/></svg></button>
+      <button class="iconbtn wide" id="zfit" type="button" data-tip-title="Fit" data-tip="Show the whole Bible again." data-kbd="0">Fit</button>
+    </div>
+    <label class="toggle ctl" data-tip-title="Red letters" data-more="guide.html#red-letters" data-tip="Words of Jesus in red, as marked in red-letter editions. Words spoken by God in dark red — found automatically from quotations and phrases like “Thus says the LORD”, so expect some misses."><input type="checkbox" id="redToggle" checked><span>Red letters</span></label>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblTheme">
+      <span class="ctl-label" id="lblTheme" data-tip-title="Theme" data-tip="Light or dark page. Your choice is remembered on this device.">Theme</span>
+      <span class="opts">
+        <label data-tip-title="Light" data-tip="White page; arcs build up like ink, as in Harrison's print."><input type="radio" name="theme" value="light"><span>Light</span></label>
+        <label data-tip-title="Dark" data-tip="Dark page; overlapping arcs glow and brighten."><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+        <label data-tip-title="System" data-tip="Follow your device's light or dark setting."><input type="radio" name="theme" value="system" checked><span>System</span></label>
+      </span>
+    </div>
+    <button class="iconbtn wide help-btn" id="helpBtn" type="button" data-tip-title="Help" data-more="guide.html" data-tip="How to read the diagram and use every control." data-kbd="?">? Help</button>
+  </footer>
+
+  <aside class="margin" id="margin" hidden aria-live="polite"></aside>
+</div>
+
+<div class="ctip" id="ctip" role="tooltip" hidden></div>
+
+<dialog class="help" id="help" aria-labelledby="helpTitle">
+  <div class="help-head">
+    <h2 id="helpTitle">How to use Reference Rainbow</h2>
+    <a class="iconbtn wide" href="guide.html" style="text-decoration:none;margin-left:auto;margin-right:10px">Full guide</a>
+    <form method="dialog"><button class="iconbtn" aria-label="Close help"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></form>
+  </div>
+  <div class="help-body">
+    <section class="wide">
+      <h3>What you're looking at</h3>
+      <p>Every arc is one cross-reference: a place where a study Bible says “compare this verse with that one.” There are 344,756 of them, from the Treasury of Scripture Knowledge via OpenBible.info. The grey bars along the bottom are the 1,189 chapters of the Bible from Genesis (left) to Revelation (right); each bar is as long as its chapter has verses. The taller an arc, the farther apart the two passages it joins.</p>
+      <div class="help-legend"><span>near / early</span><i></i><span>far / late</span></div>
+    </section>
+    <section>
+      <h3>Exploring</h3>
+      <dl>
+        <dt>Hover a bar</dt><dd>Preview that chapter's arcs.</dd>
+        <dt>Click a bar</dt><dd>Open the chapter: who wrote the book and when, where its links land, and every linked verse.</dd>
+        <dt>Hover an arc</dt><dd>See both verses and how far apart they are.</dd>
+        <dt>Click an arc</dt><dd>Open the verse it starts from, with all its linked passages and their text.</dd>
+        <dt>Scroll · drag</dt><dd>Zoom where you point; drag to pan. Chapter numbers appear when there is room.</dd>
+        <dt>Search</dt><dd>Type <em>Isaiah 53</em>, <em>Ps 23</em> or <em>John 3:16</em> and press Enter.</dd>
+        <dt>Echoes</dt><dd>Open <a href="echoes.html">Echoes</a> to see phrases of 7+ words repeated in the original languages.</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>Controls</h3>
+      <dl>
+        <dt>Color</dt><dd><b>Distance</b>: chapters apart (Harrison's scheme). <b>Book</b>: which book lists the reference. <b>Years</b>: how many years apart the two books were written.</dd>
+        <dt>Dating</dt><dd>Shown with Years. <b>Traditional</b> uses ancient Jewish and Christian attributions; <b>Critical</b> uses mainstream critical scholarship.</dd>
+        <dt>Axis</dt><dd>Give each chapter, or each verse, the same width.</dd>
+        <dt>Books</dt><dd>Tick testaments, categories (Law, Gospels, Paul's Letters…) or single books to show only their cross-references. <b>Either end</b> or <b>Both ends</b> decides whether one or both ends of an arc must be in them.</dd>
+        <dt>Relevance</dt><dd>Hide references with few reader votes. “Match Harrison's 63,779” sets it near the original's arc count, which is also where it starts.</dd>
+        <dt>Ink</dt><dd>How strongly overlapping arcs build up.</dd>
+        <dt>Translation</dt><dd>The English Bible used for verse text: choose it in the controls or at the top of any chapter panel. <a href="guide.html#translations">Which translations, and why not the NIV or NKJV</a>.</dd>
+        <dt>Red letters</dt><dd><span class="rl-j">Red</span>: words of Jesus, as marked in red-letter editions. <span class="rl-g">Dark red</span>: words of God, detected automatically from quotations — a best effort, not an editorial marking.</dd>
+        <dt>Theme</dt><dd>Light, dark, or follow your device.</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>Relevance votes</h3>
+      <p>Every cross-reference carries a vote score from OpenBible.info: a starting score from its topical and citation data, then readers' up and down votes. The slider keeps only references at or above the score you choose. Scores show popularity with readers, not scholarly weight, and famous verses collect the most. <a href="guide.html#votes">How votes work, with the numbers</a>.</p>
+    </section>
+    <section>
+      <h3>Keyboard</h3>
+      <dl>
+        <dt><kbd>/</kbd></dt><dd>Search</dd>
+        <dt><kbd><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8h-10M7 4.5 3.5 8 7 11.5"/></svg></kbd> <kbd><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5 12.5 8 9 11.5"/></svg></kbd></dt><dd>Previous / next chapter (when one is open)</dd>
+        <dt><kbd>+</kbd> <kbd>-</kbd> <kbd>0</kbd></dt><dd>Zoom in, out, fit</dd>
+        <dt><kbd>Esc</kbd></dt><dd>Close the open chapter or verse</dd>
+        <dt><kbd>?</kbd></dt><dd>This help</dd>
+      </dl>
+    </section>
+    <section>
+      <h3>About the dates</h3>
+      <p>When and by whom each book was written is often debated. Each book lists a traditional view and a critical view (and notable alternatives), with who holds them and the ancient or modern works they come from. For coloring, a book is placed at the midpoint of its date range, so the years are approximate by design.</p>
+    </section>
+    <section class="wide">
+      <h3>Data &amp; credits</h3>
+      <p>Cross-references: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY 4.0), drawn mainly from the public-domain Treasury of Scripture Knowledge. Verse text: King James Version by default; other translations are listed with their licences in the <a href="guide.html#translations">guide</a>. Authorship and dating summaries compiled from the works cited in each chapter panel. Design after Chris Harrison and Christoph Römhild's <em>Bible Cross-References</em> (2008); this is an independent remake from open data, not their image. Details on every control and data source are in the <a href="guide.html">guide</a>.</p>
+    </section>
+  </div>
+</dialog>
+
+<script src="data.js" charset="utf-8"></script>
+<script src="texts/manifest.js" charset="utf-8"></script>
+<script src="translations.js" charset="utf-8"></script>
+<script src="bookfilter.js" charset="utf-8"></script>
+<script>
+(async function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const fmt = n => n.toLocaleString('en-US');
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const root = document.documentElement;
+const stage = $('#stage'), glc = $('#gl'), ovc = $('#ov'), tip = $('#tip'), panel = $('#margin');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function fail(msg) {
+  $('#loading').remove();
+  const d = document.createElement('div'); d.className = 'fail'; d.textContent = msg; stage.appendChild(d);
+}
+const D = window.RAINBOW_DATA;
+if (!D) return fail('The cross-reference data (data.js) did not load. Keep data.js in the same folder as this page.');
+if (typeof DecompressionStream === 'undefined') return fail('This browser cannot unpack the data. Open the page in a current version of Chrome, Edge, Firefox or Safari.');
+
+// ---------------------------------------------------------------- data
+function b64bytes(s) { const bin = atob(s), n = bin.length, u = new Uint8Array(n); for (let i = 0; i < n; i++) u[i] = bin.charCodeAt(i); return u; }
+function inflate(s) { return new Response(new Blob([b64bytes(s)]).stream().pipeThrough(new DecompressionStream('gzip'))); }
+
+const BOOKS = D.books;
+const NB = BOOKS.length;
+const chBook = [], chNum = [], chCount = [], chStart = [], bookCh0 = [];
+{
+  let g = 0;
+  BOOKS.forEach((b, bi) => {
+    b.short = b.osis.replace(/^(\d)/, '$1 ');
+    b.key = b.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    bookCh0[bi] = chBook.length;
+    b.chapters.forEach((n, ci) => { chBook.push(bi); chNum.push(ci + 1); chCount.push(n); chStart.push(g); g += n; });
+  });
+  bookCh0[NB] = chBook.length; chStart.push(g);
+}
+const NC = chBook.length, NV = chStart[NC];
+const verseCh = new Uint16Array(NV);
+for (let c = 0; c < NC; c++) verseCh.fill(c, chStart[c], chStart[c + 1]);
+$('#total').textContent = fmt(D.count);
+
+const [fdB, tdB, spB, vtB] = await Promise.all([D.fromDelta, D.toDiff, D.span, D.votes].map(s => inflate(s).arrayBuffer()));
+const N = D.count;
+const fromD = new Uint16Array(fdB), toD = new Int16Array(tdB), aSpan = new Uint16Array(spB), aVotes = new Int16Array(vtB);
+const aFrom = new Uint16Array(N), aTo = new Uint16Array(N);
+for (let i = 0, f = 0; i < N; i++) { f += fromD[i]; aFrom[i] = f; aTo[i] = f + toD[i]; }
+// verse text + red letters for the chosen translation (KJV is in data.js; others load from texts/ via translations.js)
+let verses = null, TR = null, kjvRed = new Map();
+let RED = new Map();  // verse index -> [[start, end, kind]]  kind 1 = Jesus, 2/3 = God (quotation / dialogue heuristic)
+const TX = window.RainbowTexts;
+if (!TX) inflate(D.text).text().then(t => { verses = t.split('\n'); if (sel) renderPanel(); });
+if (!TX && D.red && D.red.count) {
+  Promise.all([D.red.gid, D.red.start, D.red.end, D.red.kind].map(x => inflate(x).arrayBuffer())).then(([g, a, z, k]) => {
+    const G = new Uint16Array(g), A = new Uint16Array(a), Z = new Uint16Array(z), K = new Uint8Array(k);
+    for (let i = 0; i < G.length; i++) { if (!RED.has(G[i])) RED.set(G[i], []); RED.get(G[i]).push([A[i], Z[i], K[i]]); }
+    if (sel) renderPanel();
+  });
+}
+
+const uCh = gf => { const c = verseCh[Math.min(NV - 1, gf | 0)]; return (c + (gf - chStart[c] + 0.5) / chCount[c]) / NC; };
+const uVs = gf => (gf + 0.5) / NV;
+const tDistOf = i => Math.sqrt(Math.abs(verseCh[aTo[i]] - verseCh[aFrom[i]]) / (NC - 1));
+const tBookOf = i => chBook[verseCh[aFrom[i]]] / (NB - 1);
+
+// composition years per book (midpoint of each dating tradition's range)
+const ORIG = D.origins || [], SRC = D.sources || {};
+const hasYears = ORIG.length === NB;
+const YEARS = ['trad', 'crit'].map(k => {
+  const ys = hasYears ? ORIG.map(o => o[k]) : new Array(NB).fill(0);
+  return { ys, span: Math.max(1, Math.max(...ys) - Math.min(...ys)) };
+});
+const yearsApart = (i, d) => Math.abs(YEARS[d].ys[chBook[verseCh[aTo[i]]]] - YEARS[d].ys[chBook[verseCh[aFrom[i]]]]);
+const tYearOf = (i, d) => Math.sqrt(yearsApart(i, d) / YEARS[d].span);
+
+// instance buffer, grouped by arc length so each group gets a fitting segment count
+// layout per arc: uA,uB (chapter axis), uA,uB (verse axis), tDistance, tBook, votes, -, tYears traditional, tYears critical
+const STRIDE = 10;
+const BOUNDS = [0.002, 0.008, 0.03, 0.1, 0.3, 2];
+const NG = BOUNDS.length;
+const inst = new Float32Array(N * STRIDE), instArc = new Uint32Array(N), instPos = new Uint32Array(N);
+const gStart = new Uint32Array(NG), gCount = new Uint32Array(NG), gDmax = new Float32Array(NG);
+{
+  const tmp = new Float32Array(N * 4), gi = new Uint8Array(N);
+  for (let i = 0; i < N; i++) {
+    const mid = aTo[i] + aSpan[i] / 2;
+    const a = uCh(aFrom[i]), b = uCh(mid), c = uVs(aFrom[i]), d = uVs(mid);
+    tmp.set([a, b, c, d], i * 4);
+    const dist = Math.max(Math.abs(b - a), Math.abs(d - c));
+    let g = 0; while (dist > BOUNDS[g]) g++;
+    gi[i] = g; gCount[g]++; if (dist > gDmax[g]) gDmax[g] = dist;
+  }
+  for (let g = 1; g < NG; g++) gStart[g] = gStart[g - 1] + gCount[g - 1];
+  const ptr = gStart.slice();
+  for (let i = 0; i < N; i++) {
+    const p = ptr[gi[i]]++, o = p * STRIDE;
+    instArc[p] = i; instPos[i] = p;
+    inst[o] = tmp[i * 4]; inst[o + 1] = tmp[i * 4 + 1]; inst[o + 2] = tmp[i * 4 + 2]; inst[o + 3] = tmp[i * 4 + 3];
+    inst[o + 4] = tDistOf(i); inst[o + 5] = tBookOf(i); inst[o + 6] = aVotes[i];
+    inst[o + 7] = chBook[verseCh[aFrom[i]]] * 66 + chBook[verseCh[aTo[i]]];  // from-book and to-book, for the Books filter
+    inst[o + 8] = tYearOf(i, 0); inst[o + 9] = tYearOf(i, 1);
+  }
+}
+
+// arcs touching each chapter
+const chOff = new Uint32Array(NC + 1);
+for (let i = 0; i < N; i++) { const a = verseCh[aFrom[i]], b = verseCh[aTo[i]]; chOff[a + 1]++; if (b !== a) chOff[b + 1]++; }
+for (let c = 0; c < NC; c++) chOff[c + 1] += chOff[c];
+const chArcs = new Uint32Array(chOff[NC]);
+{
+  const ptr = chOff.slice(0, NC);
+  for (let i = 0; i < N; i++) { const a = verseCh[aFrom[i]], b = verseCh[aTo[i]]; chArcs[ptr[a]++] = i; if (b !== a) chArcs[ptr[b]++] = i; }
+}
+const sortedVotes = Int16Array.from(aVotes).sort();
+function countAtLeast(t) { let lo = 0, hi = N; while (lo < hi) { const m = (lo + hi) >> 1; if (sortedVotes[m] < t) lo = m + 1; else hi = m; } return N - lo; }
+
+// ---------------------------------------------------------------- color ramp (violet = near, red = far, like a rainbow's outer band)
+const RAMP_HEX = ['#5B3FA8', '#2F62D0', '#1597B8', '#2FA565', '#C9B51C', '#EB7A22', '#D2323C'];
+const RAMP = RAMP_HEX.map(h => [1, 3, 5].map(k => parseInt(h.substr(k, 2), 16) / 255));
+function ramp(t) {
+  t = clamp(t, 0, 1) * 6; const i = Math.min(5, Math.floor(t)); let f = t - i; f = f * f * (3 - 2 * f);
+  return RAMP[i].map((v, k) => v + (RAMP[i + 1][k] - v) * f);
+}
+const rampCss = (t, gain = 1) => 'rgb(' + ramp(t).map(v => Math.round(clamp(v * gain, 0, 1) * 255)).join(',') + ')';
+
+// ---------------------------------------------------------------- state
+const REL_STOPS = [-1e9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 40, 50, 75, 100];
+const S = {
+  colorMode: 0, dating: 0, redLetters: true, tr: 'KJV', bothEnds: false, axis: 0, axisMix: 0, relIdx: 8, minVotes: 8, ink: 0.45, grow: reduceMotion ? 1 : 0,
+};
+// Books filter: BOOKSEL[book] = 1 when ticked; an arc shows when either end (or both ends) is in a ticked book
+const BOOKSEL = new Float32Array(66).fill(1);
+const bookFilterActive = () => BOOKSEL.some(v => !v);
+const bookPassCode = c => { const a = BOOKSEL[Math.floor(c / 66)], b = BOOKSEL[c % 66]; return S.bothEnds ? (a && b) : (a || b); };
+const arcVisible = i => aVotes[i] >= S.minVotes && bookPassCode(chBook[verseCh[aFrom[i]]] * 66 + chBook[verseCh[aTo[i]]]);
+function visibleCount() {
+  if (!bookFilterActive()) return S.relIdx === 0 ? N : countAtLeast(S.minVotes);
+  let n = 0;
+  for (let i = 0; i < N; i++) if (arcVisible(i)) n++;
+  return n;
+}
+const shaderColorMode = () => S.colorMode === 2 ? 2 + S.dating : S.colorMode;
+const colorT = (i, mode = shaderColorMode()) => inst[instPos[i] * STRIDE + [4, 5, 8, 9][mode]];
+let sel = null;          // {kind:'chapter', ch} | {kind:'verse', g}
+let hoverCh = -1, hoverArc = -1;
+const view = { z: 1, uc: 0.5 };
+const L = { SW: 0, SH: 0, y0: 0, W: 0, barMax: 0, k: 1, ox: 0, dpr: 1 };
+let tok = {};
+const isDark = () => tok.dark;
+
+function readTokens() {
+  const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
+  const hex = h => { const m = h.match(/^#([0-9a-f]{6})$/i); return m ? [0, 2, 4].map(k => parseInt(m[1].substr(k, 2), 16) / 255) : [1, 1, 1]; };
+  tok = {
+    dark: v('--dark') === '1', ground: hex(v('--ground')), ink: v('--ink'), muted: v('--muted'), faint: v('--faint'),
+    rule: v('--rule'), barA: v('--bar-a'), barB: v('--bar-b'), barMark: v('--bar-mark'), ribbon: v('--ribbon'), panel: v('--panel'),
+  };
+}
+readTokens();
+
+// ---------------------------------------------------------------- WebGL
+const gl = glc.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, depth: false, stencil: false });
+if (!gl) return fail('This page draws with WebGL 2, which is turned off or unavailable in this browser.');
+let floatOK = !!gl.getExtension('EXT_color_buffer_float');
+
+const RAMP_GLSL = 'const vec3 RC[7] = vec3[7](' + RAMP.map(c => 'vec3(' + c.map(x => x.toFixed(4)).join(',') + ')').join(',') + ');' +
+  'vec3 ramp(float t){ t = clamp(t,0.0,1.0)*6.0; int i = int(min(floor(t),5.0)); float f = t-float(i); f = f*f*(3.0-2.0*f); return mix(RC[i], RC[i+1], f); }';
+
+const ARC_VS = `#version 300 es
+precision highp float;
+layout(location=0) in vec3 aTpl;   // s within half, side (-1/+1), half (0 left / 1 right)
+layout(location=1) in vec4 aU;     // chapter-axis a,b ; verse-axis a,b
+layout(location=2) in vec4 aM;     // tDist, tBook, votes, fromBook*66 + toBook
+layout(location=3) in vec2 aY;     // tYears traditional, tYears critical
+uniform vec2 uRes;
+uniform float uK, uOx, uY0, uAxis, uColorMode, uMinVotes, uHalfW, uGrow, uBothEnds;
+uniform float uBooks[66];
+out vec3 vColor; out float vEdge;
+${RAMP_GLSL}
+const float PI = 3.14159265;
+void main(){
+  float xa = uOx + uK * mix(aU.x, aU.z, uAxis);
+  float xb = uOx + uK * mix(aU.y, aU.w, uAxis);
+  float lo = min(xa, xb), hi = max(xa, xb);
+  float m = 4.0 + uHalfW;
+  vColor = ramp(uColorMode < 0.5 ? aM.x : uColorMode < 1.5 ? aM.y : uColorMode < 2.5 ? aY.x : aY.y);
+  vEdge = 99.0;
+  int fb = int(floor(aM.w / 66.0 + 0.001)), tb = int(aM.w + 0.5) - fb * 66;
+  float bookOk = uBothEnds > 0.5 ? min(uBooks[fb], uBooks[tb]) : max(uBooks[fb], uBooks[tb]);
+  if (aM.z < uMinVotes || bookOk < 0.5 || hi < -m || lo > uRes.x + m) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); return; }
+  float cx = 0.5 * (lo + hi), r = max(0.5 * (hi - lo), 1e-3);
+  // only spend segments on the part of the semicircle that is on screen
+  float t0 = acos(clamp((cx + m) / r, -1.0, 1.0));
+  float t1 = acos(clamp((cx - uRes.x - m) / r, -1.0, 1.0));
+  float ta = asin(clamp((uY0 + m) / (r * max(uGrow, 1e-4)), 0.0, 1.0));
+  float l0, l1;
+  if (aTpl.z < 0.5) { l0 = t0; l1 = min(min(t1, ta), 0.5 * PI); }
+  else { l0 = max(max(t0, PI - ta), 0.5 * PI); l1 = t1; }
+  float off = aTpl.y * (uHalfW + 1.0);
+  if (l1 < l0) { l1 = l0; off = 0.0; }
+  float th = mix(l0, l1, aTpl.x);
+  float rr = max(r + off, 0.0);
+  vec2 p = vec2(cx - cos(th) * rr, uY0 - sin(th) * rr * uGrow);
+  vEdge = off;
+  gl_Position = vec4(p.x / uRes.x * 2.0 - 1.0, 1.0 - p.y / uRes.y * 2.0, 0.0, 1.0);
+}`;
+const ARC_FS = `#version 300 es
+precision highp float;
+in vec3 vColor; in float vEdge;
+uniform float uHalfW, uAlpha, uGain;
+out vec4 o;
+void main(){
+  float cov = clamp(uHalfW + 0.5 - abs(vEdge), 0.0, 1.0);
+  float a = uAlpha * cov;
+  o = vec4(vColor * uGain * a, a);
+}`;
+const COMP_VS = `#version 300 es
+void main(){ vec2 p = vec2(gl_VertexID == 1 ? 3.0 : -1.0, gl_VertexID == 2 ? 3.0 : -1.0); gl_Position = vec4(p, 0.0, 1.0); }`;
+const COMP_FS = `#version 300 es
+precision highp float;
+uniform sampler2D uTex; uniform vec3 uBg; uniform float uDensity, uDark, uDim, uMode;
+out vec4 o;
+void main(){
+  vec4 acc = texelFetch(uTex, ivec2(gl_FragCoord.xy), 0);
+  vec3 c;
+  if (uMode > 0.5) { c = acc.rgb; }
+  else {
+    // order-independent blend: average hue of every arc crossing the pixel, coverage from how many cross it
+    float A = acc.a;
+    vec3 avg = acc.rgb / max(A, 1e-6);
+    float cov = 1.0 - exp(-A * uDensity);
+    vec3 vivid = clamp(mix(vec3(dot(avg, vec3(0.299, 0.587, 0.114))), avg, 1.3), 0.0, 1.0);
+    vec3 paper = mix(uBg, vivid * 0.92, cov);
+    // night: each channel glows on its own, so dense crossings brighten instead of greying
+    vec3 night = uBg + (1.0 - exp(-acc.rgb * uDensity * 1.6));
+    c = mix(paper, night, uDark);
+  }
+  o = vec4(mix(uBg, c, uDim), 1.0);
+}`;
+
+function program(vs, fs) {
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++) { const name = gl.getActiveUniform(p, i).name; u[name] = gl.getUniformLocation(p, name); }
+  return { p, u };
+}
+let arcP, compP;
+try { arcP = program(ARC_VS, ARC_FS); compP = program(COMP_VS, COMP_FS); }
+catch (e) { return fail('The graphics shaders failed to compile: ' + e.message); }
+
+const templates = {};
+function template(n) {
+  if (templates[n]) return templates[n];
+  const h = n / 2, v = [];
+  for (let i = 0; i <= h; i++) v.push(i / h, -1, 0, i / h, 1, 0);
+  v.push(1, 1, 0, 0, -1, 1); // degenerate bridge between halves
+  for (let i = 0; i <= h; i++) v.push(i / h, -1, 1, i / h, 1, 1);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(v), gl.STATIC_DRAW);
+  return (templates[n] = { buf, count: v.length / 3 });
+}
+function segsFor(dmax) {
+  const r = L.k * L.dpr * dmax * 0.5;
+  const need = Math.PI * Math.sqrt(Math.max(r, 1) / 2);
+  let s = 8; while (s < need && s < 128) s *= 2; return s;
+}
+
+const instBuf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, instBuf); gl.bufferData(gl.ARRAY_BUFFER, inst, gl.STATIC_DRAW);
+const selBuf = gl.createBuffer();
+function makeVao() {
+  const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+  for (let a = 0; a < 4; a++) gl.enableVertexAttribArray(a);
+  gl.vertexAttribDivisor(1, 1); gl.vertexAttribDivisor(2, 1); gl.vertexAttribDivisor(3, 1);
+  gl.bindVertexArray(null); return vao;
+}
+const arcVao = makeVao(), selVao = makeVao(), emptyVao = gl.createVertexArray();
+
+let fbo = null, fboTex = null;
+function makeTarget(w, h) {
+  if (fbo) { gl.deleteFramebuffer(fbo); gl.deleteTexture(fboTex); }
+  fboTex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, fboTex);
+  if (floatOK) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  fbo = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fboTex, 0);
+  if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE && floatOK) { floatOK = false; return makeTarget(w, h); }
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+}
+
+const density = () => 0.0008 * Math.pow(250, S.ink);   // ink slider to per-arc opacity, log scale (0.0008–0.2)
+
+function setArcUniforms(halfW, alpha, gain) {
+  const u = arcP.u;
+  gl.uniform2f(u.uRes, glc.width, glc.height);
+  gl.uniform1f(u.uK, L.k * L.dpr); gl.uniform1f(u.uOx, L.ox * L.dpr); gl.uniform1f(u.uY0, L.y0 * L.dpr);
+  gl.uniform1f(u.uAxis, S.axisMix); gl.uniform1f(u.uColorMode, shaderColorMode()); gl.uniform1f(u.uMinVotes, S.minVotes);
+  gl.uniform1f(u.uHalfW, halfW); gl.uniform1f(u.uGrow, S.grow); gl.uniform1f(u.uAlpha, alpha); gl.uniform1f(u.uGain, gain);
+  gl.uniform1fv(u['uBooks[0]'], BOOKSEL); gl.uniform1f(u.uBothEnds, S.bothEnds ? 1 : 0);
+}
+function drawInstances(vao, buf, start, count, segs) {
+  const t = template(segs);
+  gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, t.buf); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.vertexAttribPointer(1, 4, gl.FLOAT, false, STRIDE * 4, start * STRIDE * 4);
+  gl.vertexAttribPointer(2, 4, gl.FLOAT, false, STRIDE * 4, start * STRIDE * 4 + 16);
+  gl.vertexAttribPointer(3, 2, gl.FLOAT, false, STRIDE * 4, start * STRIDE * 4 + 32);
+  gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, t.count, count);
+}
+
+function renderAccum() {
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  gl.viewport(0, 0, glc.width, glc.height);
+  const g = tok.ground;
+  if (floatOK) { gl.clearColor(0, 0, 0, 0); } else { gl.clearColor(g[0], g[1], g[2], 1); }
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.enable(gl.BLEND);
+  if (floatOK || isDark()) gl.blendFunc(gl.ONE, gl.ONE); else gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  gl.useProgram(arcP.p);
+  setArcUniforms(0.5 * Math.max(1, L.dpr * 0.8), floatOK ? 1 : clamp(density() * 3, 0.02, 1), 1);
+  for (let i = 0; i < NG; i++) if (gCount[i]) drawInstances(arcVao, instBuf, gStart[i], gCount[i], segsFor(gDmax[i]));
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+}
+
+let selCount = 0, selDmax = 0, activeKey = '';
+function uploadActive(list) {
+  selCount = list ? list.length : 0; selDmax = 0;
+  if (!selCount) return;
+  const data = new Float32Array(selCount * STRIDE);
+  for (let j = 0; j < selCount; j++) {
+    const o = instPos[list[j]] * STRIDE;
+    data.set(inst.subarray(o, o + STRIDE), j * STRIDE);
+    const d = Math.max(Math.abs(inst[o + 1] - inst[o]), Math.abs(inst[o + 3] - inst[o + 2]));
+    if (d > selDmax) selDmax = d;
+  }
+  gl.bindBuffer(gl.ARRAY_BUFFER, selBuf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+}
+
+function renderFrame() {
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.viewport(0, 0, glc.width, glc.height);
+  gl.disable(gl.BLEND);
+  gl.useProgram(compP.p);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, fboTex);
+  const u = compP.u, g = tok.ground;
+  gl.uniform1i(u.uTex, 0); gl.uniform3f(u.uBg, g[0], g[1], g[2]);
+  gl.uniform1f(u.uDensity, density()); gl.uniform1f(u.uDark, isDark() ? 1 : 0); gl.uniform1f(u.uMode, floatOK ? 0 : 1);
+  const dim = sel ? (isDark() ? 0.26 : 0.2) : (activeList ? 0.55 : 1);
+  gl.uniform1f(u.uDim, dim);
+  gl.bindVertexArray(emptyVao);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  if (selCount) {
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.useProgram(arcP.p);
+    const alpha = clamp(10 / Math.sqrt(selCount), 0.16, 0.9);
+    setArcUniforms(0.5 * Math.max(1.4, L.dpr * 1.1), alpha, isDark() ? 1.12 : 0.82);
+    drawInstances(selVao, selBuf, 0, selCount, segsFor(selDmax));
+  }
+}
+
+// ---------------------------------------------------------------- layout & view
+const ovx = ovc.getContext('2d');
+function layout() {
+  const r = stage.getBoundingClientRect();
+  L.SW = Math.max(1, r.width); L.SH = Math.max(1, r.height);
+  L.dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const narrow = L.SW < 760;
+  L.barMax = clamp(L.SH * 0.1, 36, 88);
+  const rulerH = 32, padBottom = 6, padTop = narrow ? 70 : 18, padX = narrow ? 12 : 24;
+  L.y0 = L.SH - padBottom - rulerH - L.barMax;
+  L.W = Math.max(50, Math.min(L.SW - 2 * padX, 2 * (L.y0 - padTop)));
+  const w = Math.round(L.SW * L.dpr), h = Math.round(L.SH * L.dpr);
+  for (const c of [glc, ovc]) { c.width = w; c.height = h; }
+  makeTarget(w, h);
+  clampView(); computeView();
+}
+function computeView() { L.k = L.W * view.z; L.ox = L.SW / 2 - view.uc * L.k; }
+function clampView() {
+  view.z = clamp(view.z, 1, 250);
+  const hs = (L.SW / 2) / (L.W * view.z);
+  view.uc = hs >= 0.5 ? 0.5 : clamp(view.uc, hs, 1 - hs);
+}
+function zoomAt(mx, f) {
+  const u = (mx - L.ox) / L.k;
+  view.z = clamp(view.z * f, 1, 250);
+  const k = L.W * view.z;
+  view.uc = (L.SW / 2 - (mx - u * k)) / k;
+  clampView(); computeView(); invalidate(true);
+}
+let tween = null;
+function flyTo(z, uc) {
+  const from = { z: view.z, uc: view.uc };
+  if (reduceMotion) { view.z = z; view.uc = uc; clampView(); computeView(); invalidate(true); return; }
+  tween = { from, to: { z, uc }, t0: performance.now(), dur: 650 };
+  invalidate(true);
+}
+const chU0 = c => (c / NC) * (1 - S.axisMix) + (chStart[c] / NV) * S.axisMix;
+const xOfU = u => L.ox + L.k * u;
+function chapterAtX(x) {
+  const u = (x - L.ox) / L.k;
+  if (u < 0 || u >= 1) return -1;
+  return S.axis ? verseCh[Math.min(NV - 1, Math.floor(u * NV))] : Math.min(NC - 1, Math.floor(u * NC));
+}
+
+// ---------------------------------------------------------------- overlay: chapter bars, book ruler, ribbon, hovered arc
+function drawOverlay() {
+  const c2 = ovx, { SW, SH, y0, barMax, k } = L;
+  c2.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
+  c2.clearRect(0, 0, SW, SH);
+  const selCh = sel ? (sel.kind === 'chapter' ? sel.ch : verseCh[sel.g]) : -1;
+
+  for (let c = 0; c < NC; c++) {
+    const x0 = xOfU(chU0(c)), x1 = xOfU(chU0(c + 1));
+    if (x1 < 0 || x0 > SW) continue;
+    const w = x1 - x0, gap = w > 3 ? Math.min(1, w * 0.2) : 0;
+    const bi = chBook[c];
+    c2.globalAlpha = BOOKSEL[bi] ? 1 : 0.25;
+    c2.fillStyle = c === hoverCh ? tok.ink : (bi === 0 || bi === 39) ? tok.barMark : (bi % 2 ? tok.barB : tok.barA);
+    c2.fillRect(x0, y0 + 1, Math.max(w - gap, 0.6), (chCount[c] / 176) * barMax);
+  }
+
+  c2.globalAlpha = 1;
+  // ruler: chapter numbers when zoomed, book names where they fit
+  const rowCh = y0 + barMax + 12, rowBook = y0 + barMax + 26;
+  c2.textBaseline = 'middle'; c2.textAlign = 'center';
+  const chW = k / NC;
+  if (chW >= 16 || (S.axis && k / NV * 20 >= 16)) {
+    c2.font = '500 9.5px "Schibsted Grotesk", system-ui, sans-serif'; c2.fillStyle = tok.faint;
+    for (let c = 0; c < NC; c++) {
+      const x0 = xOfU(chU0(c)), x1 = xOfU(chU0(c + 1));
+      if (x1 < 0 || x0 > SW || x1 - x0 < 16) continue;
+      c2.fillText(chNum[c], (x0 + x1) / 2, rowCh);
+    }
+  }
+  c2.font = '600 9.5px "Schibsted Grotesk", system-ui, sans-serif';
+  if ('letterSpacing' in c2) c2.letterSpacing = '1px';
+  for (let b = 0; b < NB; b++) {
+    const xs = xOfU(chU0(bookCh0[b])), xe = xOfU(chU0(bookCh0[b + 1]));
+    if (xe < 0 || xs > SW) continue;
+    c2.fillStyle = tok.rule; c2.fillRect(Math.round(xs), y0 + barMax + 3, 1, 5);
+    const vx0 = Math.max(xs, 6), vx1 = Math.min(xe, SW - 6), room = vx1 - vx0 - 6;
+    if (room < 10) continue;
+    const cur = selCh >= 0 && chBook[selCh] === b;
+    for (const label of [BOOKS[b].name.toUpperCase(), BOOKS[b].short.toUpperCase()]) {
+      if (c2.measureText(label).width <= room) {
+        c2.fillStyle = cur ? tok.ribbon : tok.muted;
+        c2.fillText(label, (vx0 + vx1) / 2, rowBook); break;
+      }
+    }
+  }
+  if ('letterSpacing' in c2) c2.letterSpacing = '0px';
+
+  // ribbon bookmark on the selected chapter or verse
+  if (sel) {
+    let u;
+    if (sel.kind === 'verse') u = uCh(sel.g) * (1 - S.axisMix) + uVs(sel.g) * S.axisMix;
+    else u = (chU0(sel.ch) + chU0(sel.ch + 1)) / 2;
+    const x = xOfU(u), yb = y0 + barMax + 2;
+    if (x > -10 && x < SW + 10) {
+      c2.fillStyle = tok.ribbon;
+      c2.beginPath(); c2.moveTo(x - 4, y0 - 3); c2.lineTo(x + 4, y0 - 3); c2.lineTo(x + 4, yb); c2.lineTo(x, yb - 5); c2.lineTo(x - 4, yb); c2.closePath(); c2.fill();
+    }
+  }
+
+  if (hoverArc >= 0) {
+    const g = arcGeom(hoverArc);
+    c2.strokeStyle = tok.ink; c2.lineWidth = 1.6;
+    c2.beginPath(); c2.arc(g.cx, y0, Math.max(g.r, 0.5), Math.PI, 2 * Math.PI); c2.stroke();
+    c2.fillStyle = tok.ink;
+    for (const x of [g.xa, g.xb]) { c2.beginPath(); c2.arc(x, y0, 2.6, 0, 2 * Math.PI); c2.fill(); }
+  }
+}
+function arcGeom(i) {
+  const o = instPos[i] * STRIDE, m = S.axisMix;
+  const xa = xOfU(inst[o] + (inst[o + 2] - inst[o]) * m), xb = xOfU(inst[o + 1] + (inst[o + 3] - inst[o + 1]) * m);
+  return { xa, xb, cx: (xa + xb) / 2, r: Math.abs(xb - xa) / 2 };
+}
+
+// ---------------------------------------------------------------- render loop
+let raf = 0, needAccum = true, needFrame = true;
+function invalidate(accum) { if (accum) needAccum = true; needFrame = true; if (!raf) raf = requestAnimationFrame(frame); }
+let introT0 = 0;
+function frame(now) {
+  raf = 0;
+  let again = false;
+  if (S.grow < 1) {
+    if (!introT0) introT0 = now;
+    const t = clamp((now - introT0) / 1700, 0, 1);
+    S.grow = 1 - Math.pow(1 - t, 3); needAccum = true; again = t < 1;
+  }
+  if (S.axisMix !== S.axis) {
+    const step = reduceMotion ? 1 : 0.07;
+    S.axisMix = S.axis ? Math.min(1, S.axisMix + step) : Math.max(0, S.axisMix - step);
+    needAccum = needFrame = true; again = true;
+  }
+  if (tween) {
+    const t = clamp((now - tween.t0) / tween.dur, 0, 1), e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    view.z = Math.exp(Math.log(tween.from.z) + (Math.log(tween.to.z) - Math.log(tween.from.z)) * e);
+    view.uc = tween.from.uc + (tween.to.uc - tween.from.uc) * e;
+    clampView(); computeView(); needAccum = true;
+    if (t >= 1) tween = null; else again = true;
+  }
+  if (needAccum) { renderAccum(); needFrame = true; }
+  if (needFrame) { renderFrame(); drawOverlay(); }
+  needAccum = needFrame = false;
+  if (again) raf = requestAnimationFrame(frame);
+}
+
+// ---------------------------------------------------------------- selection
+let activeList = null;
+function arcsOfChapter(c) { return chArcs.subarray(chOff[c], chOff[c + 1]); }
+function arcsOfVerse(g) {
+  const out = [], list = arcsOfChapter(verseCh[g]);
+  for (const i of list) if (aFrom[i] === g || (g >= aTo[i] && g <= aTo[i] + aSpan[i])) out.push(i);
+  return out;
+}
+function refreshActive() {
+  let list = null, key = '';
+  if (sel) { list = sel.kind === 'chapter' ? arcsOfChapter(sel.ch) : arcsOfVerse(sel.g); key = sel.kind + (sel.ch ?? sel.g); }
+  else if (hoverCh >= 0) { list = arcsOfChapter(hoverCh); key = 'h' + hoverCh; }
+  activeList = list;
+  if (key !== activeKey) { activeKey = key; uploadActive(list); }
+}
+function select(s) {
+  sel = s; hoverArc = -1; hideTip();
+  refreshActive(); renderPanel(); writeHash();
+  invalidate(false);
+}
+
+// ---------------------------------------------------------------- labels & text
+function refLabel(g, span = 0) {
+  const c = verseCh[g], b = BOOKS[chBook[c]], v = g - chStart[c] + 1;
+  let s = `${b.short} ${chNum[c]}:${v}`;
+  if (span > 0) { const e = g + span, ce = verseCh[e]; s += ce === c ? `–${e - chStart[ce] + 1}` : `–${chNum[ce]}:${e - chStart[ce] + 1}`; }
+  return s;
+}
+const verseText = g => verses ? verses[g] : '';
+function verseHtml(g, maxLen = 0) {
+  if (!verses) return '';
+  const t = verseText(g);
+  if (!t) return `<span class="tr-missing">Not in the ${esc(TR ? TR.short : 'chosen translation')}</span>`;
+  let cut = t.length;
+  if (maxLen && t.length > maxLen) cut = t.slice(0, maxLen).replace(/\s+\S*$/, '').length;
+  let out = '', pos = 0;
+  for (const [a, z, k] of (S.redLetters && RED.get(g)) || []) {
+    if (a >= cut) break;
+    if (a > pos) out += esc(t.slice(pos, a));
+    const e = Math.min(z, cut);
+    out += `<span class="${k === 1 ? 'rl-j' : 'rl-g'}" title="${k === 1 ? 'Words of Jesus' : 'Words of God (detected)'}">${esc(t.slice(Math.max(a, pos), e))}</span>`;
+    pos = Math.max(pos, e);
+  }
+  if (pos < cut) out += esc(t.slice(pos, cut));
+  return out + (cut < t.length ? '…' : '');
+}
+function passageHtml(g, span, max = 3, maxLen = 0) {
+  const n = Math.min(span, max - 1), parts = [];
+  for (let j = 0; j <= n; j++) parts.push(verseHtml(g + j, maxLen && j === 0 ? maxLen : 0));
+  let html = parts.join(' ') + (span > n ? ' …' : '');
+  return html;
+}
+function redLegend(from, to) {
+  if (!S.redLetters) return '';
+  let j = false, gd = false;
+  for (let g = from; g <= to; g++) for (const [, , k] of RED.get(g) || []) { if (k === 1) j = true; else gd = true; }
+  if (!j && !gd) {
+    if (TR && !TR.red) for (let g = from; g <= to; g++) if (kjvRed.has(g)) return '<p class="rl-legend">Red letters are marked in the King James Version and World English Bible only.</p>';
+    return '';
+  }
+  return `<p class="rl-legend">${j ? '<span><i class="rl-j">Red</i> words of Jesus</span>' : ''}${gd ? '<span><i class="rl-g">Dark red</i> words of God (detected)</span>' : ''}</p>`;
+}
+const trPicker = () => TX ? `<label class="m-tr" data-tip-title="Translation" data-more="guide.html#translations" data-tip="Show this panel's verses in another English Bible."><span class="eyebrow">Reading in</span><select class="tr-sel" aria-label="Bible translation">${TX.optionsHtml(S.tr)}</select></label>` : '';
+function passageText(g, span, max = 3) {
+  if (!verses) return '';
+  const n = Math.min(span, max - 1), parts = [];
+  for (let j = 0; j <= n; j++) parts.push(verses[g + j]);
+  return parts.join(' ') + (span > n ? ' …' : '');
+}
+const ICON = { right: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5 12.5 8 9 11.5"/></svg>', left: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8h-10M7 4.5 3.5 8 7 11.5"/></svg>', close: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>' };
+const trunc = (s, n) => s.length > n ? s.slice(0, n).replace(/\s+\S*$/, '') + '…' : s;
+const arcColor = i => rampCss(colorT(i), isDark() ? 1.1 : 0.88);
+const fmtYear = y => { y = Math.round(y); return y < 0 ? `${fmt(-y)} BC` : `AD ${fmt(Math.max(1, y))}`; };
+const VIEW_LABEL = { consensus: 'Consensus', traditional: 'Traditional', critical: 'Critical scholarship', alternative: 'Alternative view' };
+const CONS_LABEL = { broad: 'Broad agreement', divided: 'Scholars divided', open: 'Unsettled' };
+const DATING_NAME = ['traditional', 'critical'];
+
+// ---------------------------------------------------------------- authorship ("Written") section
+function writtenHtml(b) {
+  const o = ORIG[b];
+  if (!o) return '';
+  const views = o.views.map(w => `<article class="view ${w.view}">
+      <p class="view-k">${VIEW_LABEL[w.view] || w.view}${w.section ? ' · ' + esc(w.section) : ''}</p>
+      <p class="view-a">${esc(w.author)}</p>
+      <dl><dt>When</dt><dd>${esc(w.date)}</dd><dt>Where</dt><dd>${esc(w.place)}</dd>${w.held ? `<dt>Held by</dt><dd>${esc(w.held)}</dd>` : ''}</dl>
+      <p class="cite">${w.src.map(([s, loc]) => esc((SRC[s] || s) + (loc ? ', ' + loc : ''))).join('; ')}</p>
+    </article>`).join('');
+  return `<div class="views">${views}</div>
+    <p class="written-note">For “Years” coloring this book sits at ${fmtYear(o.trad)} (traditional) or ${fmtYear(o.crit)} (critical), the middle of each range.</p>`;
+}
+const consensusPill = b => ORIG[b] ? `<span class="pill ${ORIG[b].consensus}">${CONS_LABEL[ORIG[b].consensus]}</span>` : '';
+
+// ---------------------------------------------------------------- margin column
+function renderPanel() {
+  if (!sel) { panel.hidden = true; panel.innerHTML = ''; return; }
+  panel.hidden = false;
+  if (sel.kind === 'chapter') renderChapter(sel.ch); else renderVerse(sel.g);
+}
+function histogram(counts, curBook) {
+  const max = Math.max(1, ...counts);
+  let bars = '';
+  for (let b = 0; b < NB; b++) {
+    const h = counts[b] ? Math.max(4, (counts[b] / max) * 100) : 0;
+    bars += `<div class="${b === curBook ? 'cur' : b >= 39 ? 'nt' : ''}" style="height:${h}%" title="${esc(BOOKS[b].name)}: ${fmt(counts[b])}"></div>`;
+  }
+  return `<div class="hist" role="img" aria-label="Links per book">${bars}</div>
+    <div class="hist-axis"><span style="left:0">Genesis</span><span style="left:${(39 / 66 * 100).toFixed(1)}%">Matthew</span><span style="right:0">Revelation</span></div>`;
+}
+function renderChapter(c) {
+  const b = BOOKS[chBook[c]], list = arcsOfChapter(c), minV = S.minVotes;
+  const byVerse = new Map(), bookCounts = new Array(NB).fill(0);
+  let nOut = 0, nIn = 0;
+  for (const i of list) {
+    if (!arcVisible(i)) continue;
+    let local, other, span;
+    if (verseCh[aFrom[i]] === c) { local = aFrom[i]; other = aTo[i]; span = aSpan[i]; nOut++; }
+    else { local = aTo[i]; other = aFrom[i]; span = 0; nIn++; }
+    if (!byVerse.has(local)) byVerse.set(local, []);
+    byVerse.get(local).push({ i, other, span });
+    bookCounts[chBook[verseCh[other]]]++;
+  }
+  const keys = [...byVerse.keys()].sort((a, z) => a - z);
+  const prev = c > 0 ? c - 1 : -1, next = c < NC - 1 ? c + 1 : -1;
+  const chName = x => `${BOOKS[chBook[x]].name} ${chNum[x]}`;
+  let blocks = '';
+  for (const g of keys) {
+    const items = byVerse.get(g).sort((a, z) => aVotes[z.i] - aVotes[a.i]);
+    const shown = items.slice(0, 10);
+    blocks += `<article class="vb"><button class="vb-head" data-verse="${g}"><span class="vn">${g - chStart[c] + 1}</span><span class="vt">${verseHtml(g)}</span></button><div class="chips">` +
+      shown.map(it => `<button class="chip" data-verse="${it.other}" style="--c:${arcColor(it.i)}" title="${fmt(aVotes[it.i])} votes">${refLabel(it.other, it.span)}</button>`).join('') +
+      (items.length > 10 ? `<button class="chip more" data-verse="${g}">+${items.length - 10} more</button>` : '') + `</div></article>`;
+  }
+  panel.innerHTML = `
+    <div class="m-head">
+      <p class="eyebrow">${chBook[c] < 39 ? 'Old' : 'New'} Testament · Book ${chBook[c] + 1} of 66</p>
+      <h2 class="m-title">${esc(b.name)} ${chNum[c]}</h2>
+      <p class="m-stats"><span><b>${chCount[c]}</b> verses</span><span><b>${fmt(nOut)}</b> references out</span><span><b>${fmt(nIn)}</b> in</span></p>
+      ${trPicker()}
+      <div class="m-nav">
+        ${prev >= 0 ? `<button class="iconbtn wide" data-ch="${prev}">${ICON.left} ${esc(chName(prev))}</button>` : ''}
+        ${next >= 0 ? `<button class="iconbtn wide" data-ch="${next}">${esc(chName(next))} ${ICON.right}</button>` : ''}
+        <button class="iconbtn wide" data-zoombook="${chBook[c]}">Zoom to ${esc(b.name)}</button>
+        <a class="iconbtn wide" style="text-decoration:none;display:inline-grid;place-items:center" href="echoes.html#ref=${encodeURIComponent(b.name + ' ' + chNum[c])}" data-tip-title="Echoes in ${esc(b.name)} ${chNum[c]}" data-tip="Phrases of 7+ original-language words from this chapter that are repeated elsewhere.">Repeated phrases</a>
+        <a class="iconbtn wide" style="text-decoration:none;display:inline-grid;place-items:center" href="read.html#${b.osis}.${chNum[c]}" data-tip-title="Read ${esc(b.name)} ${chNum[c]}" data-tip="Open this chapter in the Bible reader, where you can study any verse.">Read this chapter</a>
+      </div>
+      <button class="iconbtn m-close" data-close aria-label="Close">${ICON.close}</button>
+    </div>
+    <section class="m-sec"><h3>Where its links land <span>${fmt(nOut + nIn)} links</span></h3>${histogram(bookCounts, chBook[c])}</section>
+    ${hasYears ? `<section class="m-sec"><h3>When ${esc(b.name)} was written ${consensusPill(chBook[c])}</h3>${writtenHtml(chBook[c])}</section>` : ''}
+    <section class="m-sec"><h3>By verse <span>${keys.length} of ${chCount[c]} verses linked</span></h3>
+      ${redLegend(chStart[c], chStart[c + 1] - 1)}
+      ${blocks || `<p class="empty">No cross-references at this relevance setting. Lower the relevance slider to see more.</p>`}
+    </section>`;
+  panel.scrollTop = 0;
+}
+function renderVerse(g) {
+  const c = verseCh[g], b = BOOKS[chBook[c]], minV = S.minVotes;
+  const items = arcsOfVerse(g).filter(arcVisible).map(i => aFrom[i] === g
+    ? { i, other: aTo[i], span: aSpan[i], dir: 'out' } : { i, other: aFrom[i], span: 0, dir: 'in' })
+    .sort((a, z) => aVotes[z.i] - aVotes[a.i]);
+  const bookCounts = new Array(NB).fill(0);
+  items.forEach(it => bookCounts[chBook[verseCh[it.other]]]++);
+  panel.innerHTML = `
+    <div class="m-head">
+      <p class="eyebrow"><button class="crumb" data-ch="${c}">${esc(b.name)} ${chNum[c]}</button> · ${chBook[c] < 39 ? 'Old' : 'New'} Testament</p>
+      <h2 class="m-title">${esc(b.name)} ${chNum[c]}:${g - chStart[c] + 1}</h2>
+      <blockquote class="m-verse">${verseHtml(g)}</blockquote>
+      ${redLegend(g, g)}
+      <p class="m-stats"><span><b>${fmt(items.length)}</b> linked passages</span></p>
+      ${trPicker()}
+      <button class="iconbtn m-close" data-close aria-label="Close">${ICON.close}</button>
+    </div>
+    ${items.length ? `<section class="m-sec"><h3>Where its links land</h3>${histogram(bookCounts, chBook[c])}</section>` : ''}
+    ${hasYears ? `<section class="m-sec"><details class="written"><summary>When ${esc(b.name)} was written ${consensusPill(chBook[c])}</summary>${writtenHtml(chBook[c])}</details></section>` : ''}
+    <section class="m-sec"><h3>Linked passages <span>by votes</span></h3>
+      <p class="legend-line">${ICON.right} listed under this verse · ${ICON.left} lists this verse</p>
+      ${items.length ? `<ol class="xrefs">${items.map(it => `<li><button class="xref" data-verse="${it.other}">
+        <span class="x-top"><span class="x-dot" style="--c:${arcColor(it.i)}"></span><span class="x-dir" aria-label="${it.dir === 'out' ? 'Listed under this verse' : 'Lists this verse'}">${it.dir === 'out' ? ICON.right : ICON.left}</span><b>${refLabel(it.other, it.span)}</b><span class="x-votes">${fmt(aVotes[it.i])} votes</span></span>
+        <span class="x-text">${passageHtml(it.other, it.span)}</span></button></li>`).join('')}</ol>`
+      : `<p class="empty">No cross-references at this relevance setting. Lower the relevance slider to see more.</p>`}
+    </section>`;
+  panel.scrollTop = 0;
+}
+panel.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.hasAttribute('data-close')) return select(null);
+  if (t.dataset.verse) return select({ kind: 'verse', g: +t.dataset.verse });
+  if (t.dataset.ch) return select({ kind: 'chapter', ch: +t.dataset.ch });
+  if (t.dataset.zoombook) zoomToBook(+t.dataset.zoombook);
+});
+function zoomToBook(b) {
+  const u0 = chU0(bookCh0[b]), u1 = chU0(bookCh0[b + 1]);
+  const span = Math.max(u1 - u0, 1e-4);
+  const z = clamp((L.SW * 0.8) / (L.W * span), 1, 250);
+  flyTo(z, (u0 + u1) / 2);
+}
+
+// ---------------------------------------------------------------- tooltip & picking
+function hideTip() { tip.hidden = true; stage.classList.remove('on-arc'); }
+function placeTip(mx, my) {
+  tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = mx + 16, y = my + 16;
+  if (x + w > L.SW - 8) x = mx - w - 16;
+  if (y + h > L.SH - 8) y = my - h - 16;
+  tip.style.transform = `translate(${Math.max(8, x)}px, ${Math.max(8, y)}px)`;
+}
+function pickArc(mx, my) {
+  if (my > L.y0 + 2) return -1;
+  const dy = L.y0 - my, k = L.k, ox = L.ox, m = S.axisMix, minV = S.minVotes, tol = 4;
+  let best = -1, bestV = -1e9, bestD = 1e9;
+  const test = (p) => {
+    const o = p * STRIDE;
+    if (inst[o + 6] < minV || !bookPassCode(inst[o + 7])) return;
+    const xa = ox + k * (inst[o] + (inst[o + 2] - inst[o]) * m), xb = ox + k * (inst[o + 1] + (inst[o + 3] - inst[o + 1]) * m);
+    const r = Math.abs(xb - xa) * 0.5;
+    if (dy > r + tol) return;
+    const dx = mx - (xa + xb) * 0.5;
+    if (dx > r + tol || dx < -r - tol) return;
+    const d = Math.abs(Math.sqrt(dx * dx + dy * dy) - r);
+    if (d > tol) return;
+    const v = inst[o + 6];
+    if (v > bestV || (v === bestV && d < bestD)) { bestV = v; bestD = d; best = p; }
+  };
+  if (sel && activeList) for (const i of activeList) test(instPos[i]);
+  else for (let p = 0; p < N; p++) test(p);
+  return best < 0 ? -1 : instArc[best];
+}
+let pendingHover = null;
+function hover(mx, my) {
+  pendingHover = [mx, my];
+  if (hover.raf) return;
+  hover.raf = requestAnimationFrame(() => {
+    hover.raf = 0; const [x, y] = pendingHover;
+    let ch = -1, arc = -1;
+    if (S.grow >= 1) {
+      if (y > L.y0) ch = chapterAtX(x);
+      else arc = pickArc(x, y);
+    }
+    const chChanged = ch !== hoverCh;
+    if (chChanged || arc !== hoverArc) {
+      hoverCh = ch; hoverArc = arc;
+      if (chChanged && !sel) refreshActive();
+      invalidate(false);
+    }
+    if (ch >= 0) {
+      let links = 0; for (const i of arcsOfChapter(ch)) if (arcVisible(i)) links++;
+      tip.innerHTML = `<div class="tip-refs">${esc(BOOKS[chBook[ch]].name)} ${chNum[ch]}</div><div class="tip-meta">${chCount[ch]} verses · ${fmt(links)} links</div>`;
+      placeTip(x, y); stage.classList.add('on-arc');
+    } else if (arc >= 0) {
+      const apart = Math.abs(verseCh[aTo[arc]] - verseCh[aFrom[arc]]);
+      tip.innerHTML = `<div class="tip-refs">${refLabel(aFrom[arc])}<i>${ICON.right}</i>${refLabel(aTo[arc], aSpan[arc])}</div>
+        <div class="tip-meta">${apart === 0 ? 'Same chapter' : fmt(apart) + (apart === 1 ? ' chapter' : ' chapters') + ' apart'}${S.colorMode === 2 && hasYears ? ` · about ${fmt(Math.round(yearsApart(arc, S.dating)))} years apart (${DATING_NAME[S.dating]})` : ''} · ${fmt(aVotes[arc])} votes</div>
+        ${verses ? `<p class="tip-text"><b>${chNum[verseCh[aFrom[arc]]]}:${aFrom[arc] - chStart[verseCh[aFrom[arc]]] + 1}</b>${verseHtml(aFrom[arc], 120)}</p>
+        <p class="tip-text"><b>${chNum[verseCh[aTo[arc]]]}:${aTo[arc] - chStart[verseCh[aTo[arc]]] + 1}</b>${passageHtml(aTo[arc], aSpan[arc], 2, 120)}</p>` : ''}`;
+      placeTip(x, y); stage.classList.add('on-arc');
+    } else hideTip();
+  });
+}
+
+// ---------------------------------------------------------------- pointer input
+const pointers = new Map();
+let drag = null, pinch = null;
+const local = e => { const r = stage.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+stage.addEventListener('pointerdown', e => {
+  if (e.target.closest('.key, .title-block form')) return;
+  stage.setPointerCapture(e.pointerId);
+  const [x, y] = local(e);
+  pointers.set(e.pointerId, [x, y]);
+  if (pointers.size === 2) {
+    const [a, b] = [...pointers.values()];
+    pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) }; drag = null;
+  } else drag = { x, y, uc: view.uc, moved: false };
+});
+stage.addEventListener('pointermove', e => {
+  const [x, y] = local(e);
+  if (pointers.has(e.pointerId)) pointers.set(e.pointerId, [x, y]);
+  if (pinch && pointers.size === 2) {
+    const [a, b] = [...pointers.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    if (pinch.d > 0) zoomAt((a[0] + b[0]) / 2, d / pinch.d);
+    pinch.d = d; return;
+  }
+  if (drag) {
+    const dx = x - drag.x;
+    if (!drag.moved && Math.hypot(dx, y - drag.y) > 4) { drag.moved = true; stage.classList.add('dragging'); hideTip(); hoverArc = -1; }
+    if (drag.moved) { tween = null; view.uc = drag.uc - dx / L.k; clampView(); computeView(); invalidate(true); return; }
+  }
+  if (e.pointerType === 'mouse' || !drag) hover(x, y);
+});
+function endPointer(e) {
+  const [x, y] = local(e);
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch = null;
+  if (drag && !drag.moved && e.type === 'pointerup') click(x, y);
+  drag = null; stage.classList.remove('dragging');
+}
+stage.addEventListener('pointerup', endPointer);
+stage.addEventListener('pointercancel', endPointer);
+stage.addEventListener('pointerleave', () => { if (!drag) { hoverCh = -1; hoverArc = -1; hideTip(); if (!sel) refreshActive(); invalidate(false); } });
+stage.addEventListener('wheel', e => {
+  e.preventDefault(); tween = null;
+  const [x] = local(e);
+  const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+  if (Math.abs(e.deltaX) > Math.abs(dy) && view.z > 1) { view.uc += e.deltaX / L.k; clampView(); computeView(); invalidate(true); return; }
+  zoomAt(x, Math.exp(-dy * 0.0016));
+}, { passive: false });
+function click(x, y) {
+  if (S.grow < 1) return;
+  if (y > L.y0) { const c = chapterAtX(x); if (c >= 0) select({ kind: 'chapter', ch: c }); return; }
+  const arc = pickArc(x, y);
+  if (arc >= 0) select({ kind: 'verse', g: aFrom[arc] });
+  else if (sel) select(null);
+}
+
+// ---------------------------------------------------------------- controls
+document.querySelectorAll('input[name=color]').forEach(r => r.addEventListener('change', () => {
+  S.colorMode = +r.value; $('#datingCtl').hidden = S.colorMode !== 2;
+  drawKey(); if (sel) renderPanel(); invalidate(true);
+}));
+document.querySelectorAll('input[name=dating]').forEach(r => r.addEventListener('change', () => {
+  S.dating = +r.value; drawKey(); if (sel) renderPanel(); invalidate(true);
+}));
+if (!hasYears) document.querySelector('input[name=color][value="2"]').closest('label').hidden = true;
+document.querySelectorAll('input[name=axis]').forEach(r => r.addEventListener('change', () => { S.axis = +r.value; invalidate(true); }));
+const rel = $('#rel'), relOut = $('#relOut');
+function applyRel() {
+  S.relIdx = +rel.value; S.minVotes = REL_STOPS[S.relIdx];
+  const n = visibleCount();
+  relOut.textContent = S.relIdx === 0 ? 'All references' : `${S.minVotes}+ votes`;
+  $('#shown').textContent = fmt(n);
+  rel.setAttribute('aria-valuetext', relOut.textContent + ', ' + fmt(n) + ' cross-references');
+  if (sel) renderPanel();
+  invalidate(true);
+}
+rel.addEventListener('input', applyRel);
+// the notch whose arc count is closest to the 63,779 in Harrison & Römhild's image (8 votes); also the starting setting
+function harrisonNotch() {
+  let best = 0, bd = Infinity;
+  REL_STOPS.forEach((t, idx) => { const d = Math.abs((idx === 0 ? N : countAtLeast(t)) - 63779); if (d < bd) { bd = d; best = idx; } });
+  return best;
+}
+$('#harrison').addEventListener('click', () => { rel.value = harrisonNotch(); applyRel(); });
+rel.value = harrisonNotch(); applyRel();
+// translation choice: controls or any panel; remembered and shared with Echoes
+function useTranslation(id) {
+  if (!TX) return;
+  TX.load(id).then(t => {
+    if (id !== S.tr) return;
+    verses = t.verses; RED = t.red; TR = t.info;
+    document.querySelectorAll('select.tr-sel').forEach(s => { s.value = t.id; });
+    if (sel) renderPanel();
+  }).catch(err => {
+    console.warn(err);
+    if (id !== 'KJV') { S.tr = 'KJV'; TX.save('KJV'); useTranslation('KJV'); }
+  });
+}
+document.addEventListener('change', e => {
+  if (!e.target.matches('select.tr-sel')) return;
+  S.tr = e.target.value; TX.save(S.tr);
+  document.querySelectorAll('select.tr-sel').forEach(s => { s.value = S.tr; });
+  useTranslation(S.tr);
+});
+// Books filter (testaments, categories, single books)
+const bookFilter = window.RainbowBooks ? RainbowBooks.filter($('#booksFilter'), { names: BOOKS.map(b => b.name), onChange: applyBooks }) : null;
+function applyBooks() {
+  for (let b = 0; b < 66; b++) BOOKSEL[b] = bookFilter.has(b) ? 1 : 0;
+  applyRel();
+}
+document.querySelectorAll('input[name=bookEnds]').forEach(r => r.addEventListener('change', () => { S.bothEnds = r.value === 'both'; applyRel(); }));
+if (!bookFilter) $('#booksCtl').hidden = true;
+$('#redToggle').addEventListener('change', e => { S.redLetters = e.target.checked; if (sel) renderPanel(); });
+$('#ctlToggle').addEventListener('click', e => {
+  const open = $('#controls').classList.toggle('open');
+  e.currentTarget.setAttribute('aria-expanded', String(open));
+  e.currentTarget.textContent = open ? 'Hide controls' : 'Controls';
+});
+const ink = $('#ink');
+ink.addEventListener('input', () => { S.ink = +ink.value / 100; invalidate(!floatOK); });
+$('#zin').addEventListener('click', () => { tween = null; zoomAt(L.SW / 2, 1.6); });
+$('#zout').addEventListener('click', () => { tween = null; zoomAt(L.SW / 2, 1 / 1.6); });
+$('#zfit').addEventListener('click', () => flyTo(1, 0.5));
+function onThemeChange() { readTokens(); drawKey(); if (sel) renderPanel(); invalidate(true); }
+new MutationObserver(onThemeChange).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', onThemeChange);
+
+// theme: light / dark / system, remembered per device
+const themeRadios = [...document.querySelectorAll('input[name=theme]')];
+function applyTheme(pref) {
+  if (pref === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pref);
+  themeRadios.forEach(r => { r.checked = r.value === pref; });
+  onThemeChange();
+}
+{
+  let saved = null;
+  try { saved = localStorage.getItem('reference-rainbow-theme'); } catch (_) { /* storage blocked */ }
+  if (saved === 'light' || saved === 'dark' || saved === 'system') applyTheme(saved);
+  else { const stamped = root.getAttribute('data-theme'); themeRadios.forEach(r => { r.checked = r.value === (stamped || 'system'); }); }
+}
+themeRadios.forEach(r => r.addEventListener('change', () => {
+  applyTheme(r.value);
+  try { localStorage.setItem('reference-rainbow-theme', r.value); } catch (_) { /* storage blocked */ }
+}));
+
+// control tooltips: every element with data-tip explains itself on hover or keyboard focus;
+// data-more adds a "Learn more" link, and the pop-up stays open while the pointer moves onto it
+const ctip = $('#ctip');
+let ctipTimer = 0, ctipHide = 0, ctipFor = null;
+function showCtip(el) {
+  clearTimeout(ctipHide);
+  const more = el.dataset.more;
+  ctip.innerHTML = `<b>${esc(el.dataset.tipTitle || '')}${el.dataset.kbd ? ` <kbd>${esc(el.dataset.kbd)}</kbd>` : ''}</b><span>${esc(el.dataset.tip)}</span>` +
+    (more ? `<a class="ctip-more" href="${esc(more)}">Learn more ${ICON.right}</a>` : '');
+  ctip.classList.toggle('has-link', !!more);
+  ctip.hidden = false; ctip.classList.remove('show');
+  const r = el.getBoundingClientRect(), w = ctip.offsetWidth, h = ctip.offsetHeight;
+  let side = 'top', y = r.top - h - 10;
+  if (y < 8) { side = 'bottom'; y = r.bottom + 10; }
+  const x = clamp(r.left + r.width / 2 - w / 2, 8, window.innerWidth - w - 8);
+  ctip.dataset.side = side;
+  ctip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+  ctip.style.setProperty('--ax', clamp(r.left + r.width / 2 - x, 10, w - 10) + 'px');
+  ctipFor = el;
+  requestAnimationFrame(() => ctip.classList.add('show'));
+}
+function hideCtip() { clearTimeout(ctipTimer); clearTimeout(ctipHide); ctipFor = null; ctip.classList.remove('show'); ctip.hidden = true; }
+document.addEventListener('pointerover', e => {
+  if (e.pointerType === 'touch') return;
+  if (ctip.contains(e.target)) { clearTimeout(ctipHide); clearTimeout(ctipTimer); return; }
+  const el = e.target.closest('[data-tip]');
+  if (el && el === ctipFor) { clearTimeout(ctipHide); return; }
+  clearTimeout(ctipTimer);
+  if (!el) { if (ctipFor) { clearTimeout(ctipHide); ctipHide = setTimeout(hideCtip, 250); } return; }
+  ctipTimer = setTimeout(() => showCtip(el), ctipFor ? 150 : 300);
+});
+document.addEventListener('focusin', e => {
+  if (ctip.contains(e.target)) return;  // clicking "Learn more" focuses the link; keep the pop-up open
+  const el = e.target.closest('[data-tip]');
+  hideCtip();
+  if (el && e.target.matches(':focus-visible')) showCtip(el);
+});
+document.addEventListener('focusout', e => { if (!ctip.contains(e.relatedTarget)) hideCtip(); });
+document.addEventListener('pointerdown', e => { if (!ctip.contains(e.target)) hideCtip(); }, true);
+window.addEventListener('scroll', hideCtip, true);
+
+// help
+const help = $('#help');
+const openHelp = () => { hideCtip(); if (!help.open) help.showModal(); };
+$('#helpBtn').addEventListener('click', openHelp);
+help.addEventListener('click', e => { if (e.target === help) help.close(); });
+
+// legend
+function drawKey() {
+  const kc = $('#keyc'), c = kc.getContext('2d'), w = kc.width, h = kc.height;
+  for (let x = 0; x < w; x++) { c.fillStyle = rampCss(x / (w - 1), isDark() ? 1.08 : 0.92); c.fillRect(x, 0, 1, h); }
+  const ticks = $('#ticks');
+  if (S.colorMode === 0) {
+    $('#scaleCap').textContent = 'Chapters apart';
+    ticks.innerHTML = [0, 10, 100, 400, 1188].map(n => `<span style="left:${(Math.sqrt(n / 1188) * 100).toFixed(2)}%">${fmt(n)}</span>`).join('');
+  } else if (S.colorMode === 1) {
+    $('#scaleCap').textContent = 'Book the reference is listed under';
+    ticks.innerHTML = [[0, 'Genesis'], [18, 'Psalms'], [39, 'Matthew'], [65, 'Revelation']].map(([b, n]) => `<span style="left:${(b / 65 * 100).toFixed(2)}%">${n}</span>`).join('');
+  } else {
+    const span = YEARS[S.dating].span;
+    $('#scaleCap').textContent = `Years apart · ${DATING_NAME[S.dating]} dating`;
+    const marks = [0, 50, 250, 500, 1000].filter(v => Math.sqrt(v / span) < 0.86);
+    ticks.innerHTML = [...marks, Math.round(span)].map(v => `<span style="left:${(Math.sqrt(v / span) * 100).toFixed(2)}%">${fmt(v)}</span>`).join('');
+  }
+}
+drawKey();
+
+// search
+const ALIASES = { psalm: 18, psa: 18, pss: 18, jn: 42, mt: 39, mk: 40, lk: 41, sos: 21, songofsongs: 21, canticles: 21, phm: 56, jas: 58, 'rv': 65, revelations: 65, ezk: 25, jdg: 6 };
+function findBook(q) {
+  const key = q.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!key) return -1;
+  if (key in ALIASES) return ALIASES[key];
+  let i = BOOKS.findIndex(b => b.key === key || b.osis.toLowerCase() === key);
+  if (i < 0) i = BOOKS.findIndex(b => b.key.startsWith(key) || b.osis.toLowerCase().startsWith(key));
+  return i;
+}
+function parseRef(q) {
+  const m = q.trim().match(/^((?:[1-3]\s*)?[a-z][a-z .]*?)\.?\s*(\d+)?(?:\s*[:. ]\s*(\d+))?\s*$/i);
+  if (!m) return null;
+  const b = findBook(m[1]); if (b < 0) return null;
+  const nCh = bookCh0[b + 1] - bookCh0[b];
+  if (!m[2]) return { book: b };
+  const cn = clamp(+m[2], 1, nCh), c = bookCh0[b] + cn - 1;
+  if (!m[3]) return { ch: c };
+  return { g: chStart[c] + clamp(+m[3], 1, chCount[c]) - 1 };
+}
+$('#searchForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const q = $('#q').value, r = parseRef(q), msg = $('#searchMsg');
+  if (!q.trim()) return;
+  if (!r) { msg.textContent = `No book matches “${q.trim()}”. Try John 3:16, Ps 23 or Romans.`; msg.hidden = false; return; }
+  msg.hidden = true;
+  if (r.book !== undefined) { select({ kind: 'chapter', ch: bookCh0[r.book] }); zoomToBook(r.book); }
+  else if (r.ch !== undefined) select({ kind: 'chapter', ch: r.ch });
+  else select({ kind: 'verse', g: r.g });
+  $('#q').blur();
+});
+$('#q').addEventListener('input', () => { $('#searchMsg').hidden = true; });
+
+// keyboard
+document.addEventListener('keydown', e => {
+  if (help.open) return;
+  hideCtip();
+  const typing = e.target.matches('input[type=search], input[type=text]');
+  if (e.key === '?' && !typing) { e.preventDefault(); openHelp(); return; }
+  if (e.key === '/' && !typing) { e.preventDefault(); $('#q').focus(); return; }
+  if (e.key === 'Escape') { if (typing) e.target.blur(); else if (sel) select(null); return; }
+  if (typing || e.target.matches('input[type=range], input[type=radio]')) return;
+  if (sel && sel.kind === 'chapter' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+    e.preventDefault(); select({ kind: 'chapter', ch: clamp(sel.ch + (e.key === 'ArrowRight' ? 1 : -1), 0, NC - 1) });
+  }
+  if (e.key === '+' || e.key === '=') zoomAt(L.SW / 2, 1.6);
+  if (e.key === '-') zoomAt(L.SW / 2, 1 / 1.6);
+  if (e.key === '0') flyTo(1, 0.5);
+});
+
+// shareable location
+function writeHash() {
+  let h = '';
+  if (sel) { const c = sel.kind === 'chapter' ? sel.ch : verseCh[sel.g]; h = `#${BOOKS[chBook[c]].osis}.${chNum[c]}` + (sel.kind === 'verse' ? `.${sel.g - chStart[c] + 1}` : ''); }
+  try { history.replaceState(null, '', h || location.pathname + location.search); } catch (_) { /* sandboxed */ }
+}
+function readHash() {
+  const m = decodeURIComponent(location.hash.slice(1)).match(/^(\w+)\.(\d+)(?:\.(\d+))?$/);
+  if (!m) return;
+  const b = BOOKS.findIndex(x => x.osis === m[1]); if (b < 0) return;
+  const c = bookCh0[b] + clamp(+m[2], 1, bookCh0[b + 1] - bookCh0[b]) - 1;
+  sel = m[3] ? { kind: 'verse', g: chStart[c] + clamp(+m[3], 1, chCount[c]) - 1 } : { kind: 'chapter', ch: c };
+}
+
+// ---------------------------------------------------------------- boot
+readHash();
+window.addEventListener('hashchange', () => { const before = sel; readHash(); if (sel !== before) select(sel); });
+new ResizeObserver(() => { layout(); invalidate(true); }).observe(stage);
+layout();
+if (TX) {
+  S.tr = TX.saved();
+  $('#trSel').innerHTML = TX.optionsHtml(S.tr);
+  TX.load('KJV').then(t => { kjvRed = t.red; if (sel) renderPanel(); });
+  useTranslation(S.tr);
+} else $('#trSel').closest('label').hidden = true;
+refreshActive(); renderPanel();
+$('#loading').remove();
+invalidate(true);
+if (document.fonts) document.fonts.ready.then(() => invalidate(false));
+})();
+</script>
+<script src="scriptorium-link.js" charset="utf-8"></script>

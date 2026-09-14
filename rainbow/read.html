@@ -1,0 +1,939 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Read</title>
+<meta name="description" content="Read the Bible in 29 English translations, and study any verse: the Hebrew or Greek words, their meanings, how they are translated, where else they appear, and cross-references.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --dark:0;
+  --ground:#FAFAF7; --panel:#FFFFFF; --ink:#1B1A21; --muted:#6D6A77; --faint:#A3A0AC; --rule:#E4E2E8; --wash:#F2F1F5;
+  --ribbon:#8C6A1C; --ribbon-soft:#F4ECD8; --control:#EDECF1; --control-on:#1B1A21; --on-control-on:#FAFAF7;
+  --red-jesus:#C8102E; --red-god:#6B1119; --shadow:rgba(27,20,40,.14);
+  --serif:"Libre Baskerville","Baskerville","Baskerville Old Face",Georgia,serif;
+  --sans:"Schibsted Grotesk","Segoe UI",system-ui,-apple-system,sans-serif;
+  --hebrew:"Noto Serif Hebrew","SBL Hebrew","Ezra SIL","Times New Roman",serif;
+  --greek:"Noto Serif","Gentium Plus","Times New Roman",Georgia,serif;
+  --read-size:18px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --dark:1; --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E; --wash:#18171F;
+    --ribbon:#D4AE63; --ribbon-soft:#2A2416; --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11;
+    --red-jesus:#FF6B6B; --red-god:#C9868B; --shadow:rgba(0,0,0,.5); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --dark:1; --ground:#0C0B11; --panel:#131219; --ink:#ECEAF2; --muted:#9E9AA9; --faint:#666271; --rule:#26242E; --wash:#18171F;
+  --ribbon:#D4AE63; --ribbon-soft:#2A2416; --control:#1F1D27; --control-on:#ECEAF2; --on-control-on:#0C0B11;
+  --red-jesus:#FF6B6B; --red-god:#C9868B; --shadow:rgba(0,0,0,.5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ribbon);outline-offset:2px}
+.ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.eyebrow{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- bar ---------- */
+.bar{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 20px}
+.brand{display:flex;align-items:baseline;gap:14px;margin-right:6px}
+.brand b{font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:-.01em}
+.nav{display:flex;gap:12px;font-size:12.5px}
+.nav a{color:var(--muted);text-decoration:none}
+.nav a:hover{color:var(--ink)}
+.grow{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:13px;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--ink)}
+.btn.big{font-family:var(--serif);font-size:15px}
+.btn.icon{width:32px;justify-content:center;padding:0}
+select.sel{height:32px;max-width:230px;padding:0 6px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:13px}
+.search{position:relative}
+.search input{width:240px;height:32px;padding:0 10px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);font-size:13px}
+.search input:focus{outline:none;border-color:var(--ink)}
+.search input::placeholder{color:var(--faint)}
+.opts{display:inline-flex;background:var(--control);border-radius:4px;padding:2px}
+.opts label{position:relative;display:block}
+.opts input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opts span{display:block;padding:4px 9px;border-radius:3px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.opts input:checked + span{background:var(--control-on);color:var(--on-control-on)}
+.opts input:focus-visible + span{outline:2px solid var(--ribbon);outline-offset:1px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.toggle input{margin:0;width:15px;height:15px;accent-color:var(--red-jesus)}
+.ctl-label{font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.ctl{display:inline-flex;align-items:center;gap:7px}
+
+/* ---------- layout ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+.reader{min-width:0;padding:34px 28px 90px;display:flex;flex-direction:column;align-items:center}
+.page{width:100%;max-width:44em}
+.page.two{max-width:78em}
+.chap-head{display:flex;flex-direction:column;gap:6px;margin-bottom:22px}
+.chap-head h1{margin:0;font-family:var(--serif);font-weight:400;font-size:40px;line-height:1.1;letter-spacing:-.015em}
+.chap-sub{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--muted)}
+.chap-sub button{border:0;background:none;padding:0;color:inherit;font:inherit;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:pointer}
+.chap-sub button:hover{color:var(--ink)}
+.para{margin:0;font-family:var(--serif);font-size:var(--read-size);line-height:1.85;text-wrap:pretty}
+.v{cursor:pointer;border-radius:3px;transition:background .12s;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.v:hover{background:var(--wash)}
+.v.on{background:var(--ribbon-soft);box-shadow:0 0 0 2px var(--ribbon-soft)}
+.vn{font-family:var(--sans);font-size:.58em;font-weight:600;color:var(--ribbon);vertical-align:.55em;margin:0 .25em 0 .15em;font-variant-numeric:tabular-nums}
+.vrows{display:flex;flex-direction:column}
+.vhead{display:grid;gap:18px;padding:0 0 8px;border-bottom:1px solid var(--rule);font-size:12px;color:var(--muted)}
+.vrow{display:grid;gap:18px;padding:7px 8px;margin:0 -8px;border-radius:4px;cursor:pointer;font-family:var(--serif);font-size:var(--read-size);line-height:1.75}
+.vrow:hover{background:var(--wash)}
+.vrow.on{background:var(--ribbon-soft)}
+.vrow .num{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ribbon);padding-top:.35em;text-align:right;font-variant-numeric:tabular-nums}
+.missing{font-style:italic;color:var(--faint)}
+.rl-j{color:var(--red-jesus)} .rl-g{color:var(--red-god)}
+.ew{border-radius:2px}
+.ew.hl,.wc.hl{background:var(--ribbon-soft);box-shadow:0 2px 0 -1px var(--ribbon)}
+.chap-nav{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:18px;border-top:1px solid var(--rule)}
+.results{display:flex;flex-direction:column;gap:0}
+.res{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--rule);text-align:left;background:none;border-left:0;border-right:0;border-bottom:0;width:100%;font:inherit}
+.res:hover .res-r{text-decoration:underline}
+.res-r{font-weight:600;font-size:13px;color:var(--ribbon)}
+.res-t{font-family:var(--serif);font-size:15px;line-height:1.65}
+mark{background:var(--ribbon-soft);color:inherit;border-radius:2px;padding:0 1px}
+.loading{font-family:var(--serif);font-style:italic;color:var(--muted)}
+
+/* ---------- study panel ---------- */
+.study{position:sticky;top:53px;width:min(480px,40vw);height:calc(100vh - 53px);overflow:auto;overscroll-behavior:contain;background:var(--panel);border-left:1px solid var(--rule);display:flex;flex-direction:column}
+.st-head{padding:20px 22px 14px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--rule);position:relative}
+.st-head h2{margin:0;font-family:var(--serif);font-weight:400;font-size:26px;padding-right:36px}
+.st-close{position:absolute;top:14px;right:14px}
+.st-verse{margin:0;font-family:var(--serif);font-size:15.5px;line-height:1.7}
+.st-verse small{display:block;font-family:var(--sans);font-size:11px;color:var(--muted);margin-bottom:2px}
+.st-links{display:flex;flex-wrap:wrap;gap:6px}
+.st-links .btn{height:28px;font-size:12px}
+.tabs{display:flex;gap:4px;padding:10px 22px 0;border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--panel);z-index:3}
+.tab{border:0;background:none;padding:8px 10px;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ribbon);font-weight:600}
+.pane{padding:16px 22px 40px;display:flex;flex-direction:column;gap:14px}
+.hint{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.cards{display:flex;flex-wrap:wrap;gap:6px}
+.cards.rtl{direction:rtl}
+.wc{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:64px;padding:7px 8px 6px;border:1px solid var(--rule);border-radius:5px;background:var(--panel);text-align:center;direction:ltr}
+.wc:hover{border-color:var(--ribbon)}
+.wc.sel{border-color:var(--ribbon);box-shadow:inset 0 0 0 1px var(--ribbon)}
+.wc.dim{opacity:.55}
+.wc-o{font-family:var(--greek);font-size:17px;line-height:1.35}
+.wc-o.he{font-family:var(--hebrew);font-size:21px}
+.wc-t{font-family:var(--serif);font-style:italic;font-size:12px;color:var(--muted)}
+.wc-e{font-size:12px}
+.wc-s{font-size:10.5px;font-weight:600;color:var(--ribbon);font-variant-numeric:tabular-nums}
+.sec{display:flex;flex-direction:column;gap:6px;padding-top:14px;border-top:1px solid var(--rule)}
+.sec h3{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.sec h3 span{letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+.sec p{margin:0;font-family:var(--serif);font-size:14px;line-height:1.65}
+.lemma{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.lemma-o{font-family:var(--greek);font-size:34px;line-height:1.15}
+.lemma-o.he{font-family:var(--hebrew);font-size:40px}
+.lemma-t{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--muted)}
+.facts{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0}
+.flag{font-size:12px;color:var(--ribbon)}
+.senses{margin:0;padding-left:18px;font-size:13px}
+.rend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px}
+.rend-col{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rend-col b{font-size:12px;margin-bottom:2px}
+.rrow{display:grid;grid-template-columns:auto minmax(0,1fr) 38px;align-items:center;gap:6px;font-size:12.5px;cursor:pointer}
+.rrow input{margin:0;width:14px;height:14px;accent-color:var(--ribbon)}
+.rrow .lab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rrow .lab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rrow i{display:block;height:4px;border-radius:1px;background:var(--ribbon);opacity:.7}
+.rrow .n{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.rrow.plain{cursor:default}
+.linkish{border:0;background:none;padding:0;font-size:12px;color:var(--muted);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:pointer}
+.linkish:hover{color:var(--ink)}
+.row-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.dist{display:grid;grid-template-columns:repeat(66,minmax(0,1fr));gap:1px;align-items:end;height:40px}
+.dist div{background:var(--ribbon);opacity:.7}
+.dist div.nt{opacity:.45}
+.dist-axis{position:relative;height:14px;font-size:10.5px;color:var(--muted)}
+.dist-axis span{position:absolute;top:0}
+.occs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.occ{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-top:1px solid var(--rule)}
+.occ:first-child{border-top:0}
+.occ-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.occ-ref{border:0;background:none;padding:0;font-weight:600;font-size:13px;color:var(--ribbon);cursor:pointer}
+.occ-ref:hover{text-decoration:underline}
+.occ-here{font-size:11px;color:var(--muted)}
+.occ-r{font-size:11.5px;color:var(--muted)}
+.occ-t{margin:0;font-family:var(--serif);font-size:13.5px;line-height:1.6}
+.xr{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-top:1px solid var(--rule)}
+.xr:first-child{border-top:0}
+.xr-top{display:flex;align-items:baseline;gap:8px;font-size:13px}
+.xr-top .n{margin-left:auto;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.view-card{display:flex;flex-direction:column;gap:5px;padding:10px 12px;border:1px solid var(--rule);border-radius:5px}
+.view-card h4{margin:0;font-family:var(--serif);font-weight:400;font-size:14.5px}
+.view-card .cite{font-size:11.5px;color:var(--muted)}
+.empty{font-family:var(--serif);font-style:italic;color:var(--muted)}
+
+/* ---------- pickers, tooltips, help ---------- */
+.pop{position:fixed;z-index:40;background:var(--panel);border:1px solid var(--rule);border-radius:6px;box-shadow:0 20px 60px var(--shadow);padding:14px 16px;max-height:min(620px,calc(100vh - 80px));overflow:auto}
+.bookgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 26px;width:min(760px,calc(100vw - 32px))}
+.bookgrid h4{margin:10px 0 4px;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.bookgrid h5{margin:8px 0 3px;font-size:12px;font-weight:600}
+.bookbtns{display:flex;flex-wrap:wrap;gap:4px}
+.bookbtns button{border:1px solid var(--rule);background:var(--panel);border-radius:3px;padding:3px 8px;font-size:12.5px}
+.bookbtns button:hover,.bookbtns button.cur{border-color:var(--ribbon);color:var(--ribbon)}
+.chapgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:4px;width:min(420px,calc(100vw - 32px))}
+.chapgrid button{height:34px;border:1px solid var(--rule);background:var(--panel);border-radius:3px;font-variant-numeric:tabular-nums}
+.chapgrid button:hover,.chapgrid button.cur{border-color:var(--ribbon);color:var(--ribbon)}
+.ctip{position:fixed;left:0;top:0;z-index:60;width:max-content;max-width:280px;pointer-events:none;background:var(--ink);color:var(--ground);border-radius:4px;padding:8px 11px 9px;box-shadow:0 10px 30px var(--shadow);display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity .12s}
+.ctip.show{opacity:1}
+.ctip b{font-size:12.5px;font-weight:600}
+.ctip span{font-size:12px;line-height:1.45;opacity:.86}
+.ctip.has-link{pointer-events:auto}
+.ctip.has-link::before{content:"";position:absolute;left:0;right:0;height:14px}
+.ctip.has-link[data-side="top"]::before{bottom:-14px}
+.ctip.has-link[data-side="bottom"]::before{top:-14px}
+.ctip-more{margin-top:5px;align-self:flex-start;font-size:12px;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}
+dialog.help{width:min(720px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink);box-shadow:0 30px 80px var(--shadow)}
+dialog.help::backdrop{background:rgba(12,11,17,.45)}
+.help-head{position:sticky;top:0;display:flex;align-items:center;gap:10px;padding:20px 26px 14px;background:var(--panel);border-bottom:1px solid var(--rule)}
+.help-head h2{margin:0 auto 0 0;font-family:var(--serif);font-weight:400;font-size:25px}
+.help-body{padding:6px 26px 26px;display:flex;flex-direction:column;gap:6px}
+.help-body h3{margin:14px 0 4px;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.help-body p{margin:0;font-family:var(--serif);font-size:14px;line-height:1.65}
+.help-body dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px}
+.help-body dt{font-weight:600;white-space:nowrap}
+.help-body dd{margin:0;color:var(--muted)}
+
+@media (max-width: 980px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .study{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;height:70vh;border-left:0;border-top:1px solid var(--rule);border-radius:12px 12px 0 0;box-shadow:0 -10px 40px var(--shadow);z-index:30}
+  .search input{width:170px}
+  .reader{padding:22px 16px 80px}
+  .chap-head h1{font-size:32px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand"><b>Read</b>
+      <nav class="nav" aria-label="Other pages"><a href="index.html">Rainbow</a><a href="echoes.html">Echoes</a><a href="guide.html#reader">Guide</a><a data-scriptorium data-tip-title="Scriptorium" data-more="guide.html#scriptorium" data-tip="The full database reading room: 152 texts, a Strong's concordance and more. It must be running first: double-click Start Scriptorium in the project folder, then use this link.">Scriptorium</a></nav>
+    </div>
+    <button class="btn big" id="bookBtn" type="button" aria-haspopup="dialog" data-tip-title="Book" data-tip="Choose a book, grouped by testament and category.">Genesis</button>
+    <button class="btn big" id="chapBtn" type="button" aria-haspopup="dialog" data-tip-title="Chapter" data-tip="Choose a chapter of this book.">1</button>
+    <button class="btn icon" id="prevBtn" type="button" aria-label="Previous chapter" data-tip-title="Previous chapter" data-tip="Go back one chapter. Keyboard: left arrow."><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button>
+    <button class="btn icon" id="nextBtn" type="button" aria-label="Next chapter" data-tip-title="Next chapter" data-tip="Go forward one chapter. Keyboard: right arrow."><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></button>
+    <label class="ctl" data-tip-title="Translation" data-more="guide.html#translations" data-tip="The English Bible you are reading. Shared with the Rainbow and Echoes.">
+      <span class="ctl-label">Translation</span><select class="sel" id="trSel" aria-label="Translation"></select>
+    </label>
+    <label class="ctl" data-tip-title="Compare" data-tip="Show a second translation beside the first, verse by verse.">
+      <span class="ctl-label">Compare</span><select class="sel" id="cmpSel" aria-label="Compare with"></select>
+    </label>
+    <span class="grow"></span>
+    <form class="search" id="searchForm" role="search" data-tip-title="Search" data-tip="Type a passage (John 3:16, Psalm 23) or words to find (love one another), then press Enter." data-kbd="/">
+      <input id="q" type="search" placeholder="Passage or words" aria-label="Passage or words">
+    </form>
+    <span class="opts" role="radiogroup" aria-label="Layout" data-tip-title="Layout" data-tip="Paragraph reads like a printed Bible. Verses puts each verse on its own line.">
+      <label><input type="radio" name="view" value="para" checked><span>Paragraph</span></label>
+      <label><input type="radio" name="view" value="verses"><span>Verses</span></label>
+    </span>
+    <button class="btn icon" id="smaller" type="button" aria-label="Smaller text" data-tip-title="Smaller text" data-tip="Make the Bible text smaller.">A−</button>
+    <button class="btn icon" id="larger" type="button" aria-label="Larger text" data-tip-title="Larger text" data-tip="Make the Bible text larger.">A+</button>
+    <label class="toggle" data-tip-title="Red letters" data-more="guide.html#red-letters" data-tip="Words of Jesus in red; words of God (found automatically) in dark red. Marked in the KJV and WEB."><input type="checkbox" id="redToggle" checked> Red letters</label>
+    <span class="opts" role="radiogroup" aria-label="Theme" data-tip-title="Theme" data-tip="Light, dark, or follow your device.">
+      <label><input type="radio" name="theme" value="light"><span>Light</span></label>
+      <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+      <label><input type="radio" name="theme" value="system" checked><span>System</span></label>
+    </span>
+    <button class="btn" id="helpBtn" type="button" data-tip-title="Help" data-tip="How to read and study with this page." data-kbd="?">? Help</button>
+  </div>
+</header>
+
+<div class="layout">
+  <main class="reader" id="reader"><div class="page"><p class="loading">Opening the Bible…</p></div></main>
+  <aside class="study" id="study" hidden aria-label="Verse study">
+    <div class="st-head" id="stHead"></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="words" aria-selected="true" data-tip-title="Words" data-tip="The Hebrew, Aramaic or Greek words of this verse. Click one to study it.">Original words</button>
+      <button class="tab" role="tab" data-tab="xrefs" aria-selected="false" data-tip-title="Cross-references" data-more="guide.html#votes" data-tip="Other passages that study Bibles link to this verse, most helpful first.">Cross-references</button>
+      <button class="tab" role="tab" data-tab="book" aria-selected="false" data-tip-title="About the book" data-more="guide.html#dating" data-tip="Who wrote this book, when and where, with traditional and scholarly views.">About the book</button>
+    </div>
+    <section class="pane" id="paneWords">
+      <p class="hint" id="wordsHint"></p>
+      <div class="cards" id="cards"></div>
+      <div id="detail" hidden>
+        <div id="dTop"></div>
+        <div class="sec" id="dTrans"></div>
+        <div class="sec">
+          <h3>Where else it's used <span id="dCount"></span></h3>
+          <div class="dist" id="dDist" role="img" aria-label="Verses by book"></div>
+          <div class="dist-axis"><span style="left:0">Genesis</span><span style="left:59%">Matthew</span><span style="right:0">Revelation</span></div>
+          <div class="row-tools"><span id="dBooks"></span><span class="hint" id="dShowing"></span></div>
+          <ol class="occs" id="dList"></ol>
+          <button class="btn" id="dMore" type="button" hidden>Show more</button>
+        </div>
+      </div>
+    </section>
+    <section class="pane" id="paneXrefs" hidden></section>
+    <section class="pane" id="paneBook" hidden></section>
+  </aside>
+</div>
+
+<div class="pop" id="bookPop" role="dialog" aria-label="Choose a book" hidden></div>
+<div class="pop" id="chapPop" role="dialog" aria-label="Choose a chapter" hidden></div>
+<div class="ctip" id="ctip" role="tooltip" hidden></div>
+
+<dialog class="help" id="help" aria-labelledby="helpTitle">
+  <div class="help-head"><h2 id="helpTitle">Reading and studying</h2><a class="btn" href="guide.html#reader">Full guide</a><form method="dialog"><button class="btn" aria-label="Close help">Close</button></form></div>
+  <div class="help-body">
+    <h3>Reading</h3>
+    <dl>
+      <dt>Book · chapter</dt><dd>Click the book name or chapter number at the top. Arrows (or the ← → keys) turn the page.</dd>
+      <dt>Translation</dt><dd>29 English Bibles. <b>Compare</b> shows a second one beside it.</dd>
+      <dt>Search</dt><dd>Type a passage like <i>Romans 8:28</i>, or words like <i>love one another</i>, and press Enter.</dd>
+      <dt>Layout · size</dt><dd>Paragraph or one verse per line; A− and A+ change the text size.</dd>
+    </dl>
+    <h3>Studying a verse</h3>
+    <p>Click any verse. A panel opens with:</p>
+    <dl>
+      <dt>Original words</dt><dd>The Hebrew, Aramaic or Greek, word by word, with how to say it and what it means. Hover a word to underline its English words in the verse (KJV and BSB). Click it to see its dictionary meaning, its grammar, how the KJV and BSB translate it everywhere, and every verse that uses it. Tick translations or books to narrow that list, and click any verse to go there.</dd>
+      <dt>Cross-references</dt><dd>Passages study Bibles link to this verse.</dd>
+      <dt>About the book</dt><dd>Who wrote it, when and where, with traditional and scholarly views.</dd>
+    </dl>
+    <h3>Keyboard</h3>
+    <p><b>←</b> <b>→</b> previous / next chapter · <b>/</b> search · <b>Esc</b> close the panel · <b>?</b> this help</p>
+  </div>
+</dialog>
+
+<script src="data.js" charset="utf-8"></script>
+<script src="texts/manifest.js" charset="utf-8"></script>
+<script src="translations.js" charset="utf-8"></script>
+<script src="bookfilter.js" charset="utf-8"></script>
+<script src="morph.js" charset="utf-8"></script>
+<script>
+(async function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const fmt = n => Number(n).toLocaleString('en-US');
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const root = document.documentElement;
+const reader = $('#reader'), study = $('#study');
+const D = window.RAINBOW_DATA, TX = window.RainbowTexts, RB = window.RainbowBooks;
+const fail = msg => { reader.innerHTML = `<div class="page"><p class="empty">${esc(msg)}</p></div>`; };
+if (!D || !TX) return fail('The data files did not load. Keep read.html in the rainbow folder with data.js, translations.js and the texts folder.');
+if (typeof DecompressionStream === 'undefined') return fail('This browser cannot unpack the data. Open the page in a current version of Chrome, Edge, Firefox or Safari.');
+const b64 = s => { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
+const inflate = s => new Response(new Blob([b64(s)]).stream().pipeThrough(new DecompressionStream('gzip')));
+const ICON = {
+  right: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5 12.5 8 9 11.5"/></svg>',
+  x: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+};
+function loadScript(src) {
+  return new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.charset = 'utf-8'; el.onload = res; el.onerror = () => rej(new Error('Could not load ' + src)); document.head.appendChild(el); });
+}
+
+// ------------------------------------------------------------ Bible structure
+const BOOKS = D.books, NB = 66;
+const chBook = [], chNum = [], chCount = [], chStart = [], bookCh0 = [];
+{
+  let g = 0;
+  BOOKS.forEach((b, bi) => {
+    b.short = b.osis.replace(/^(\d)/, '$1 ');
+    b.key = b.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    bookCh0[bi] = chBook.length;
+    b.chapters.forEach((n, ci) => { chBook.push(bi); chNum.push(ci + 1); chCount.push(n); chStart.push(g); g += n; });
+  });
+  bookCh0[NB] = chBook.length; chStart.push(g);
+}
+const NC = chBook.length, NV = chStart[NC];
+const verseCh = new Uint16Array(NV);
+for (let c = 0; c < NC; c++) verseCh.fill(c, chStart[c], chStart[c + 1]);
+const bookName = b => b === 18 ? 'Psalm' : BOOKS[b].name;
+const refOf = g => { const c = verseCh[g]; return `${BOOKS[chBook[c]].name} ${chNum[c]}:${g - chStart[c] + 1}`; };
+const shortRef = g => { const c = verseCh[g]; return `${BOOKS[chBook[c]].short} ${chNum[c]}:${g - chStart[c] + 1}`; };
+const osisOf = g => { const c = verseCh[g]; return `${BOOKS[chBook[c]].osis}.${chNum[c]}.${g - chStart[c] + 1}`; };
+const testamentOf = b => b < 39 ? 'OT' : 'NT';
+
+// ------------------------------------------------------------ state
+const SAVE_KEY = 'reference-rainbow-read';
+const ST = { tr: TX.saved(), cmp: '', view: 'para', size: 18, red: true, ch: 0, sel: -1, word: -1, tab: 'words', group: 'kjv', rend: null, shown: 25, search: null, pendingSid: '' };
+try { Object.assign(ST, JSON.parse(localStorage.getItem(SAVE_KEY) || '{}')); } catch (_) { /* storage blocked */ }
+Object.assign(ST, { sel: -1, word: -1, tab: 'words', rend: null, shown: 25, search: null, pendingSid: '', tr: TX.saved() });
+ST.ch = clamp(ST.ch | 0, 0, NC - 1);
+ST.group = String(ST.group).toLowerCase() === 'bsb' ? 'bsb' : 'kjv';
+const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify({ cmp: ST.cmp, view: ST.view, size: ST.size, red: ST.red, ch: ST.ch, group: ST.group })); } catch (_) { /* storage blocked */ } };
+let T1 = null, T2 = null;
+
+// ------------------------------------------------------------ reference parsing
+const ALIASES = { psalm: 18, psa: 18, jn: 42, mt: 39, mk: 40, lk: 41, sos: 21, songofsongs: 21, phm: 56, jas: 58, revelations: 65, canticles: 21 };
+function findBook(q) {
+  const key = q.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!key) return -1;
+  if (key in ALIASES) return ALIASES[key];
+  let i = BOOKS.findIndex(b => b.key === key || b.osis.toLowerCase() === key);
+  if (i < 0) i = BOOKS.findIndex(b => b.key.startsWith(key) || b.osis.toLowerCase().startsWith(key));
+  return i;
+}
+function parseRef(q) {
+  const m = q.trim().match(/^((?:[1-3]\s*)?[a-z][a-z .]*?)\.?\s*(\d+)?(?:\s*[:. ]\s*(\d+))?\s*$/i);
+  if (!m) return null;
+  const b = findBook(m[1]);
+  if (b < 0) return null;
+  const c = bookCh0[b] + clamp(+(m[2] || 1), 1, bookCh0[b + 1] - bookCh0[b]) - 1;
+  const g = m[3] ? chStart[c] + clamp(+m[3], 1, chCount[c]) - 1 : -1;
+  return { c, g };
+}
+
+// ------------------------------------------------------------ verse text
+function verseHtml(T, g, withLinks) {
+  if (!T) return '';
+  const t = T.verses[g] || '';
+  if (!t) return `<span class="missing">Not in the ${esc(T.info.short)}</span>`;
+  const red = ST.red ? (T.red.get(g) || []) : [];
+  const words = withLinks && SB.get(chBook[verseCh[g]])?.a[T.id]?.[g] || [];
+  if (!red.length && !words.length) return esc(t);
+  const cuts = new Set([0, t.length]);
+  for (const [x, y] of red) { cuts.add(x); cuts.add(y); }
+  for (const [x, y] of words) { cuts.add(x); cuts.add(y); }
+  const pts = [...cuts].filter(x => x >= 0 && x <= t.length).sort((x, y) => x - y);
+  let out = '';
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const x = pts[i], y = pts[i + 1];
+    const rk = red.find(([p0, p1]) => p0 <= x && y <= p1);
+    const ids = [...new Set(words.filter(([p0, p1]) => p0 <= x && y <= p1).map(w => w[2]))];
+    const cls = [rk ? (rk[2] === 1 ? 'rl-j' : 'rl-g') : '', ids.length ? 'ew' : ''].filter(Boolean).join(' ');
+    const piece = esc(t.slice(x, y));
+    out += cls ? `<span class="${cls}"${ids.length ? ` data-s="${ids.join(' ')}"` : ''}>${piece}</span>` : piece;
+  }
+  return out;
+}
+
+// ------------------------------------------------------------ chapter view
+function renderChapter() {
+  ST.search = null;
+  const c = ST.ch, b = chBook[c], g0 = chStart[c], n = chCount[c];
+  const cat = RB ? RB.categoryOf(b) : null;
+  $('#bookBtn').textContent = BOOKS[b].name;
+  $('#chapBtn').textContent = chNum[c];
+  $('#prevBtn').disabled = c === 0; $('#nextBtn').disabled = c === NC - 1;
+  document.title = `${bookName(b)} ${chNum[c]} · Read`;
+  const two = !!T2;
+  let body;
+  if (!T1) body = '<p class="loading">Loading the text…</p>';
+  else if (two || ST.view === 'verses') {
+    const cols = two ? '2.2rem minmax(0,1fr) minmax(0,1fr)' : '2.2rem minmax(0,1fr)';
+    body = `${two ? `<div class="vhead" style="grid-template-columns:${cols}"><span></span><span>${esc(T1.info.name)}</span><span>${esc(T2.info.name)}</span></div>` : ''}
+      <div class="vrows">${Array.from({ length: n }, (_, i) => {
+        const g = g0 + i;
+        return `<div class="vrow${g === ST.sel ? ' on' : ''}" data-g="${g}" style="grid-template-columns:${cols}"><span class="num">${i + 1}</span><span>${verseHtml(T1, g, g === ST.sel)}</span>${two ? `<span>${verseHtml(T2, g, g === ST.sel)}</span>` : ''}</div>`;
+      }).join('')}</div>`;
+  } else {
+    body = `<p class="para">${Array.from({ length: n }, (_, i) => {
+      const g = g0 + i;
+      return `<span class="v${g === ST.sel ? ' on' : ''}" data-g="${g}"><sup class="vn">${i + 1}</sup>${verseHtml(T1, g, g === ST.sel)}</span>`;
+    }).join(' ')}</p>`;
+  }
+  const prev = c > 0 ? `${bookName(chBook[c - 1])} ${chNum[c - 1]}` : '', next = c < NC - 1 ? `${bookName(chBook[c + 1])} ${chNum[c + 1]}` : '';
+  reader.innerHTML = `<div class="page${two ? ' two' : ''}">
+    <header class="chap-head">
+      <p class="eyebrow">${b < 39 ? 'Old Testament' : 'New Testament'}${cat ? ' · ' + esc(cat.name) : ''}</p>
+      <h1>${esc(bookName(b))} ${chNum[c]}</h1>
+      <p class="chap-sub"><span>${T1 ? esc(T1.info.name) : ''}</span><span>${n} verses</span><span>Click a verse to study it</span>
+        <button type="button" data-about>About ${esc(BOOKS[b].name)}</button><a href="echoes.html#ref=${encodeURIComponent(BOOKS[b].name + ' ' + chNum[c])}">Repeated phrases</a><a href="index.html#${BOOKS[b].osis}.${chNum[c]}">On the Rainbow</a></p>
+    </header>
+    ${body}
+    <nav class="chap-nav">${prev ? `<button class="btn big" type="button" data-step="-1">${ICON.right.replace('M2.5 8h10M9 4.5 12.5 8 9 11.5', 'M13.5 8h-10M7 4.5 3.5 8 7 11.5')} ${esc(prev)}</button>` : '<span></span>'}${next ? `<button class="btn big" type="button" data-step="1">${esc(next)} ${ICON.right}</button>` : ''}</nav>
+  </div>`;
+  if (!T1 || T1.verses[g0] || n === 0) return;
+}
+function goChapter(c, g = -1, keepWordSid = '') {
+  const changed = c !== ST.ch;
+  ST.ch = clamp(c, 0, NC - 1);
+  save();
+  ST.pendingSid = keepWordSid;
+  if (g >= 0) select(g, true);
+  else { if (changed && ST.sel >= 0 && verseCh[ST.sel] !== ST.ch) closeStudy(); renderChapter(); reader.scrollIntoView ? window.scrollTo({ top: 0 }) : 0; writeHash(); }
+}
+function writeHash() {
+  const h = ST.sel >= 0 ? osisOf(ST.sel) : `${BOOKS[chBook[ST.ch]].osis}.${chNum[ST.ch]}`;
+  try { history.replaceState(null, '', '#' + h); } catch (_) { /* sandboxed */ }
+}
+
+// ------------------------------------------------------------ search
+function runSearch(q) {
+  const r = parseRef(q);
+  if (r) { goChapter(r.c, r.g); return; }
+  if (!T1) return;
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) return;
+  const hits = [];
+  for (let g = 0; g < NV && hits.length < 500; g++) {
+    const t = (T1.verses[g] || '').toLowerCase();
+    if (t && terms.every(w => t.includes(w))) hits.push(g);
+  }
+  const phrase = q.toLowerCase();
+  const exact = new Set(hits.filter(g => T1.verses[g].toLowerCase().includes(phrase)));
+  hits.sort((a, z) => (exact.has(z) - exact.has(a)) || a - z);  // the exact phrase first, then verses with all the words
+  ST.search = { q, hits };
+  const rx = new RegExp(`(${terms.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+  reader.innerHTML = `<div class="page">
+    <header class="chap-head"><p class="eyebrow">Search · ${esc(T1.info.name)}</p><h1>“${esc(q)}”</h1>
+      <p class="chap-sub"><span>${hits.length >= 500 ? 'First 500' : fmt(hits.length)} verses</span><button type="button" data-back>Back to ${esc(bookName(chBook[ST.ch]))} ${chNum[ST.ch]}</button></p></header>
+    ${hits.length ? `<div class="results">${hits.map(g => `<button class="res" type="button" data-go="${g}"><span class="res-r">${esc(refOf(g))}</span><span class="res-t">${esc(T1.verses[g]).replace(rx, '<mark>$1</mark>')}</span></button>`).join('')}</div>`
+      : `<p class="empty">No verses in the ${esc(T1.info.short)} contain all of those words. Try fewer words, or another translation.</p>`}
+  </div>`;
+  window.scrollTo({ top: 0 });
+}
+
+// ------------------------------------------------------------ study data (loaded when first needed)
+const SB = new Map();          // book index -> {v: {g: words}, a: {KJV: {g: links}, BSB: ...}}
+const sbJobs = new Map();
+function loadStudyBook(b) {
+  if (sbJobs.has(b)) return sbJobs.get(b);
+  const n = b + 1, job = (async () => {
+    if (!(window.STUDY_BOOKS || {})[n]) await loadScript(`study/books/B${String(n).padStart(2, '0')}.js`);
+    const d = JSON.parse(await inflate(window.STUDY_BOOKS[n].z).text());
+    SB.set(b, d);
+    return d;
+  })();
+  sbJobs.set(b, job);
+  job.catch(() => sbJobs.delete(b));
+  return job;
+}
+let LEX = null, CONC = null, lexJob = null, concJob = null;
+const loadLex = () => lexJob || (lexJob = (async () => { if (!window.STUDY_LEX) await loadScript('study/lexicon.js'); LEX = JSON.parse(await inflate(window.STUDY_LEX.z).text()); return LEX; })());
+const loadConc = () => concJob || (concJob = (async () => { if (!window.STUDY_CONC) await loadScript('study/concordance.js'); CONC = JSON.parse(await inflate(window.STUDY_CONC.z).text()); return CONC; })());
+const concCache = new Map();
+function occurrences(sid) {
+  if (concCache.has(sid)) return concCache.get(sid);
+  const e = CONC && CONC.s[sid];
+  if (!e) return null;
+  const list = [];
+  let g = 0;
+  for (let i = 0; i < e[0].length; i++) { g += e[0][i]; list.push({ g, kjv: CONC.r[e[1][i]], bsb: CONC.r[e[2][i]] }); }
+  concCache.set(sid, list);
+  return list;
+}
+
+// cross-references (decoded on first use)
+let XR = null;
+async function xrefs() {
+  if (XR) return XR;
+  const [fd, td, sp, vt] = await Promise.all([D.fromDelta, D.toDiff, D.span, D.votes].map(s => inflate(s).arrayBuffer()));
+  const F = new Uint16Array(fd), TD = new Int16Array(td), SP = new Uint16Array(sp), V = new Int16Array(vt), N = F.length;
+  const from = new Uint16Array(N), to = new Uint16Array(N);
+  for (let i = 0, f = 0; i < N; i++) { f += F[i]; from[i] = f; to[i] = f + TD[i]; }
+  const off = new Uint32Array(NV + 1);
+  for (let i = 0; i < N; i++) { off[from[i] + 1]++; if (to[i] !== from[i]) off[to[i] + 1]++; }
+  for (let v = 0; v < NV; v++) off[v + 1] += off[v];
+  const arcs = new Uint32Array(off[NV]), ptr = off.slice(0, NV);
+  for (let i = 0; i < N; i++) { arcs[ptr[from[i]]++] = i; if (to[i] !== from[i]) arcs[ptr[to[i]]++] = i; }
+  return (XR = { from, to, span: SP, votes: V, off, arcs });
+}
+
+// ------------------------------------------------------------ selecting a verse / study panel
+function select(g, scroll) {
+  if (verseCh[g] !== ST.ch) { ST.ch = verseCh[g]; save(); }
+  const sameVerse = g === ST.sel;
+  ST.sel = g;
+  if (!sameVerse) { ST.word = -1; ST.rend = null; ST.shown = 25; }
+  study.hidden = false;
+  renderChapter();
+  writeHash();
+  renderStudy();
+  const b = chBook[verseCh[g]];
+  loadStudyBook(b).then(() => {
+    if (ST.sel !== g) return;
+    if (ST.pendingSid) {
+      const idx = (SB.get(b).v[g] || []).findIndex(w => w[3] === ST.pendingSid);
+      if (idx >= 0) ST.word = idx;
+      ST.pendingSid = '';
+    }
+    renderChapter(); renderStudy();
+  }).catch(err => { $('#wordsHint').textContent = `The word data for ${BOOKS[b].name} could not be loaded (${err.message}). Keep the study folder next to read.html.`; });
+  loadLex().then(() => { if (ST.word >= 0) renderDetail(); }).catch(() => {});
+  loadConc().then(() => { if (ST.word >= 0) renderDetail(); }).catch(() => {});
+  if (scroll) requestAnimationFrame(() => document.querySelector(`[data-g="${g}"]`)?.scrollIntoView({ block: 'center' }));
+}
+function closeStudy() {
+  ST.sel = -1; ST.word = -1; study.hidden = true;
+  renderChapter(); writeHash();
+}
+function renderStudy() {
+  const g = ST.sel;
+  if (g < 0) return;
+  const b = chBook[verseCh[g]];
+  $('#stHead').innerHTML = `<p class="eyebrow">${b < 39 ? 'Old Testament' : 'New Testament'} · ${b < 39 ? 'Hebrew and Aramaic' : 'Greek'}</p>
+    <h2>${esc(refOf(g))}</h2>
+    <button class="btn icon st-close" type="button" data-close aria-label="Close the study panel">${ICON.x}</button>
+    <p class="st-verse"><small>${esc(T1 ? T1.info.name : '')}</small>${verseHtml(T1, g, true)}</p>
+    ${T2 ? `<p class="st-verse"><small>${esc(T2.info.name)}</small>${verseHtml(T2, g, true)}</p>` : ''}
+    <div class="st-links">
+      <a class="btn" href="index.html#${osisOf(g)}">See its arcs on the Rainbow</a>
+      <a class="btn" href="echoes.html#ref=${encodeURIComponent(refOf(g))}">Repeated phrases here</a>
+    </div>`;
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === ST.tab)));
+  $('#paneWords').hidden = ST.tab !== 'words'; $('#paneXrefs').hidden = ST.tab !== 'xrefs'; $('#paneBook').hidden = ST.tab !== 'book';
+  renderWords();
+  if (ST.tab === 'xrefs') renderXrefs();
+  if (ST.tab === 'book') renderBookInfo();
+}
+function renderWords() {
+  const g = ST.sel, b = chBook[verseCh[g]], d = SB.get(b), ot = b < 39;
+  const hasLinks = T1 && (T1.id === 'KJV' || T1.id === 'BSB');
+  if (!d) { $('#wordsHint').textContent = `Loading the ${ot ? 'Hebrew' : 'Greek'}…`; $('#cards').innerHTML = ''; $('#detail').hidden = true; return; }
+  const words = d.v[g] || [];
+  $('#wordsHint').innerHTML = words.length
+    ? `${ot ? 'Read right to left.' : ''} Click a word to study it.${hasLinks ? ' Hover a word to underline its English in the verse.' : ' Choose the KJV or BSB to see each word underlined in the English.'}`
+    : 'No original-language words are recorded for this verse (its numbering may differ in the Hebrew or Greek).';
+  $('#cards').className = 'cards' + (ot ? ' rtl' : '');
+  $('#cards').innerHTML = words.map((w, i) => `<button class="wc${i === ST.word ? ' sel' : ''}${w[5] === 'n' ? ' dim' : ''}" type="button" data-w="${i}"${w[3] ? ` data-s="${w[3]}"` : ''} title="${esc(window.Morph ? Morph.describe(w[4], testamentOf(b)) : w[4])}">
+      <span class="wc-o${ot ? ' he' : ''}" lang="${ot ? 'hbo' : 'grc'}">${esc(w[0])}</span>
+      <span class="wc-t">${esc(w[1])}</span><span class="wc-e">${esc(w[2])}</span>
+      <span class="wc-s">${w[3] ? esc(w[3][0] + parseInt(w[3].slice(1), 10)) : '&nbsp;'}</span></button>`).join('');
+  renderDetail();
+}
+function renderDetail() {
+  const g = ST.sel, b = chBook[verseCh[g]], d = SB.get(b);
+  const w = d && ST.word >= 0 ? (d.v[g] || [])[ST.word] : null;
+  $('#detail').hidden = !w;
+  if (!w) return;
+  const sid = w[3], ot = b < 39, e = LEX && sid ? LEX[sid] : null;
+  const flag = { q: 'Read aloud as the margin reading (qere); the written text differs slightly.', t: "In the Greek text behind the KJV (the Textus Receptus), but not in modern critical editions.", n: "In modern critical editions of the Greek, but not in the Greek text behind the KJV." }[w[5]];
+  $('#dTop').innerHTML = `<div class="sec" style="border-top:0;padding-top:0">
+      <h3>${sid ? `Strong's ${esc(sid[0] + parseInt(sid.slice(1), 10))}` : 'Word'} <span>${e ? esc(e[3]) : ''}</span></h3>
+      <div class="lemma"><span class="lemma-o${ot ? ' he' : ''}" lang="${ot ? 'hbo' : 'grc'}">${esc(e ? e[0] : w[0])}</span><span class="lemma-t">${esc(e ? e[1] : w[1])}${e && e[2] ? ` · say “${esc(e[2])}”` : ''}</span></div>
+      <dl class="facts">
+        <dt>In this verse</dt><dd><span lang="${ot ? 'hbo' : 'grc'}">${esc(w[0])}</span> <i>${esc(w[1])}</i>: “${esc(w[2])}”</dd>
+        <dt>Grammar</dt><dd>${esc(window.Morph ? Morph.describe(w[4], testamentOf(b)) : w[4])}</dd>
+        ${e && e[7] ? `<dt>Short meaning</dt><dd>${esc(e[7])}</dd>` : ''}
+      </dl>
+      ${flag ? `<p class="flag">${esc(flag)}</p>` : ''}
+    </div>
+    ${e ? `<div class="sec"><h3>Meaning</h3><p>${esc(e[4] || '—')}</p>
+      ${e[8] ? `<p style="font-family:var(--sans);font-size:12px;color:var(--muted)">Senses distinguished by STEPBible:</p><ul class="senses">${e[8].map(([id, gl]) => `<li>${esc(gl)} <span style="color:var(--faint)">${esc(id)}</span></li>`).join('')}</ul>` : ''}
+      ${e[5] ? `<p style="font-size:13px"><b style="font-family:var(--sans);font-size:12px">KJV renders it:</b> ${esc(e[5])}</p>` : ''}
+      ${e[6] ? `<p style="font-size:13px;color:var(--muted)">Origin: ${esc(e[6])}</p>` : ''}
+      <p style="font-family:var(--sans);font-size:11px;color:var(--faint)">Strong's dictionary (Open Scriptures, CC BY-SA); short meanings and senses from STEPBible (CC BY 4.0).</p></div>`
+      : `<p class="loading">${sid ? 'Loading the dictionary…' : 'This word has no Strong\'s number.'}</p>`}`;
+  renderUsage();
+}
+
+// how it is translated + where else it is used
+let studyBooks = null;
+function renderUsage() {
+  const g = ST.sel, b = chBook[verseCh[g]], w = (SB.get(b)?.v[g] || [])[ST.word];
+  const sid = w && w[3], list = sid && CONC ? occurrences(sid) : null;
+  if (!sid) { $('#dTrans').innerHTML = ''; $('#dCount').textContent = ''; $('#dList').innerHTML = ''; $('#dDist').innerHTML = ''; $('#dMore').hidden = true; return; }
+  if (!list) { $('#dTrans').innerHTML = `<h3>How it's translated</h3><p class="loading">Loading the concordance…</p>`; return; }
+  const tally = key => {
+    const m = new Map();
+    for (const o of list) for (const part of (o[key] || '').split(' / ')) {
+      const k = part.trim().toLowerCase() || '(not translated)';
+      const cur = m.get(k) || { label: part.trim() || '(not translated)', n: 0 };
+      cur.n++; m.set(k, cur);
+    }
+    return [...m.entries()].sort((a, z) => z[1].n - a[1].n);
+  };
+  const kj = tally('kjv'), bs = tally('bsb');
+  const col = (name, key, rows) => {
+    const max = Math.max(1, ...rows.map(r => r[1].n)), active = ST.group === key;
+    const shown = rows.slice(0, ST.rendAll === key ? rows.length : 8);
+    return `<div class="rend-col"><b>${name}</b>${shown.map(([k, r]) => `<label class="rrow${active ? '' : ' plain'}">
+        ${active ? `<input type="checkbox" data-rend="${esc(k)}"${!ST.rend || ST.rend.has(k) ? ' checked' : ''}>` : '<span></span>'}
+        <span class="lab"><span>${esc(r.label)}</span><i style="width:${(r.n / max * 100).toFixed(1)}%"></i></span><span class="n">${fmt(r.n)}</span></label>`).join('')}
+      ${rows.length > 8 && ST.rendAll !== key ? `<button class="linkish" type="button" data-rend-all="${key}">All ${rows.length} renderings</button>` : ''}</div>`;
+  };
+  $('#dTrans').innerHTML = `<h3>How it's translated <span>${fmt(list.length)} verses</span></h3>
+    <div class="row-tools"><span class="opts" role="radiogroup" aria-label="Filter by the renderings of">
+      <label><input type="radio" name="grp" value="kjv"${ST.group === 'kjv' ? ' checked' : ''}><span>Filter by KJV words</span></label>
+      <label><input type="radio" name="grp" value="bsb"${ST.group === 'bsb' ? ' checked' : ''}><span>Filter by BSB words</span></label></span>
+      <button class="linkish" type="button" data-rend-select="all">Select all</button><button class="linkish" type="button" data-rend-select="none">Deselect all</button></div>
+    <div class="rend">${col('King James Version', 'kjv', kj)}${col('Berean Standard Bible', 'bsb', bs)}</div>
+    <p class="hint">Tick the renderings you want to compare; the verse list below shows only those places, so you can see how context shapes the translation.</p>`;
+  // books filter (created once)
+  if (!studyBooks && RB) studyBooks = RB.filter($('#dBooks'), { names: BOOKS.map(x => x.name), onChange: () => { ST.shown = 25; renderOccList(); } });
+  // distribution
+  const counts = new Array(NB).fill(0);
+  list.forEach(o => counts[chBook[verseCh[o.g]]]++);
+  const max = Math.max(1, ...counts);
+  $('#dDist').innerHTML = counts.map((n, i) => `<div class="${i >= 39 ? 'nt' : ''}" style="height:${n ? Math.max(6, n / max * 100) : 0}%" title="${esc(BOOKS[i].name)}: ${fmt(n)}"></div>`).join('');
+  $('#dCount').textContent = `${fmt(list.length)} verses in ${counts.filter(Boolean).length} books`;
+  renderOccList();
+}
+function renderOccList() {
+  const g = ST.sel, b = chBook[verseCh[g]], w = (SB.get(b)?.v[g] || [])[ST.word];
+  const list = w && w[3] ? occurrences(w[3]) : null;
+  if (!list) return;
+  const key = ST.group;
+  const pass = o => (!studyBooks || studyBooks.has(chBook[verseCh[o.g]])) &&
+    (!ST.rend || (o[key] || '').split(' / ').some(p => ST.rend.has(p.trim().toLowerCase() || '(not translated)')));
+  const rows = list.filter(pass);
+  const hlWords = o => {
+    const src = T1 && T1.id === 'KJV' ? o.kjv : T1 && T1.id === 'BSB' ? o.bsb : '';
+    return src ? src.split(' / ').map(s => s.trim()).filter(Boolean) : [];
+  };
+  const text = o => {
+    let t = esc(T1 ? T1.verses[o.g] || '' : '');
+    const ws = hlWords(o).sort((a, z) => z.length - a.length);
+    if (ws.length) {
+      const rx = new RegExp(`\\b(${ws.map(s => esc(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'gi');
+      t = t.replace(rx, '<mark>$1</mark>');
+    }
+    return t || '<span class="missing">Not in this translation</span>';
+  };
+  $('#dShowing').textContent = rows.length === list.length ? '' : `${fmt(rows.length)} of ${fmt(list.length)} verses match your choices`;
+  $('#dList').innerHTML = rows.slice(0, ST.shown).map(o => `<li class="occ">
+      <div class="occ-top"><button class="occ-ref" type="button" data-go="${o.g}">${esc(refOf(o.g))}</button>${o.g === g ? '<span class="occ-here">this verse</span>' : ''}
+        <span class="occ-r">KJV: ${esc(o.kjv || '—')} · BSB: ${esc(o.bsb || '—')}</span></div>
+      <p class="occ-t">${text(o)}</p></li>`).join('') || '<li class="empty">No verses match. Tick more renderings or books.</li>';
+  $('#dMore').hidden = rows.length <= ST.shown;
+  $('#dMore').textContent = `Show ${fmt(Math.min(25, rows.length - ST.shown))} more`;
+}
+async function renderXrefs() {
+  const g = ST.sel, pane = $('#paneXrefs');
+  pane.innerHTML = '<p class="loading">Loading cross-references…</p>';
+  const X = await xrefs();
+  if (ST.sel !== g) return;
+  const items = [];
+  for (let k = X.off[g]; k < X.off[g + 1]; k++) {
+    const i = X.arcs[k];
+    items.push(X.from[i] === g ? { i, other: X.to[i], span: X.span[i], out: true } : { i, other: X.from[i], span: 0, out: false });
+  }
+  items.sort((a, z) => X.votes[z.i] - X.votes[a.i]);
+  const shown = ST.xrShown || 30;
+  const label = it => it.span ? `${refOf(it.other)}–${it.other + it.span - chStart[verseCh[it.other + it.span]] + 1}` : refOf(it.other);
+  pane.innerHTML = items.length ? `<p class="hint">${fmt(items.length)} passages, most helpful first (by OpenBible.info reader votes). → listed under this verse · ← lists this verse.</p>
+    <div>${items.slice(0, shown).map(it => `<div class="xr"><div class="xr-top"><span style="color:var(--faint)">${it.out ? '→' : '←'}</span><button class="occ-ref" type="button" data-go="${it.other}">${esc(label(it))}</button><span class="n">${fmt(X.votes[it.i])} votes</span></div>
+      <p class="occ-t">${verseHtml(T1, it.other)}${it.span ? ' …' : ''}</p></div>`).join('')}</div>
+    ${items.length > shown ? `<button class="btn" type="button" data-xr-more>Show ${fmt(Math.min(30, items.length - shown))} more</button>` : ''}`
+    : '<p class="empty">No cross-references are listed for this verse.</p>';
+}
+function renderBookInfo() {
+  const b = chBook[verseCh[ST.sel >= 0 ? ST.sel : chStart[ST.ch]]], o = (D.origins || [])[b];
+  const VIEW = { consensus: 'Consensus', traditional: 'Traditional', critical: 'Critical scholarship', alternative: 'Alternative view' };
+  const CONS = { broad: 'Traditional and critical scholarship largely agree.', divided: 'Traditional and critical scholarship differ.', open: 'There is no agreement even among critical scholars.' };
+  $('#paneBook').innerHTML = o ? `<h3 style="margin:0;font-family:var(--serif);font-weight:400;font-size:20px">When ${esc(BOOKS[b].name)} was written</h3><p class="hint">${CONS[o.consensus] || ''}</p>
+    ${o.views.map(v => `<div class="view-card"><p class="eyebrow">${esc(VIEW[v.view] || v.view)}${v.section ? ' · ' + esc(v.section) : ''}</p><h4>${esc(v.author)}</h4>
+      <dl class="facts"><dt>When</dt><dd>${esc(v.date)}</dd><dt>Where</dt><dd>${esc(v.place)}</dd>${v.held ? `<dt>Held by</dt><dd>${esc(v.held)}</dd>` : ''}</dl>
+      <p class="cite">${v.src.map(([s, loc]) => esc(((D.sources || {})[s] || s) + (loc ? ', ' + loc : ''))).join('; ')}</p></div>`).join('')}`
+    : '<p class="empty">No authorship notes for this book.</p>';
+}
+
+// ------------------------------------------------------------ events
+reader.addEventListener('click', e => {
+  const step = e.target.closest('[data-step]');
+  if (step) return goChapter(ST.ch + +step.dataset.step);
+  if (e.target.closest('[data-back]')) { renderChapter(); return; }
+  if (e.target.closest('[data-about]')) { ST.tab = 'book'; select(ST.sel >= 0 ? ST.sel : chStart[ST.ch]); return; }
+  const go = e.target.closest('[data-go]');
+  if (go) { const g = +go.dataset.go; ST.ch = verseCh[g]; ST.search = null; select(g, true); return; }
+  if (e.target.closest('a')) return;
+  const ew = e.target.closest('.ew[data-s]');
+  const v = e.target.closest('[data-g]');
+  if (!v) return;
+  const g = +v.dataset.g;
+  if (ew && g === ST.sel) {
+    const idx = (SB.get(chBook[verseCh[g]])?.v[g] || []).findIndex(w => w[3] === ew.dataset.s.split(' ')[0]);
+    if (idx >= 0) { ST.tab = 'words'; ST.word = idx; ST.rend = null; ST.shown = 25; renderStudy(); return; }
+  }
+  if (g === ST.sel) return closeStudy();
+  select(g);
+});
+study.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) return closeStudy();
+  const tab = e.target.closest('[data-tab]');
+  if (tab) { ST.tab = tab.dataset.tab; renderStudy(); return; }
+  const card = e.target.closest('.wc[data-w]');
+  if (card) { const i = +card.dataset.w; ST.word = ST.word === i ? -1 : i; ST.rend = null; ST.rendAll = ''; ST.shown = 25; renderWords(); if (ST.word >= 0) $('#detail').scrollIntoView({ block: 'nearest' }); return; }
+  const go = e.target.closest('[data-go]');
+  if (go) {
+    const g = +go.dataset.go, w = (SB.get(chBook[verseCh[ST.sel]])?.v[ST.sel] || [])[ST.word];
+    const tab = ST.tab;
+    ST.pendingSid = tab === 'words' && w ? w[3] : '';
+    ST.ch = verseCh[g];
+    select(g, true);
+    ST.tab = tab;
+    return;
+  }
+  const all = e.target.closest('[data-rend-all]');
+  if (all) { ST.rendAll = all.dataset.rendAll; renderUsage(); return; }
+  const rs = e.target.closest('[data-rend-select]');
+  if (rs) {
+    ST.rend = rs.dataset.rendSelect === 'all' ? null : new Set();
+    ST.shown = 25; renderUsage(); return;
+  }
+  if (e.target.closest('#dMore')) { ST.shown += 25; renderOccList(); return; }
+  if (e.target.closest('[data-xr-more]')) { ST.xrShown = (ST.xrShown || 30) + 30; renderXrefs(); }
+});
+study.addEventListener('change', e => {
+  const r = e.target.closest('[data-rend]');
+  if (r) {
+    const all = [...study.querySelectorAll('[data-rend]')].map(x => x.dataset.rend);
+    if (!ST.rend) ST.rend = new Set(all);
+    if (r.checked) ST.rend.add(r.dataset.rend); else ST.rend.delete(r.dataset.rend);
+    // renderings hidden behind "All renderings" stay ticked unless changed
+    ST.shown = 25; renderOccList(); return;
+  }
+  if (e.target.name === 'grp') { ST.group = e.target.value; ST.rend = null; save(); renderUsage(); }
+});
+// underline an original word together with its English words
+let hlOn = [];
+document.addEventListener('pointerover', e => {
+  const el = e.target.closest('.wc[data-s], .ew[data-s]');
+  hlOn.forEach(x => x.classList.remove('hl')); hlOn = [];
+  if (!el) return;
+  const ids = el.dataset.s.split(' ');
+  document.querySelectorAll('.wc[data-s], .ew[data-s]').forEach(x => { if (x.dataset.s.split(' ').some(id => ids.includes(id))) { x.classList.add('hl'); hlOn.push(x); } });
+});
+
+// header controls
+$('#prevBtn').addEventListener('click', () => goChapter(ST.ch - 1));
+$('#nextBtn').addEventListener('click', () => goChapter(ST.ch + 1));
+$('#trSel').innerHTML = TX.optionsHtml(ST.tr);
+$('#cmpSel').innerHTML = '<option value="">None</option>' + TX.optionsHtml(ST.cmp);
+$('#cmpSel').value = ST.cmp || '';
+async function useTranslations() {
+  try {
+    const [a, b] = await Promise.all([TX.load(ST.tr), ST.cmp ? TX.load(ST.cmp) : Promise.resolve(null)]);
+    T1 = a; T2 = b;
+  } catch (err) { console.warn(err); ST.tr = 'KJV'; ST.cmp = ''; T1 = await TX.load('KJV'); T2 = null; }
+  if (ST.search) runSearch(ST.search.q); else renderChapter();
+  if (ST.sel >= 0) renderStudy();
+}
+$('#trSel').addEventListener('change', e => { ST.tr = e.target.value; TX.save(ST.tr); useTranslations(); });
+$('#cmpSel').addEventListener('change', e => { ST.cmp = e.target.value; save(); useTranslations(); });
+$$('input[name=view]').forEach(r => { r.checked = r.value === ST.view; r.addEventListener('change', () => { ST.view = r.value; save(); renderChapter(); }); });
+const applySize = () => root.style.setProperty('--read-size', ST.size + 'px');
+$('#smaller').addEventListener('click', () => { ST.size = clamp(ST.size - 1, 13, 30); applySize(); save(); });
+$('#larger').addEventListener('click', () => { ST.size = clamp(ST.size + 1, 13, 30); applySize(); save(); });
+applySize();
+$('#redToggle').checked = ST.red;
+$('#redToggle').addEventListener('change', e => { ST.red = e.target.checked; save(); renderChapter(); if (ST.sel >= 0) renderStudy(); });
+$('#searchForm').addEventListener('submit', e => { e.preventDefault(); const q = $('#q').value.trim(); if (q) { closePops(); runSearch(q); $('#q').blur(); } });
+
+// book and chapter pickers
+function openPop(pop, anchor) {
+  closePops();
+  pop.hidden = false;
+  const r = anchor.getBoundingClientRect();
+  pop.style.left = Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8)) + 'px';
+  pop.style.top = (r.bottom + 6) + 'px';
+}
+function closePops() { $('#bookPop').hidden = true; $('#chapPop').hidden = true; }
+$('#bookBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  if (!$('#bookPop').hidden) return closePops();
+  const cur = chBook[ST.ch], cats = RB ? RB.CATEGORIES : [{ name: 'Old Testament', testament: 'OT', books: [...Array(39).keys()] }, { name: 'New Testament', testament: 'NT', books: [...Array(27).keys()].map(i => i + 39) }];
+  $('#bookPop').innerHTML = `<div class="bookgrid">${['OT', 'NT'].map(t => `<div><h4>${t === 'OT' ? 'Old Testament' : 'New Testament'}</h4>${cats.filter(c => c.testament === t).map(c => `<h5>${esc(c.name)}</h5>
+    <div class="bookbtns">${c.books.map(b => `<button type="button" data-book="${b}" class="${b === cur ? 'cur' : ''}">${esc(BOOKS[b].name)}</button>`).join('')}</div>`).join('')}</div>`).join('')}</div>`;
+  openPop($('#bookPop'), e.currentTarget);
+});
+$('#chapBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  if (!$('#chapPop').hidden) return closePops();
+  const b = chBook[ST.ch];
+  $('#chapPop').innerHTML = `<p class="eyebrow" style="margin-bottom:8px">${esc(BOOKS[b].name)}</p><div class="chapgrid">${BOOKS[b].chapters.map((_, i) => `<button type="button" data-chap="${bookCh0[b] + i}" class="${bookCh0[b] + i === ST.ch ? 'cur' : ''}">${i + 1}</button>`).join('')}</div>`;
+  openPop($('#chapPop'), e.currentTarget);
+});
+$('#bookPop').addEventListener('click', e => {
+  e.stopPropagation();
+  const b = e.target.closest('[data-book]');
+  if (!b) return;
+  const bi = +b.dataset.book;
+  closePops();
+  if (BOOKS[bi].chapters.length === 1) return goChapter(bookCh0[bi]);
+  goChapter(bookCh0[bi]);
+  $('#chapBtn').click();
+});
+$('#chapPop').addEventListener('click', e => { e.stopPropagation(); const c = e.target.closest('[data-chap]'); if (c) { closePops(); goChapter(+c.dataset.chap); } });
+document.addEventListener('click', e => { if (!e.target.closest('.pop')) closePops(); });
+
+// theme
+const themeRadios = $$('input[name=theme]');
+function applyTheme(p) { if (p === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', p); themeRadios.forEach(r => { r.checked = r.value === p; }); }
+{
+  let saved = null;
+  try { saved = localStorage.getItem('reference-rainbow-theme'); } catch (_) { /* storage blocked */ }
+  if (saved) applyTheme(saved);
+}
+themeRadios.forEach(r => r.addEventListener('change', () => { applyTheme(r.value); try { localStorage.setItem('reference-rainbow-theme', r.value); } catch (_) { /* storage blocked */ } }));
+
+// tooltips
+const ctip = $('#ctip');
+let ctipTimer = 0, ctipHide = 0, ctipFor = null;
+function showCtip(el) {
+  clearTimeout(ctipHide);
+  const more = el.dataset.more;
+  ctip.innerHTML = `<b>${esc(el.dataset.tipTitle || '')}${el.dataset.kbd ? ` (${esc(el.dataset.kbd)})` : ''}</b><span>${esc(el.dataset.tip)}</span>` + (more ? `<a class="ctip-more" href="${esc(more)}">Learn more</a>` : '');
+  ctip.classList.toggle('has-link', !!more);
+  ctip.hidden = false; ctip.classList.remove('show');
+  const r = el.getBoundingClientRect(), w = ctip.offsetWidth, h = ctip.offsetHeight;
+  let side = 'bottom', y = r.bottom + 10;
+  if (y + h > innerHeight - 8) { side = 'top'; y = r.top - h - 10; }
+  ctip.dataset.side = side;
+  ctip.style.transform = `translate(${Math.round(clamp(r.left + r.width / 2 - w / 2, 8, innerWidth - w - 8))}px, ${Math.round(y)}px)`;
+  ctipFor = el; requestAnimationFrame(() => ctip.classList.add('show'));
+}
+function hideCtip() { clearTimeout(ctipTimer); clearTimeout(ctipHide); ctipFor = null; ctip.classList.remove('show'); ctip.hidden = true; }
+document.addEventListener('pointerover', e => {
+  if (e.pointerType === 'touch') return;
+  if (ctip.contains(e.target)) { clearTimeout(ctipHide); clearTimeout(ctipTimer); return; }
+  const el = e.target.closest('[data-tip]');
+  if (el && el === ctipFor) { clearTimeout(ctipHide); return; }
+  clearTimeout(ctipTimer);
+  if (!el) { if (ctipFor) { clearTimeout(ctipHide); ctipHide = setTimeout(hideCtip, 250); } return; }
+  ctipTimer = setTimeout(() => showCtip(el), ctipFor ? 150 : 350);
+});
+document.addEventListener('focusin', e => { if (ctip.contains(e.target)) return; const el = e.target.closest('[data-tip]'); hideCtip(); if (el && e.target.matches(':focus-visible')) showCtip(el); });
+document.addEventListener('pointerdown', e => { if (!ctip.contains(e.target)) hideCtip(); }, true);
+window.addEventListener('scroll', hideCtip, true);
+
+// help + keys
+const help = $('#help');
+$('#helpBtn').addEventListener('click', () => { hideCtip(); help.showModal(); });
+help.addEventListener('click', e => { if (e.target === help) help.close(); });
+document.addEventListener('keydown', e => {
+  if (help.open) return;
+  const typing = e.target.matches('input, select, textarea');
+  if (e.key === 'Escape') { if (!$('#bookPop').hidden || !$('#chapPop').hidden) closePops(); else if (typing) e.target.blur(); else if (ST.sel >= 0) closeStudy(); return; }
+  if (typing) return;
+  if (e.key === '?') { e.preventDefault(); help.showModal(); }
+  else if (e.key === '/') { e.preventDefault(); $('#q').focus(); }
+  else if (e.key === 'ArrowLeft') goChapter(ST.ch - 1);
+  else if (e.key === 'ArrowRight') goChapter(ST.ch + 1);
+});
+
+// start: #Gen.1.1 / #John.3 / #ref=John 3:16, else where you left off
+function readHash() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (!h) return null;
+  const m = h.match(/^(\w+)\.(\d+)(?:\.(\d+))?$/);
+  if (m) {
+    const b = BOOKS.findIndex(x => x.osis === m[1]);
+    if (b >= 0) {
+      const c = bookCh0[b] + clamp(+m[2], 1, bookCh0[b + 1] - bookCh0[b]) - 1;
+      return { c, g: m[3] ? chStart[c] + clamp(+m[3], 1, chCount[c]) - 1 : -1 };
+    }
+  }
+  return parseRef(h.replace(/^ref=/, ''));
+}
+window.addEventListener('hashchange', () => { const r = readHash(); if (r && (r.g !== ST.sel || r.c !== ST.ch)) goChapter(r.c, r.g); });
+const start = readHash();
+if (start) ST.ch = start.c;
+renderChapter();
+await useTranslations();
+if (start && start.g >= 0) select(start.g, true);
+})();
+</script>
+<script src="scriptorium-link.js" charset="utf-8"></script>

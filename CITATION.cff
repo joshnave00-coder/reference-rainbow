@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software or its derived data, please cite it as below, and credit the data sources listed in DATA_LICENSES.md."
+type: software
+title: "Reference Rainbow: Bible cross-references, repeated phrases and a local Bible database"
+version: 0.1.0
+date-released: 2026-09-13
+license: MIT
+authors:
+  - given-names: Josh
+    family-names: Nave
+keywords:
+  - Bible
+  - cross-references
+  - Treasury of Scripture Knowledge
+  - Strong's concordance
+  - Hebrew Bible
+  - Greek New Testament
+  - Septuagint
+  - data visualization
+  - DuckDB
+references:
+  - type: data
+    title: "Bible Cross References"
+    authors:
+      - name: "OpenBible.info"
+    url: "https://www.openbible.info/labs/cross-references/"
+    license: CC-BY-4.0
+  - type: data
+    title: "STEPBible Data (TAHOT, TAGNT, TBESH, TBESG)"
+    authors:
+      - name: "STEPBible.org / Tyndale House, Cambridge"
+    url: "https://github.com/STEPBible/STEPBible-Data"
+    license: CC-BY-4.0
+  - type: artwork
+    title: "Bible Cross-References"
+    authors:
+      - given-names: Chris
+        family-names: Harrison
+      - given-names: Christoph
+        family-names: Römhild
+    year: 2008
+    url: "https://www.chrisharrison.net/index.php/Visualizations/BibleViz"
