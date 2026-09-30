@@ -44,6 +44,9 @@ It works best on a computer (not a phone) in a recent version of **Chrome, Edge,
 | **Go to a passage** | Type it in the search box at the top right, e.g. *John 3:16*, *Psalm 23* or *Isaiah*, and press Enter. |
 | **Change the translation** | Use **Translation** in the controls at the bottom, or **Reading in** at the top of any chapter panel. |
 | **Show only some books** | Click **Books** at the bottom and tick what you want: whole testaments, categories or single books. **Select all** and **Deselect all** are at the top of the list. |
+| **See it as a circle** | Click **Wheel** next to **Layout** in the controls for *Wheel within a Wheel*: the chapters wrap around a circle with the sections of the Bible marked around the edge, and every reference becomes a curve across the middle. **Rainbow** switches back. |
+| **See it in the order things happened** | Click **Chronological** next to **Order**. Every verse moves to when its events happened, with parallel accounts (the four Gospels, Kings and Chronicles) side by side. **Bible** switches back. |
+| **See everything one book or section links to** | Rest your mouse on a book name, or on the Wheel on a section such as *Gospels*. Click it to zoom in. |
 | **Show more or fewer arcs** | Move the **Relevance** slider. It starts at about the same number of arcs as the original poster; slide it all the way left to see every cross-reference. |
 | **Zoom in** | Scroll with your mouse wheel over the picture, and drag to move sideways. **Fit** zooms back out. |
 | **Find repeated phrases** | Click **Echoes: repeated phrases** under the search box. |

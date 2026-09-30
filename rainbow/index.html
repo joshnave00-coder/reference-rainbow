@@ -47,6 +47,9 @@ button,input{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--ribbon);outline-offset:2px}
+.theme-fab{position:fixed;top:14px;right:14px;z-index:38;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--rule);border-radius:50%;background:var(--panel);color:var(--ink);box-shadow:0 6px 20px var(--shadow);transition:opacity .15s,transform .15s}
+.theme-fab:hover{filter:brightness(.94)}
+.theme-fab.is-hidden{opacity:0;transform:scale(.9);pointer-events:none}
 
 .app{position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:minmax(0,1fr) auto;background:var(--ground)}
 
@@ -66,7 +69,13 @@ a{color:inherit}
 .count b{color:var(--ink);font-weight:600}
 .hint{margin:0;font-size:11.5px;color:var(--faint)}
 
-.key{position:absolute;top:20px;right:22px;width:268px;display:flex;flex-direction:column;gap:14px;background:var(--veil);box-shadow:0 0 22px 16px var(--veil);border-radius:14px}
+.key{position:absolute;top:20px;right:62px;width:268px;display:flex;flex-direction:column;gap:14px;background:var(--veil);box-shadow:0 0 22px 16px var(--veil);border-radius:14px}
+@media (min-width: 761px){ .app:has(.margin:not([hidden])) .key{right:22px} }   /* the theme button hides while the side panel is open, so the key needs no room for it */
+/* "Zoom out": hangs just below the key panel without taking room in it, and fades in only while the picture is zoomed in (visibility keeps it out of the tab order when hidden) */
+.zoom-out{position:absolute;top:100%;right:0;margin-top:18px;z-index:5;display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;border:1px solid var(--rule);border-radius:999px;background:var(--panel);color:var(--ink);font-size:12.5px;line-height:1.2;box-shadow:0 6px 20px var(--shadow);opacity:0;visibility:hidden;pointer-events:none;transform:scale(.94);transition:opacity .18s,transform .18s,visibility 0s .18s}
+.zoom-out.show{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .18s,transform .18s,visibility 0s}
+.zoom-out:hover{border-color:var(--ink)}
+.zoom-out .ico{width:14px;height:14px}
 .search{position:relative;margin:0}
 .search input{width:100%;height:34px;padding:0 34px 0 11px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);font-size:13px}
 .search input::placeholder{color:var(--faint)}
@@ -232,10 +241,12 @@ details.written[open] summary{margin-bottom:10px}
 }
 @media (max-width: 760px){
   .app{grid-template-columns:minmax(0,1fr)}
-  .title-block{top:14px;left:16px;right:16px;max-width:none}
+  .title-block{top:14px;left:16px;right:60px;max-width:none}
   .title-block h1{font-size:24px}
   .dek,.hint{display:none}
   .key{top:auto;bottom:14px;left:16px;right:16px;width:auto}
+  .zoom-out{position:fixed;top:58px;right:14px;margin:0;width:36px;height:36px;padding:0;justify-content:center}   /* icon only, under the theme button */
+  .zoom-out span{display:none}
   .scale{display:none}
   .controls{gap:10px 16px;padding:10px 14px;max-height:52vh;overflow-y:auto}
   .ctl-toggle{display:inline-grid!important}
@@ -244,20 +255,22 @@ details.written[open] summary{margin-bottom:10px}
   .ctl output{min-width:0}
   .margin{position:fixed;left:0;right:0;bottom:0;top:auto;height:58vh;width:auto;border-left:0;border-top:1px solid var(--rule);border-radius:12px 12px 0 0;box-shadow:0 -10px 40px var(--shadow);z-index:10}
 }
-@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important} }
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important} .zoom-out,.zoom-out.show{transition:none} }
 </style>
 
+<button class="theme-fab" id="themeFab" type="button" aria-label="Theme" data-tip-title="Theme" data-tip="Light, dark, or follow your device."></button>
 <div class="app" id="app">
   <main class="stage" id="stage" aria-label="Arc diagram of Bible cross-references">
     <canvas id="gl"></canvas>
     <canvas id="ov"></canvas>
 
     <div class="title-block">
-      <p class="eyebrow">After Chris Harrison &amp; Christoph Römhild, 2008</p>
-      <h1>Reference <em>Rainbow</em></h1>
-      <p class="dek">Every cross-reference in the Treasury of Scripture Knowledge, drawn as an arc between the two verses it joins. The bars beneath are the 1,189 chapters, Genesis to Revelation, each as long as its verse count.</p>
+      <p class="eyebrow" id="eyebrow">After Chris Harrison &amp; Christoph Römhild, 2008</p>
+      <h1 id="title">Reference <em>Rainbow</em></h1>
+      <p class="dek" id="dek">Every cross-reference in the Treasury of Scripture Knowledge, drawn as an arc between the two verses it joins. The bars beneath are the 1,189 chapters, Genesis to Revelation, each as long as its verse count.</p>
       <p class="count"><b id="shown">60,635</b> of <span id="total">344,756</span> cross-references</p>
-      <p class="hint">Click a chapter bar or an arc. Scroll to zoom, drag to pan. Press <b>?</b> for help.</p>
+      <p class="hint" id="orderNote" hidden>Chronological order: every verse where its events happened, parallel accounts side by side. Dates: Theographic Bible Metadata.</p>
+      <p class="hint" id="hint">Click a chapter bar or an arc. Scroll to zoom, drag to pan. Press <b>?</b> for help.</p>
     </div>
 
     <div class="key">
@@ -275,6 +288,7 @@ details.written[open] summary{margin-bottom:10px}
         <canvas id="keyc" width="536" height="18"></canvas>
         <div class="ticks" id="ticks"></div>
       </div>
+      <button class="zoom-out" id="zoomOut" type="button" aria-label="Zoom all the way out" data-tip-title="Zoom all the way out" data-tip="Show the whole Bible again." data-kbd="0"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M4.8 7h4.4M10.3 10.3 13.5 13.5"/></svg><span>Zoom out</span></button>
     </div>
 
     <div class="loading" id="loading">Setting the arcs…</div>
@@ -283,6 +297,20 @@ details.written[open] summary{margin-bottom:10px}
 
   <footer class="controls" id="controls">
     <button class="iconbtn wide ctl-toggle" id="ctlToggle" type="button" aria-expanded="false" aria-controls="controls" style="display:none">Controls</button>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblLayout">
+      <span class="ctl-label" id="lblLayout" data-tip-title="Layout" data-more="guide.html#layout" data-tip="Two ways to draw the same cross-references. Every other control works in both.">Layout</span>
+      <span class="opts">
+        <label data-tip-title="Reference Rainbow" data-more="guide.html#layout" data-tip="The original picture: the chapters in a line along the bottom, each cross-reference an arc above them."><input type="radio" name="layout" value="0" checked><span>Rainbow</span></label>
+        <label data-tip-title="Wheel within a Wheel" data-more="guide.html#layout" data-tip="The chapters around a circle, Genesis at the top running clockwise to Revelation, each cross-reference a curve across the middle. The outer band marks the sections of the Bible."><input type="radio" name="layout" value="1"><span>Wheel</span></label>
+      </span>
+    </div>
+    <div class="ctl" role="radiogroup" aria-labelledby="lblOrder" id="orderCtl" hidden>
+      <span class="ctl-label" id="lblOrder" data-tip-title="Order" data-more="guide.html#order" data-tip="The order the chapters are laid out in, in either layout.">Order</span>
+      <span class="opts">
+        <label data-tip-title="Bible order" data-more="guide.html#order" data-tip="Genesis to Revelation, as the books are printed."><input type="radio" name="order" value="0" checked><span>Bible</span></label>
+        <label data-tip-title="Chronological order" data-more="guide.html#order" data-tip="Every verse in the order its events happened, from Creation to Revelation. Parallel accounts sit side by side: the Gospels’ tellings of one event, Kings and Chronicles, the prophets beside the kings they spoke to. Dates from Theographic Bible Metadata."><input type="radio" name="order" value="1"><span>Chronological</span></label>
+      </span>
+    </div>
     <label class="ctl" data-tip-title="Translation" data-more="guide.html#translations" data-tip="Which English Bible the verse text in the panels and pop-ups is shown in: 29 freely licensed translations, from the KJV and Geneva Bible to the BSB, WEB and LSV. Remembered on this device.">
       <span class="ctl-label">Translation</span>
       <select class="tr-sel" id="trSel" aria-label="Bible translation"><option value="KJV">King James Version</option></select>
@@ -302,7 +330,7 @@ details.written[open] summary{margin-bottom:10px}
         <label data-tip-title="Critical dating" data-more="guide.html#dating" data-tip="Dates from mainstream critical scholarship — e.g. Genesis compiled from sources, final form c. 5th century BC; Daniel c. 167–164 BC."><input type="radio" name="dating" value="1"><span>Critical</span></label>
       </span>
     </div>
-    <div class="ctl" role="radiogroup" aria-labelledby="lblAxis">
+    <div class="ctl" role="radiogroup" aria-labelledby="lblAxis" id="axisCtl">
       <span class="ctl-label" id="lblAxis" data-tip-title="Axis" data-more="guide.html#axis" data-tip="How the baseline is divided between chapters.">Axis</span>
       <span class="opts">
         <label data-tip-title="Equal chapters" data-more="guide.html#axis" data-tip="Every chapter gets the same width, as in the original poster."><input type="radio" name="axis" value="0" checked><span>Chapters</span></label>
@@ -333,14 +361,6 @@ details.written[open] summary{margin-bottom:10px}
       <button class="iconbtn wide" id="zfit" type="button" data-tip-title="Fit" data-tip="Show the whole Bible again." data-kbd="0">Fit</button>
     </div>
     <label class="toggle ctl" data-tip-title="Red letters" data-more="guide.html#red-letters" data-tip="Words of Jesus in red, as marked in red-letter editions. Words spoken by God in dark red — found automatically from quotations and phrases like “Thus says the LORD”, so expect some misses."><input type="checkbox" id="redToggle" checked><span>Red letters</span></label>
-    <div class="ctl" role="radiogroup" aria-labelledby="lblTheme">
-      <span class="ctl-label" id="lblTheme" data-tip-title="Theme" data-tip="Light or dark page. Your choice is remembered on this device.">Theme</span>
-      <span class="opts">
-        <label data-tip-title="Light" data-tip="White page; arcs build up like ink, as in Harrison's print."><input type="radio" name="theme" value="light"><span>Light</span></label>
-        <label data-tip-title="Dark" data-tip="Dark page; overlapping arcs glow and brighten."><input type="radio" name="theme" value="dark"><span>Dark</span></label>
-        <label data-tip-title="System" data-tip="Follow your device's light or dark setting."><input type="radio" name="theme" value="system" checked><span>System</span></label>
-      </span>
-    </div>
     <button class="iconbtn wide help-btn" id="helpBtn" type="button" data-tip-title="Help" data-more="guide.html" data-tip="How to read the diagram and use every control." data-kbd="?">? Help</button>
   </footer>
 
@@ -365,6 +385,7 @@ details.written[open] summary{margin-bottom:10px}
       <h3>Exploring</h3>
       <dl>
         <dt>Hover a bar</dt><dd>Preview that chapter's arcs.</dd>
+        <dt>Hover a book</dt><dd>Preview every arc touching that book; on the Wheel, hover a section of the outer band for the whole section. Click to zoom to it.</dd>
         <dt>Click a bar</dt><dd>Open the chapter: who wrote the book and when, where its links land, and every linked verse.</dd>
         <dt>Hover an arc</dt><dd>See both verses and how far apart they are.</dd>
         <dt>Click an arc</dt><dd>Open the verse it starts from, with all its linked passages and their text.</dd>
@@ -376,6 +397,8 @@ details.written[open] summary{margin-bottom:10px}
     <section>
       <h3>Controls</h3>
       <dl>
+        <dt>Order</dt><dd><b>Bible</b>: Genesis to Revelation. <b>Chronological</b>: every verse in the order its events happened, parallel accounts side by side (Theographic Bible Metadata).</dd>
+        <dt>Layout</dt><dd><b>Rainbow</b> (the Reference Rainbow): chapters in a line, references as arcs, as in the original poster. <b>Wheel</b> (Wheel within a Wheel): chapters around a circle, references as curves across it, with the sections of the Bible marked around the edge.</dd>
         <dt>Color</dt><dd><b>Distance</b>: chapters apart (Harrison's scheme). <b>Book</b>: which book lists the reference. <b>Years</b>: how many years apart the two books were written.</dd>
         <dt>Dating</dt><dd>Shown with Years. <b>Traditional</b> uses ancient Jewish and Christian attributions; <b>Critical</b> uses mainstream critical scholarship.</dd>
         <dt>Axis</dt><dd>Give each chapter, or each verse, the same width.</dd>
@@ -407,7 +430,7 @@ details.written[open] summary{margin-bottom:10px}
     </section>
     <section class="wide">
       <h3>Data &amp; credits</h3>
-      <p>Cross-references: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY 4.0), drawn mainly from the public-domain Treasury of Scripture Knowledge. Verse text: King James Version by default; other translations are listed with their licences in the <a href="guide.html#translations">guide</a>. Authorship and dating summaries compiled from the works cited in each chapter panel. Design after Chris Harrison and Christoph Römhild's <em>Bible Cross-References</em> (2008); this is an independent remake from open data, not their image. Details on every control and data source are in the <a href="guide.html">guide</a>.</p>
+      <p>Cross-references: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY 4.0), drawn mainly from the public-domain Treasury of Scripture Knowledge. Verse text: King James Version by default; other translations are listed with their licences in the <a href="guide.html#translations">guide</a>. Authorship and dating summaries compiled from the works cited in each chapter panel. Chronological order: <a href="https://github.com/robertrouse/theographic-bible-metadata" target="_blank" rel="noopener">Theographic Bible Metadata</a>, Robert Rouse (CC BY-SA 4.0). Design after Chris Harrison and Christoph Römhild's <em>Bible Cross-References</em> (2008); this is an independent remake from open data, not their image. Details on every control and data source are in the <a href="guide.html">guide</a>.</p>
     </section>
   </div>
 </dialog>
@@ -416,6 +439,7 @@ details.written[open] summary{margin-bottom:10px}
 <script src="texts/manifest.js" charset="utf-8"></script>
 <script src="translations.js" charset="utf-8"></script>
 <script src="bookfilter.js" charset="utf-8"></script>
+<script src="chrono.js" charset="utf-8"></script>
 <script>
 (async function () {
 'use strict';
@@ -490,9 +514,29 @@ const YEARS = ['trad', 'crit'].map(k => {
 const yearsApart = (i, d) => Math.abs(YEARS[d].ys[chBook[verseCh[aTo[i]]]] - YEARS[d].ys[chBook[verseCh[aFrom[i]]]]);
 const tYearOf = (i, d) => Math.sqrt(yearsApart(i, d) / YEARS[d].span);
 
+// ---------------------------------------------------------------- chronological order (optional; chrono.js)
+// CHRON[k] = the verse told k-th when the Bible is read in the order its events happened; RANK is the inverse.
+// Without chrono.js both are the canonical order and the Order control is hidden.
+const CHRON = new Uint16Array(NV), RANK = new Uint16Array(NV);
+let hasChrono = false;
+if (window.RAINBOW_CHRONO && window.RAINBOW_CHRONO.count === NV) {
+  CHRON.set(new Uint16Array(await inflate(window.RAINBOW_CHRONO.order).arrayBuffer()));
+  hasChrono = true;
+} else for (let g = 0; g < NV; g++) CHRON[g] = g;
+for (let k = 0; k < NV; k++) RANK[CHRON[k]] = k;
+// blocks: runs of verses that are consecutive in both orders and in one chapter. In canonical order they are the chapters;
+// in chronological order a chapter may be split between several blocks. Listed in chronological order.
+const blkG0 = [], blkN = [], blkK0 = [];
+for (let k = 0; k < NV; k++) {
+  const g = CHRON[k];
+  if (k && g === CHRON[k - 1] + 1 && verseCh[g] === verseCh[g - 1]) blkN[blkN.length - 1]++;
+  else { blkG0.push(g); blkN.push(1); blkK0.push(k); }
+}
+const NBLK = blkG0.length;
+
 // instance buffer, grouped by arc length so each group gets a fitting segment count
-// layout per arc: uA,uB (chapter axis), uA,uB (verse axis), tDistance, tBook, votes, -, tYears traditional, tYears critical
-const STRIDE = 10;
+// layout per arc: uA,uB (chapter axis), uA,uB (verse axis), tDistance, tBook, votes, books, tYears traditional, tYears critical, uA,uB (chronological)
+const STRIDE = 12;
 const BOUNDS = [0.002, 0.008, 0.03, 0.1, 0.3, 2];
 const NG = BOUNDS.length;
 const inst = new Float32Array(N * STRIDE), instArc = new Uint32Array(N), instPos = new Uint32Array(N);
@@ -503,7 +547,7 @@ const gStart = new Uint32Array(NG), gCount = new Uint32Array(NG), gDmax = new Fl
     const mid = aTo[i] + aSpan[i] / 2;
     const a = uCh(aFrom[i]), b = uCh(mid), c = uVs(aFrom[i]), d = uVs(mid);
     tmp.set([a, b, c, d], i * 4);
-    const dist = Math.max(Math.abs(b - a), Math.abs(d - c));
+    const dist = Math.max(Math.abs(b - a), Math.abs(d - c), Math.abs(RANK[Math.floor(mid)] - RANK[aFrom[i]]) / NV);
     let g = 0; while (dist > BOUNDS[g]) g++;
     gi[i] = g; gCount[g]++; if (dist > gDmax[g]) gDmax[g] = dist;
   }
@@ -516,6 +560,7 @@ const gStart = new Uint32Array(NG), gCount = new Uint32Array(NG), gDmax = new Fl
     inst[o + 4] = tDistOf(i); inst[o + 5] = tBookOf(i); inst[o + 6] = aVotes[i];
     inst[o + 7] = chBook[verseCh[aFrom[i]]] * 66 + chBook[verseCh[aTo[i]]];  // from-book and to-book, for the Books filter
     inst[o + 8] = tYearOf(i, 0); inst[o + 9] = tYearOf(i, 1);
+    inst[o + 10] = (RANK[aFrom[i]] + 0.5) / NV; inst[o + 11] = (RANK[Math.floor(aTo[i] + aSpan[i] / 2)] + 0.5) / NV;
   }
 }
 
@@ -544,7 +589,11 @@ const rampCss = (t, gain = 1) => 'rgb(' + ramp(t).map(v => Math.round(clamp(v * 
 const REL_STOPS = [-1e9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 40, 50, 75, 100];
 const S = {
   colorMode: 0, dating: 0, redLetters: true, tr: 'KJV', bothEnds: false, axis: 0, axisMix: 0, relIdx: 8, minVotes: 8, ink: 0.45, grow: reduceMotion ? 1 : 0,
+  layout: 0, layoutMix: 0, chrono: 0, chronoMix: 0,   // layout: 0 = Rainbow (arcs), 1 = Wheel; chrono: 0 = Bible order, 1 = chronological (…Mix animate between them)
+  colorFrom: 0, colorMix: 1,   // colour mode being faded from, and how far the fade has got (1 = settled on the current mode)
 };
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const layoutT = () => ease(S.layoutMix);
 // Books filter: BOOKSEL[book] = 1 when ticked; an arc shows when either end (or both ends) is in a ticked book
 const BOOKSEL = new Float32Array(66).fill(1);
 const bookFilterActive = () => BOOKSEL.some(v => !v);
@@ -559,7 +608,10 @@ function visibleCount() {
 const shaderColorMode = () => S.colorMode === 2 ? 2 + S.dating : S.colorMode;
 const colorT = (i, mode = shaderColorMode()) => inst[instPos[i] * STRIDE + [4, 5, 8, 9][mode]];
 let sel = null;          // {kind:'chapter', ch} | {kind:'verse', g}
-let hoverCh = -1, hoverArc = -1;
+let hoverCh = -1, hoverArc = -1, hoverBook = -1, hoverSec = -1;   // hovered chapter bar, curve, book name, section band
+const CATS = window.RainbowBooks ? RainbowBooks.CATEGORIES : [];
+const secOfBook = new Int8Array(66).fill(-1);
+CATS.forEach((cat, k) => cat.books.forEach(b => { secOfBook[b] = k; }));
 const view = { z: 1, uc: 0.5 };
 const L = { SW: 0, SH: 0, y0: 0, W: 0, barMax: 0, k: 1, ox: 0, dpr: 1 };
 let tok = {};
@@ -570,7 +622,7 @@ function readTokens() {
   const hex = h => { const m = h.match(/^#([0-9a-f]{6})$/i); return m ? [0, 2, 4].map(k => parseInt(m[1].substr(k, 2), 16) / 255) : [1, 1, 1]; };
   tok = {
     dark: v('--dark') === '1', ground: hex(v('--ground')), ink: v('--ink'), muted: v('--muted'), faint: v('--faint'),
-    rule: v('--rule'), barA: v('--bar-a'), barB: v('--bar-b'), barMark: v('--bar-mark'), ribbon: v('--ribbon'), panel: v('--panel'),
+    rule: v('--rule'), barA: v('--bar-a'), barB: v('--bar-b'), barMark: v('--bar-mark'), ribbon: v('--ribbon'), panel: v('--panel'), control: v('--control'),
   };
 }
 readTokens();
@@ -589,23 +641,61 @@ layout(location=0) in vec3 aTpl;   // s within half, side (-1/+1), half (0 left 
 layout(location=1) in vec4 aU;     // chapter-axis a,b ; verse-axis a,b
 layout(location=2) in vec4 aM;     // tDist, tBook, votes, fromBook*66 + toBook
 layout(location=3) in vec2 aY;     // tYears traditional, tYears critical
+layout(location=4) in vec2 aK;     // chronological-order a,b
 uniform vec2 uRes;
-uniform float uK, uOx, uY0, uAxis, uColorMode, uMinVotes, uHalfW, uGrow, uBothEnds;
+uniform float uK, uOx, uY0, uAxis, uColorFrom, uColorMode, uColorMix, uMinVotes, uHalfW, uGrow, uBothEnds;
+uniform float uLayout, uWR, uGapF, uChrono;   // wheel: morph amount, ring radius (px), gap at the top (fraction of the circle)
+uniform vec2 uWC;                    // wheel centre (px)
 uniform float uBooks[66];
 out vec3 vColor; out float vEdge;
 ${RAMP_GLSL}
 const float PI = 3.14159265;
+vec2 wheelDir(float u){ float th = -0.5 * PI + PI * uGapF + u * 2.0 * PI * (1.0 - uGapF); return vec2(cos(th), sin(th)); }
+// how far a wheel curve bends toward the centre: near neighbours hug the rim, distant passages dive through the middle
+float wheelPull(vec2 d0, vec2 d1){ float s = clamp(0.5 * length(d1 - d0), 0.0, 1.0); return 0.1 + 0.9 * (1.0 - s) * (1.0 - s); }
+// colour position (0..1) of this arc under one of the four colour modes
+float tOf(float mode, vec4 m4, vec2 y2){ return mode < 0.5 ? m4.x : mode < 1.5 ? m4.y : mode < 2.5 ? y2.x : y2.y; }
 void main(){
-  float xa = uOx + uK * mix(aU.x, aU.z, uAxis);
-  float xb = uOx + uK * mix(aU.y, aU.w, uAxis);
+  float ua = mix(mix(aU.x, aU.z, uAxis), aK.x, uChrono), ub = mix(mix(aU.y, aU.w, uAxis), aK.y, uChrono);
+  float xa = uOx + uK * ua;
+  float xb = uOx + uK * ub;
   float lo = min(xa, xb), hi = max(xa, xb);
   float m = 4.0 + uHalfW;
-  vColor = ramp(uColorMode < 0.5 ? aM.x : uColorMode < 1.5 ? aM.y : uColorMode < 2.5 ? aY.x : aY.y);
+  vColor = mix(ramp(tOf(uColorFrom, aM, aY)), ramp(tOf(uColorMode, aM, aY)), uColorMix);
   vEdge = 99.0;
   int fb = int(floor(aM.w / 66.0 + 0.001)), tb = int(aM.w + 0.5) - fb * 66;
   float bookOk = uBothEnds > 0.5 ? min(uBooks[fb], uBooks[tb]) : max(uBooks[fb], uBooks[tb]);
-  if (aM.z < uMinVotes || bookOk < 0.5 || hi < -m || lo > uRes.x + m) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); return; }
+  if (aM.z < uMinVotes || bookOk < 0.5 || (uLayout < 0.001 && (hi < -m || lo > uRes.x + m))) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); return; }
   float cx = 0.5 * (lo + hi), r = max(0.5 * (hi - lo), 1e-3);
+  if (uLayout > 0.001) {
+    // wheel: a cubic curve between the two rim points, blended with the whole (unclipped) arc while morphing
+    float off = aTpl.y * (uHalfW + 1.0);
+    float th = (aTpl.z + aTpl.x) * 0.5 * PI;
+    vec2 pArc = vec2(cx - cos(th) * (r + off), uY0 - sin(th) * (r + off) * uGrow);
+    bool aLo = xa <= xb;
+    vec2 d0 = wheelDir(aLo ? ua : ub), d1 = wheelDir(aLo ? ub : ua);
+    float k = wheelPull(d0, d1);
+    vec2 p0 = d0, p1 = d0 * k, p2 = d1 * k, p3 = d1;
+    if (uLayout > 0.999) {
+      // fully a wheel: the cubic lies inside the hull of its control points, so skip curves whose pixel box is off screen
+      vec2 c0 = uWC + p0 * uWR, c1 = uWC + p1 * uWR, c2 = uWC + p2 * uWR, c3 = uWC + p3 * uWR;
+      vec2 bmin = min(min(c0, c1), min(c2, c3)), bmax = max(max(c0, c1), max(c2, c3));
+      if (bmax.x < -m || bmin.x > uRes.x + m || bmax.y < -m || bmin.y > uRes.y + m) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); return; }
+    }
+    // grow in from both ends toward the middle of the curve
+    float t = aTpl.z < 0.5 ? aTpl.x * 0.5 * uGrow : 1.0 - (1.0 - aTpl.x) * 0.5 * uGrow;
+    float it = 1.0 - t;
+    vec2 q = it * it * it * p0 + 3.0 * it * it * t * p1 + 3.0 * it * t * t * p2 + t * t * t * p3;
+    vec2 dq = 3.0 * it * it * (p1 - p0) + 6.0 * it * t * (p2 - p1) + 3.0 * t * t * (p3 - p2);
+    if (dot(dq, dq) < 1e-10) dq = p3 - p0;
+    if (dot(dq, dq) < 1e-10) dq = vec2(-d0.y, d0.x);
+    vec2 nrm = normalize(vec2(-dq.y, dq.x));
+    vec2 pw = uWC + q * uWR + nrm * off;
+    vec2 p = mix(pArc, pw, uLayout);
+    vEdge = off;
+    gl_Position = vec4(p.x / uRes.x * 2.0 - 1.0, 1.0 - p.y / uRes.y * 2.0, 0.0, 1.0);
+    return;
+  }
   // only spend segments on the part of the semicircle that is on screen
   float t0 = acos(clamp((cx + m) / r, -1.0, 1.0));
   float t1 = acos(clamp((cx - uRes.x - m) / r, -1.0, 1.0));
@@ -683,7 +773,12 @@ function template(n) {
   return (templates[n] = { buf, count: v.length / 3 });
 }
 function segsFor(dmax) {
-  const r = L.k * L.dpr * dmax * 0.5;
+  let r = L.k * L.dpr * dmax * 0.5;
+  if (S.layoutMix > 0) {
+    let rw = V2.z * L.R0 * L.dpr * Math.sin(Math.min(Math.PI * dmax, Math.PI / 2)) * 2;
+    rw = Math.min(rw, Math.hypot(L.SW, L.SH) * L.dpr);   // a curve can't be longer on screen than the screen is wide, however far we zoom
+    r = S.layoutMix >= 1 ? rw : Math.max(r, rw);
+  }
   const need = Math.PI * Math.sqrt(Math.max(r, 1) / 2);
   let s = 8; while (s < need && s < 128) s *= 2; return s;
 }
@@ -693,8 +788,8 @@ gl.bindBuffer(gl.ARRAY_BUFFER, instBuf); gl.bufferData(gl.ARRAY_BUFFER, inst, gl
 const selBuf = gl.createBuffer();
 function makeVao() {
   const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
-  for (let a = 0; a < 4; a++) gl.enableVertexAttribArray(a);
-  gl.vertexAttribDivisor(1, 1); gl.vertexAttribDivisor(2, 1); gl.vertexAttribDivisor(3, 1);
+  for (let a = 0; a < 5; a++) gl.enableVertexAttribArray(a);
+  for (let a = 1; a < 5; a++) gl.vertexAttribDivisor(a, 1);
   gl.bindVertexArray(null); return vao;
 }
 const arcVao = makeVao(), selVao = makeVao(), emptyVao = gl.createVertexArray();
@@ -719,9 +814,12 @@ function setArcUniforms(halfW, alpha, gain) {
   const u = arcP.u;
   gl.uniform2f(u.uRes, glc.width, glc.height);
   gl.uniform1f(u.uK, L.k * L.dpr); gl.uniform1f(u.uOx, L.ox * L.dpr); gl.uniform1f(u.uY0, L.y0 * L.dpr);
-  gl.uniform1f(u.uAxis, S.axisMix); gl.uniform1f(u.uColorMode, shaderColorMode()); gl.uniform1f(u.uMinVotes, S.minVotes);
+  gl.uniform1f(u.uAxis, S.axisMix); gl.uniform1f(u.uColorFrom, S.colorFrom); gl.uniform1f(u.uColorMode, shaderColorMode()); gl.uniform1f(u.uColorMix, ease(S.colorMix)); gl.uniform1f(u.uMinVotes, S.minVotes);
   gl.uniform1f(u.uHalfW, halfW); gl.uniform1f(u.uGrow, S.grow); gl.uniform1f(u.uAlpha, alpha); gl.uniform1f(u.uGain, gain);
   gl.uniform1fv(u['uBooks[0]'], BOOKSEL); gl.uniform1f(u.uBothEnds, S.bothEnds ? 1 : 0);
+  const w = wheelNow();
+  gl.uniform1f(u.uLayout, layoutT()); gl.uniform1f(u.uChrono, ease(S.chronoMix)); gl.uniform1f(u.uWR, w.r0 * L.dpr); gl.uniform1f(u.uGapF, GAPF);
+  gl.uniform2f(u.uWC, w.cx * L.dpr, w.cy * L.dpr);
 }
 function drawInstances(vao, buf, start, count, segs) {
   const t = template(segs);
@@ -731,6 +829,7 @@ function drawInstances(vao, buf, start, count, segs) {
   gl.vertexAttribPointer(1, 4, gl.FLOAT, false, STRIDE * 4, start * STRIDE * 4);
   gl.vertexAttribPointer(2, 4, gl.FLOAT, false, STRIDE * 4, start * STRIDE * 4 + 16);
   gl.vertexAttribPointer(3, 2, gl.FLOAT, false, STRIDE * 4, start * STRIDE * 4 + 32);
+  gl.vertexAttribPointer(4, 2, gl.FLOAT, false, STRIDE * 4, start * STRIDE * 4 + 40);
   gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, t.count, count);
 }
 
@@ -756,7 +855,7 @@ function uploadActive(list) {
   for (let j = 0; j < selCount; j++) {
     const o = instPos[list[j]] * STRIDE;
     data.set(inst.subarray(o, o + STRIDE), j * STRIDE);
-    const d = Math.max(Math.abs(inst[o + 1] - inst[o]), Math.abs(inst[o + 3] - inst[o + 2]));
+    const d = Math.max(Math.abs(inst[o + 1] - inst[o]), Math.abs(inst[o + 3] - inst[o + 2]), Math.abs(inst[o + 11] - inst[o + 10]));
     if (d > selDmax) selDmax = d;
   }
   gl.bindBuffer(gl.ARRAY_BUFFER, selBuf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
@@ -792,16 +891,64 @@ function layout() {
   L.SW = Math.max(1, r.width); L.SH = Math.max(1, r.height);
   L.dpr = Math.min(window.devicePixelRatio || 1, 2);
   const narrow = L.SW < 760;
+  // on a phone the search-and-links panel sits along the bottom of the stage, so both diagrams stop above it
+  const keyH = narrow ? (document.querySelector('.key').offsetHeight + 20) : 0;
   L.barMax = clamp(L.SH * 0.1, 36, 88);
-  const rulerH = 32, padBottom = 6, padTop = narrow ? 70 : 18, padX = narrow ? 12 : 24;
+  const rulerH = L.rulerH = narrow ? 64 : clamp(Math.round(L.SH * 0.12), 84, 108), padBottom = 6 + keyH, padTop = narrow ? 70 : 18, padX = narrow ? 12 : 24;
   L.y0 = L.SH - padBottom - rulerH - L.barMax;
   L.W = Math.max(50, Math.min(L.SW - 2 * padX, 2 * (L.y0 - padTop)));
+  // wheel, from the outside in: section labels, section band (Rb), chapter bars (R1 … R1 + cBar), book-name ring (R0 … R0 + cLW), curves inside R0
+  const wTop = narrow ? 64 : 14, wBot = 12 + keyH;
+  const wH = Math.max(180, L.SH - wTop - wBot);   // room for the wheel between the title and the phone panel
+  L.ccx = L.SW / 2; L.ccy = wTop + wH / 2;
+  L.cOut = Math.max(90, Math.min(L.SW / 2 - padX, wH / 2));
+  L.cBar = clamp(L.cOut * 0.12, 16, 60);
+  L.cLW = clamp(L.cOut * 0.17, 36, 84);
+  L.Rb = L.cOut - 17;
+  L.R1 = L.Rb - 6 - L.cBar;
+  L.R0 = Math.max(24, L.R1 - 10 - L.cLW);
   const w = Math.round(L.SW * L.dpr), h = Math.round(L.SH * L.dpr);
   for (const c of [glc, ovc]) { c.width = w; c.height = h; }
   makeTarget(w, h);
-  clampView(); computeView();
+  clampView(); computeView(); clampV2();
 }
 function computeView() { L.k = L.W * view.z; L.ox = L.SW / 2 - view.uc * L.k; }
+// wheel view: zoom, and how far the centre is moved from where it sits when the whole wheel fits
+const V2 = { z: 1, ox: 0, oy: 0 };
+const GAPF = 0.012;   // a small gap at the top marks where Genesis starts and Revelation ends
+const thetaOf = u => -Math.PI / 2 + Math.PI * GAPF + u * 2 * Math.PI * (1 - GAPF);
+const wheelNow = () => ({ cx: L.ccx + V2.ox, cy: L.ccy + V2.oy, z: V2.z, r0: L.R0 * V2.z });
+function clampV2() {
+  V2.z = clamp(V2.z, 1, 80);
+  // no slack at z = 1 (the fitted wheel stays centred); by z = 1.5 any point of the rim can be brought to the middle
+  const m = L.cOut * V2.z * clamp((V2.z - 1) * 2, 0, 1);
+  V2.ox = clamp(V2.ox, -m, m); V2.oy = clamp(V2.oy, -m, m);
+}
+function zoomWheelAt(mx, my, f) {
+  const z0 = V2.z, z1 = clamp(z0 * f, 1, 80), w = wheelNow();
+  V2.z = z1;
+  V2.ox = mx - (mx - w.cx) * z1 / z0 - L.ccx; V2.oy = my - (my - w.cy) * z1 / z0 - L.ccy;
+  clampV2(); invalidate(true);
+}
+function flyWheel(z, ox, oy) {
+  if (reduceMotion) { V2.z = z; V2.ox = ox; V2.oy = oy; clampV2(); invalidate(true); return; }
+  tween = { wheel: true, from: { ...V2 }, to: { z, ox, oy }, t0: performance.now(), dur: 650 };
+  invalidate(true);
+}
+function zoomBy(f) { tween = null; if (S.layout) zoomWheelAt(L.ccx + V2.ox, L.ccy + V2.oy, f); else zoomAt(L.SW / 2, f); }
+function fitView() { if (S.layout) flyWheel(1, 0, 0); else flyTo(1, 0.5); }
+// the chapter at position u along the Bible (0 = Genesis 1, 1 = end of Revelation)
+function chapterAtU(u) {
+  if (u < 0 || u >= 1) return -1;
+  if (S.chrono) return verseCh[CHRON[Math.min(NV - 1, Math.floor(u * NV))]];
+  return S.axis ? verseCh[Math.min(NV - 1, Math.floor(u * NV))] : Math.min(NC - 1, Math.floor(u * NC));
+}
+function wheelUAt(x, y) {
+  const w = wheelNow();
+  let a = Math.atan2(y - w.cy, x - w.cx) + Math.PI / 2 - Math.PI * GAPF;
+  a = ((a % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  return { u: a / (2 * Math.PI * (1 - GAPF)), r: Math.hypot(x - w.cx, y - w.cy) / w.z };
+}
 function clampView() {
   view.z = clamp(view.z, 1, 250);
   const hs = (L.SW / 2) / (L.W * view.z);
@@ -821,75 +968,195 @@ function flyTo(z, uc) {
   tween = { from, to: { z, uc }, t0: performance.now(), dur: 650 };
   invalidate(true);
 }
+// where an arc's two ends sit along the Bible (0 … 1) for the current axis and order; o = its offset in inst
+const arcUA = o => { const c = ease(S.chronoMix); return (inst[o] + (inst[o + 2] - inst[o]) * S.axisMix) * (1 - c) + inst[o + 10] * c; };
+const arcUB = o => { const c = ease(S.chronoMix); return (inst[o + 1] + (inst[o + 3] - inst[o + 1]) * S.axisMix) * (1 - c) + inst[o + 11] * c; };
 const chU0 = c => (c / NC) * (1 - S.axisMix) + (chStart[c] / NV) * S.axisMix;
 const xOfU = u => L.ox + L.k * u;
-function chapterAtX(x) {
-  const u = (x - L.ox) / L.k;
-  if (u < 0 || u >= 1) return -1;
-  return S.axis ? verseCh[Math.min(NV - 1, Math.floor(u * NV))] : Math.min(NC - 1, Math.floor(u * NC));
+function chapterAtX(x) { return chapterAtU((x - L.ox) / L.k); }
+// the start of verse g along the Bible in canonical order (0 … 1), for the current axis
+function uCan(g) {
+  if (g >= NV) return 1;
+  const c = verseCh[g];
+  return (c + (g - chStart[c]) / chCount[c]) / NC * (1 - S.axisMix) + g / NV * S.axisMix;
 }
 
 // ---------------------------------------------------------------- overlay: chapter bars, book ruler, ribbon, hovered arc
-function drawOverlay() {
-  const c2 = ovx, { SW, SH, y0, barMax, k } = L;
-  c2.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
-  c2.clearRect(0, 0, SW, SH);
-  const selCh = sel ? (sel.kind === 'chapter' ? sel.ch : verseCh[sel.g]) : -1;
+const FONT = (w, px = 9.5) => `${w} ${px}px "Schibsted Grotesk", system-ui, sans-serif`;
+const selChapter = () => sel ? (sel.kind === 'chapter' ? sel.ch : verseCh[sel.g]) : -1;
+function selU() {
+  const cm = ease(S.chronoMix);
+  const g = sel.kind === 'verse' ? sel.g : chStart[sel.ch] + (chCount[sel.ch] >> 1);
+  const canon = sel.kind === 'verse' ? uCh(sel.g) * (1 - S.axisMix) + uVs(sel.g) * S.axisMix : (chU0(sel.ch) + chU0(sel.ch + 1)) / 2;
+  return canon * (1 - cm) + (RANK[g] + 0.5) / NV * cm;
+}
+const barColor = c => { const bi = chBook[c]; return c === hoverCh || bi === hoverBook || (hoverSec >= 0 && secOfBook[bi] === hoverSec) ? tok.ink : (bi === 0 || bi === 39) ? tok.barMark : (bi % 2 ? tok.barB : tok.barA); };
+// a block's two ends along the Bible (0 … 1), blending Bible order and chronological order
+function blkU(j) {
+  const cm = ease(S.chronoMix), g0 = blkG0[j], n = blkN[j];
+  return [uCan(g0) * (1 - cm) + blkK0[j] / NV * cm, uCan(g0 + n) * (1 - cm) + (blkK0[j] + n) / NV * cm];
+}
+// runs of one book (or one section) in the current order: {id, k0, k1} as verse positions in that order
+function orderRuns(keyOf) {
+  const out = [];
+  if (!S.chrono) {
+    for (let g = 0; g < NV;) { const id = keyOf(chBook[verseCh[g]]); let e = g; while (e < NV && keyOf(chBook[verseCh[e]]) === id) e = chStart[verseCh[e] + 1]; out.push({ id, k0: g, k1: e }); g = e; }
+  } else {
+    for (let j = 0; j < NBLK; j++) {
+      const id = keyOf(chBook[verseCh[blkG0[j]]]), last = out[out.length - 1];
+      if (last && last.id === id) last.k1 = blkK0[j] + blkN[j]; else out.push({ id, k0: blkK0[j], k1: blkK0[j] + blkN[j] });
+    }
+  }
+  return out;
+}
+let runCache = { key: '', books: [], secs: [] };
+function runs() {
+  const key = S.chrono + '';
+  if (runCache.key !== key) runCache = { key, books: orderRuns(b => b), secs: orderRuns(b => secOfBook[b]) };
+  return runCache;
+}
+const posU = k => S.chrono ? k / NV : uCan(k);   // a verse position in the current order, as 0 … 1
 
-  for (let c = 0; c < NC; c++) {
-    const x0 = xOfU(chU0(c)), x1 = xOfU(chU0(c + 1));
+// Spread labels along a line so no two are closer than `gap`, each as near its own stretch [lo, hi] as possible
+// (pool-adjacent-violators on target − i·gap). When they can't all fit, or some would end up more than maxShift
+// from their stretch, the least important of those (smallest pri; a quarter of them at a time, at least one)
+// are left out and the rest placed again. Every pass drops at least one, so it always ends with a valid placement.
+function spreadLabels(cands, gap, lo, hi, maxShift) {
+  let s = cands.slice().sort((a, b) => b.pri - a.pri).slice(0, Math.max(0, Math.floor((hi - lo) / gap) + 1)).sort((a, b) => a.x - b.x);
+  while (s.length) {
+    const n = s.length, st = [];
+    for (let i = 0; i < n; i++) {
+      let blk = { sum: s[i].x - i * gap, n: 1 };
+      while (st.length && st[st.length - 1].sum / st[st.length - 1].n > blk.sum / blk.n) { const t = st.pop(); blk = { sum: t.sum + blk.sum, n: t.n + blk.n }; }
+      st.push(blk);
+    }
+    const p = [];
+    for (const blk of st) for (let j = 0; j < blk.n; j++) p.push(blk.sum / blk.n + p.length * gap);
+    for (let i = 0; i < n; i++) p[i] = Math.max(p[i], lo + i * gap);
+    for (let i = n - 1; i >= 0; i--) p[i] = Math.min(p[i], hi - (n - 1 - i) * gap);
+    const far = [];
+    for (let i = 0; i < n; i++) {
+      const c = s[i], off = p[i] < c.lo ? c.lo - p[i] : p[i] > c.hi ? p[i] - c.hi : 0;
+      if (off > maxShift) far.push(c);
+    }
+    if (!far.length) return s.map((c, i) => Object.assign(c, { p: p[i] }));
+    far.sort((a, b) => a.pri - b.pri);
+    const out = new Set(far.slice(0, Math.max(1, Math.ceil(far.length / 4))));
+    s = s.filter(c => !out.has(c));
+  }
+  return [];
+}
+// a book's name if it fits in `room` pixels, else its short form (Deut, 1 Thess …); the rule is only "does it fit"
+function bookLabel(c2, b, room) {
+  const full = BOOKS[b].name;
+  if (c2.measureText(full).width <= room) return full;
+  const short = BOOKS[b].short;
+  return c2.measureText(short).width <= room ? short : '';
+}
+// in chronological order a book comes back many times; name each return only if the same name isn't already close by
+function dropRepeats(placed, near) {
+  const keep = [];
+  for (const c of placed.slice().sort((a, b) => b.pri - a.pri)) if (!keep.some(k => k.b === c.b && Math.abs(k.p - c.p) < near)) keep.push(c);
+  return keep;
+}
+// Where the names go only changes with the view, order, window size or open book, so keep the last placement for each layout
+// instead of redoing it on every hover frame (hover colour and dimming are applied when drawing, so they are not in the key).
+const placeCache = {};
+function placement(kind, key, make) {
+  const c = placeCache[kind];
+  if (c && c.key === key) return c.placed;
+  return (placeCache[kind] = { key, placed: make() }).placed;
+}
+const labelHits = { rainbow: [], wheel: [] };   // where book names were drawn, so hovering a name finds its book
+const SLANT = 65 * Math.PI / 180;                // book names under the Rainbow lean back from vertical by 25°
+
+function drawOverlay() {
+  const c2 = ovx;
+  c2.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
+  c2.clearRect(0, 0, L.SW, L.SH);
+  // cross-fade the two layouts' furniture while the arcs morph between them; names wait until a reorder finishes
+  const m = layoutT(), still = S.chronoMix === S.chrono;
+  labelHits.rainbow = []; labelHits.wheel = [];
+  if (m < 1) drawArcOverlay(1 - m, still);
+  if (m > 0) drawWheelOverlay(m, still);
+  c2.globalAlpha = 1;
+}
+
+function drawArcOverlay(A, still) {
+  const c2 = ovx, { SW, y0, barMax, k } = L;
+  const selCh = selChapter(), cm = S.chronoMix;
+
+  for (let j = 0; j < NBLK; j++) {
+    const [u0, u1] = blkU(j), x0 = xOfU(u0), x1 = xOfU(u1);
     if (x1 < 0 || x0 > SW) continue;
-    const w = x1 - x0, gap = w > 3 ? Math.min(1, w * 0.2) : 0;
-    const bi = chBook[c];
-    c2.globalAlpha = BOOKSEL[bi] ? 1 : 0.25;
-    c2.fillStyle = c === hoverCh ? tok.ink : (bi === 0 || bi === 39) ? tok.barMark : (bi % 2 ? tok.barB : tok.barA);
+    const c = verseCh[blkG0[j]], chEnd = blkG0[j] + blkN[j] === chStart[c + 1] || cm > 0;
+    const w = x1 - x0, gap = chEnd && w > 3 ? Math.min(1, w * 0.2) : 0;
+    c2.globalAlpha = A * (BOOKSEL[chBook[c]] ? 1 : 0.25);
+    c2.fillStyle = barColor(c);
     c2.fillRect(x0, y0 + 1, Math.max(w - gap, 0.6), (chCount[c] / 176) * barMax);
   }
 
-  c2.globalAlpha = 1;
-  // ruler: chapter numbers when zoomed, book names where they fit
-  const rowCh = y0 + barMax + 12, rowBook = y0 + barMax + 26;
+  c2.globalAlpha = A;
   c2.textBaseline = 'middle'; c2.textAlign = 'center';
-  const chW = k / NC;
-  if (chW >= 16 || (S.axis && k / NV * 20 >= 16)) {
-    c2.font = '500 9.5px "Schibsted Grotesk", system-ui, sans-serif'; c2.fillStyle = tok.faint;
-    for (let c = 0; c < NC; c++) {
-      const x0 = xOfU(chU0(c)), x1 = xOfU(chU0(c + 1));
-      if (x1 < 0 || x0 > SW || x1 - x0 < 16) continue;
-      c2.fillText(chNum[c], (x0 + x1) / 2, rowCh);
+  const chNums = still && (S.chrono ? k / NV * 20 >= 16 : (k / NC >= 16 || (S.axis && k / NV * 20 >= 16)));
+  if (chNums) {
+    c2.font = FONT(500); c2.fillStyle = tok.faint;
+    for (let j = 0; j < NBLK; j++) {
+      const [u0, u1] = blkU(j), x0 = xOfU(u0), x1 = xOfU(u1);
+      if (x1 < 0 || x0 > SW || x1 - x0 < 16 || blkG0[j] !== chStart[verseCh[blkG0[j]]] && !S.chrono) continue;
+      c2.fillText(chNum[verseCh[blkG0[j]]], (x0 + x1) / 2, y0 + barMax + 12);
     }
   }
-  c2.font = '600 9.5px "Schibsted Grotesk", system-ui, sans-serif';
-  if ('letterSpacing' in c2) c2.letterSpacing = '1px';
-  for (let b = 0; b < NB; b++) {
-    const xs = xOfU(chU0(bookCh0[b])), xe = xOfU(chU0(bookCh0[b + 1]));
+  if (!still) return;
+
+  // Book names, slanted, spread out so none overlap and each as close to its book as it can be, with a thin
+  // line back to the book when a name had to move. The open book is always named; if there isn't room for every
+  // book, the shortest ones wait until you zoom in.
+  const yb = y0 + barMax + (chNums ? 19 : 5), top = yb + 13, bottom = y0 + barMax + L.rulerH - 4;
+  const cands = [];
+  c2.fillStyle = tok.rule;
+  for (const r of runs().books) {
+    const xs = xOfU(posU(r.k0)), xe = xOfU(posU(r.k1));
     if (xe < 0 || xs > SW) continue;
-    c2.fillStyle = tok.rule; c2.fillRect(Math.round(xs), y0 + barMax + 3, 1, 5);
-    const vx0 = Math.max(xs, 6), vx1 = Math.min(xe, SW - 6), room = vx1 - vx0 - 6;
-    if (room < 10) continue;
-    const cur = selCh >= 0 && chBook[selCh] === b;
-    for (const label of [BOOKS[b].name.toUpperCase(), BOOKS[b].short.toUpperCase()]) {
-      if (c2.measureText(label).width <= room) {
-        c2.fillStyle = cur ? tok.ribbon : tok.muted;
-        c2.fillText(label, (vx0 + vx1) / 2, rowBook); break;
-      }
-    }
+    c2.fillRect(Math.round(xs), y0 + barMax + 3, 1, 4);
+    const vx0 = Math.max(xs, 0), vx1 = Math.min(xe, SW);
+    const cur = selCh >= 0 && chBook[selCh] === r.id;
+    cands.push({ b: r.id, x: (vx0 + vx1) / 2, lo: vx0, hi: vx1, xs, xe, pri: cur ? 1e9 : vx1 - vx0 });
   }
+  const placed = placement('r', ['r', S.chrono, S.axisMix, view.z, view.uc, L.SW, L.SH, L.W, selCh >= 0 ? chBook[selCh] : -1, chNums].join('|'),
+    () => dropRepeats(spreadLabels(cands, 12.5, 34, SW - 6, 90), 60));
+  c2.font = FONT(500, 10.5);
+  if ('letterSpacing' in c2) c2.letterSpacing = '0.2px';
+  const room = (bottom - top) / Math.sin(SLANT);
+  c2.strokeStyle = tok.faint; c2.lineWidth = 0.7;
+  for (const cd of placed) {
+    const label = bookLabel(c2, cd.b, room);
+    if (!label) continue;
+    const px = Math.round(cd.p) + 0.5, tx = clamp(px, cd.xs + 1, cd.xe - 1);
+    c2.globalAlpha = A * (BOOKSEL[cd.b] ? 0.8 : 0.35);
+    c2.beginPath(); c2.moveTo(tx, yb); c2.lineTo(tx, yb + 3); c2.lineTo(px, top - 3); c2.stroke();
+    const cur = selCh >= 0 && chBook[selCh] === cd.b;
+    c2.globalAlpha = A * (BOOKSEL[cd.b] ? 1 : 0.45);
+    c2.fillStyle = cur ? tok.ribbon : cd.b === hoverBook || (hoverSec >= 0 && secOfBook[cd.b] === hoverSec) ? tok.ink : tok.muted;
+    c2.textAlign = 'right';
+    c2.save(); c2.translate(px, top); c2.rotate(-SLANT);
+    c2.fillText(label, 0, 0);
+    c2.restore();
+    labelHits.rainbow.push({ x: px, top, b: cd.b });
+  }
+  c2.globalAlpha = A; c2.textAlign = 'center';
   if ('letterSpacing' in c2) c2.letterSpacing = '0px';
 
   // ribbon bookmark on the selected chapter or verse
   if (sel) {
-    let u;
-    if (sel.kind === 'verse') u = uCh(sel.g) * (1 - S.axisMix) + uVs(sel.g) * S.axisMix;
-    else u = (chU0(sel.ch) + chU0(sel.ch + 1)) / 2;
-    const x = xOfU(u), yb = y0 + barMax + 2;
+    const x = xOfU(selU()), yr = y0 + barMax + 2;
     if (x > -10 && x < SW + 10) {
       c2.fillStyle = tok.ribbon;
-      c2.beginPath(); c2.moveTo(x - 4, y0 - 3); c2.lineTo(x + 4, y0 - 3); c2.lineTo(x + 4, yb); c2.lineTo(x, yb - 5); c2.lineTo(x - 4, yb); c2.closePath(); c2.fill();
+      c2.beginPath(); c2.moveTo(x - 4, y0 - 3); c2.lineTo(x + 4, y0 - 3); c2.lineTo(x + 4, yr); c2.lineTo(x, yr - 5); c2.lineTo(x - 4, yr); c2.closePath(); c2.fill();
     }
   }
 
-  if (hoverArc >= 0) {
+  if (hoverArc >= 0 && A >= 1) {
     const g = arcGeom(hoverArc);
     c2.strokeStyle = tok.ink; c2.lineWidth = 1.6;
     c2.beginPath(); c2.arc(g.cx, y0, Math.max(g.r, 0.5), Math.PI, 2 * Math.PI); c2.stroke();
@@ -897,45 +1164,296 @@ function drawOverlay() {
     for (const x of [g.xa, g.xb]) { c2.beginPath(); c2.arc(x, y0, 2.6, 0, 2 * Math.PI); c2.fill(); }
   }
 }
+
+// wheel: book-name ring, chapter bars pointing outward, and a colored band naming the sections of the Bible
+const SECTION_SHORT = { wisdom: 'Wisdom', acts: 'Acts', prophecy: 'Revelation', general: 'General', paul: 'Paul', history: 'History' };
+function arcText(c2, text, cx, cy, r, th) {
+  // letters set along a circle, reading left to right on the top half and on the bottom half alike
+  const top = Math.sin(th) < 0, dir = top ? 1 : -1;
+  let a = th - dir * c2.measureText(text).width / 2 / r;
+  for (const ch of text) {
+    const cw = c2.measureText(ch).width, ac = a + dir * cw / 2 / r;
+    c2.save(); c2.translate(cx + Math.cos(ac) * r, cy + Math.sin(ac) * r); c2.rotate(ac + dir * Math.PI / 2);
+    c2.fillText(ch, 0, 0); c2.restore();
+    a += dir * cw / r;
+  }
+}
+function drawWheelOverlay(A, still) {
+  const c2 = ovx, { SW, SH } = L, w = wheelNow(), z = w.z, cx = w.cx, cy = w.cy;
+  const R0 = L.R0 * z, RL = (L.R0 + L.cLW) * z, R1 = L.R1 * z, bm = L.cBar * z, Rb = L.Rb * z;
+  const selCh = selChapter(), cm = S.chronoMix;
+  const onScreen = (x, y, pad) => x > -pad && x < SW + pad && y > -pad && y < SH + pad;
+  const PX = (th, r) => cx + Math.cos(th) * r, PY = (th, r) => cy + Math.sin(th) * r;
+  const TAU = 2 * Math.PI;
+
+  // book-name ring
+  c2.globalAlpha = A;
+  c2.fillStyle = tok.control;
+  c2.beginPath(); c2.arc(cx, cy, RL, 0, TAU); c2.arc(cx, cy, R0, 0, TAU, true); c2.fill();
+  c2.strokeStyle = tok.rule; c2.lineWidth = 1;
+  for (const r of [R0, RL]) { c2.beginPath(); c2.arc(cx, cy, r, 0, TAU); c2.stroke(); }
+  if (still) {
+    // as under the Rainbow: names spread around the ring so none overlap, each as near its book as it can be,
+    // with a short tick back to the book when a name had to move
+    const cands = [], Rl = R0 + 6;
+    for (const r of runs().books) {
+      const th0 = thetaOf(posU(r.k0)), th1 = thetaOf(posU(r.k1));
+      c2.globalAlpha = A;
+      c2.beginPath(); c2.moveTo(PX(th0, R0), PY(th0, R0)); c2.lineTo(PX(th0, RL), PY(th0, RL)); c2.stroke();
+      const mid = (th0 + th1) / 2;
+      if (!onScreen(PX(mid, (R0 + RL) / 2), PY(mid, (R0 + RL) / 2), RL - R0 + 40)) continue;
+      const cur = selCh >= 0 && chBook[selCh] === r.id;
+      cands.push({ b: r.id, x: mid * Rl, lo: th0 * Rl, hi: th1 * Rl, th0, th1, pri: cur ? 1e9 : th1 - th0 });
+    }
+    const placed = placement('w', ['w', S.chrono, S.axisMix, V2.z, V2.ox, V2.oy, L.SW, L.SH, L.R0, L.ccy, selCh >= 0 ? chBook[selCh] : -1].join('|'),
+      () => dropRepeats(spreadLabels(cands, 11.5, thetaOf(0) * Rl, thetaOf(1) * Rl, 40), 60));
+    c2.font = FONT(500, 10); c2.textBaseline = 'middle';
+    if ('letterSpacing' in c2) c2.letterSpacing = '0.2px';
+    const room = RL - R0 - 14;
+    for (const cd of placed) {
+      const label = bookLabel(c2, cd.b, room);
+      if (!label) continue;
+      const th = cd.p / Rl, tt = clamp(th, cd.th0 + 0.5 / Rl, cd.th1 - 0.5 / Rl);
+      c2.globalAlpha = A * (BOOKSEL[cd.b] ? 0.8 : 0.35); c2.strokeStyle = tok.faint; c2.lineWidth = 0.7;
+      c2.beginPath(); c2.moveTo(PX(tt, R0), PY(tt, R0)); c2.lineTo(PX(th, R0 + 7), PY(th, R0 + 7)); c2.stroke();
+      const cur = selCh >= 0 && chBook[selCh] === cd.b;
+      c2.globalAlpha = A * (BOOKSEL[cd.b] ? 1 : 0.45);
+      c2.fillStyle = cur ? tok.ribbon : cd.b === hoverBook || (hoverSec >= 0 && secOfBook[cd.b] === hoverSec) ? tok.ink : tok.muted;
+      const left = Math.cos(th) < 0;
+      c2.textAlign = left ? 'right' : 'left';
+      c2.save(); c2.translate(PX(th, R0 + 10), PY(th, R0 + 10)); c2.rotate(left ? th + Math.PI : th);
+      c2.fillText(label, 0, 0); c2.restore();
+      labelHits.wheel.push({ th, b: cd.b });
+    }
+    c2.textAlign = 'center';
+    if ('letterSpacing' in c2) c2.letterSpacing = '0px';
+  }
+
+  // chapter bars, with chapter numbers once zoomed in far enough
+  c2.font = FONT(500); c2.textBaseline = 'middle'; c2.textAlign = 'center';
+  for (let j = 0; j < NBLK; j++) {
+    const [u0, u1] = blkU(j), th0 = thetaOf(u0), th1 = thetaOf(u1), mid = (th0 + th1) / 2;
+    const c = verseCh[blkG0[j]], len = (chCount[c] / 176) * bm, wpx = (th1 - th0) * R1;
+    if (!onScreen(PX(mid, R1 + len / 2), PY(mid, R1 + len / 2), len + wpx)) continue;
+    const chEnd = blkG0[j] + blkN[j] === chStart[c + 1] || cm > 0;
+    const ta = th0, tb = th0 + Math.max(wpx - (chEnd && wpx > 3 ? Math.min(1, wpx * 0.2) : 0), 0.6) / R1;
+    c2.globalAlpha = A * (BOOKSEL[chBook[c]] ? 1 : 0.25);
+    c2.fillStyle = barColor(c);
+    c2.beginPath();
+    c2.moveTo(PX(ta, R1), PY(ta, R1)); c2.lineTo(PX(tb, R1), PY(tb, R1));
+    c2.lineTo(PX(tb, R1 + len), PY(tb, R1 + len)); c2.lineTo(PX(ta, R1 + len), PY(ta, R1 + len));
+    c2.closePath(); c2.fill();
+    if (still && wpx >= 16 && (S.chrono || blkG0[j] === chStart[c])) {
+      const rn = (RL + R1) / 2;
+      c2.globalAlpha = A; c2.fillStyle = tok.faint;
+      c2.fillText(chNum[c], PX(mid, rn), PY(mid, rn));
+    }
+  }
+
+  // sections of the Bible
+  if (still) {
+    c2.globalAlpha = A;
+    c2.font = FONT(600);
+    if ('letterSpacing' in c2) c2.letterSpacing = '1.4px';
+    const longest = {};
+    for (const r of runs().secs) if (!longest[r.id] || r.k1 - r.k0 > longest[r.id].k1 - longest[r.id].k0) longest[r.id] = r;
+    for (const r of runs().secs) {
+      if (r.id < 0) continue;
+      const gap = 2.5 / Rb, th0 = thetaOf(posU(r.k0)) + gap, th1 = thetaOf(posU(r.k1)) - gap;
+      if (th1 <= th0) continue;
+      const bs = CATS[r.id].books, color = rampCss((bs[0] + bs[bs.length - 1]) / 2 / 65, isDark() ? 1.08 : 0.92);
+      c2.strokeStyle = color;
+      c2.lineWidth = Math.max(3, Math.min(6, 3 * Math.sqrt(z))) * (r.id === hoverSec ? 2 : 1);
+      c2.beginPath(); c2.arc(cx, cy, Rb, th0, th1); c2.stroke();
+      const rt = Rb + 10, mid = (th0 + th1) / 2;
+      if (longest[r.id] !== r || !onScreen(PX(mid, rt), PY(mid, rt), 240)) continue;
+      const label = [CATS[r.id].name, SECTION_SHORT[CATS[r.id].id]].filter(Boolean).map(s => s.toUpperCase())
+        .find(s => c2.measureText(s).width + 10 <= (th1 - th0) * rt);
+      if (!label) continue;
+      c2.fillStyle = color;
+      arcText(c2, label, cx, cy, rt, mid);
+    }
+    if ('letterSpacing' in c2) c2.letterSpacing = '0px';
+  }
+  c2.globalAlpha = A;
+
+  // ribbon on the selected chapter or verse
+  if (sel) {
+    const th = thetaOf(selU());
+    c2.strokeStyle = tok.ribbon; c2.lineWidth = 3; c2.lineCap = 'round';
+    c2.beginPath(); c2.moveTo(PX(th, R0 - 6), PY(th, R0 - 6)); c2.lineTo(PX(th, R1 - 3), PY(th, R1 - 3)); c2.stroke();
+    c2.lineCap = 'butt';
+  }
+
+  if (hoverArc >= 0 && A >= 1) {
+    const g = wheelGeom(hoverArc), sx = x => cx + x * R0, sy = y => cy + y * R0;
+    c2.strokeStyle = tok.ink; c2.lineWidth = 1.6;
+    c2.beginPath(); c2.moveTo(sx(g[0]), sy(g[1]));
+    c2.bezierCurveTo(sx(g[0] * g[4]), sy(g[1] * g[4]), sx(g[2] * g[4]), sy(g[3] * g[4]), sx(g[2]), sy(g[3])); c2.stroke();
+    c2.fillStyle = tok.ink;
+    for (const [x, y] of [[g[0], g[1]], [g[2], g[3]]]) { c2.beginPath(); c2.arc(sx(x), sy(y), 2.6, 0, TAU); c2.fill(); }
+  }
+}
+
+// what is under the pointer: a chapter bar, a book name, a section band, the arcs, or nothing
+function zoneAt(x, y) {
+  const NONE = { kind: 'none' };
+  if (S.layout) {
+    const { u, r } = wheelUAt(x, y);
+    if (r < L.R0 - 2) return { kind: 'arcs' };
+    const c = chapterAtU(u);
+    if (c < 0) return NONE;
+    if (r <= L.R0 + L.cLW) {
+      const th = thetaOf(u), R = L.R0 * V2.z + 6;
+      const hit = labelHits.wheel.find(h => Math.abs(h.th - th) * R < 6);
+      return { kind: 'book', id: hit ? hit.b : chBook[c] };
+    }
+    if (r <= L.R1 + L.cBar + 4) return { kind: 'ch', id: c };
+    if (r >= L.Rb - 7 && r <= L.Rb + 22 && secOfBook[chBook[c]] >= 0) return { kind: 'sec', id: secOfBook[chBook[c]] };
+    return NONE;
+  }
+  if (y <= L.y0) return { kind: 'arcs' };
+  const c = chapterAtX(x);
+  if (y <= L.y0 + L.barMax + 3) return c >= 0 ? { kind: 'ch', id: c } : NONE;
+  // slanted names: slide the pointer up the slant to the row where the names start, then find the nearest
+  const h0 = labelHits.rainbow[0];
+  if (h0 && y >= h0.top - 2) {
+    const xa = x + (y - h0.top) / Math.tan(SLANT);
+    let best = null, bd = 7;
+    for (const h of labelHits.rainbow) { const d = Math.abs(h.x - xa); if (d < bd) { bd = d; best = h; } }
+    if (best) return { kind: 'book', id: best.b };
+  }
+  return c >= 0 ? { kind: 'book', id: chBook[c] } : NONE;
+}
+
+// an arc's wheel curve on the unit circle: [x0, y0, x3, y3, pull]; its inner control points are the ends times pull (as in the shader)
+// every arc's wheel curve at once, 5 numbers per arc index [x0, y0, x3, y3, pull]; hovering tests hundreds of thousands of them,
+// so the trig is done once and redone only when the axis or order changes (hovering only happens once those have settled)
+let wheelTab = { key: '', a: null };
+const wheelKey = () => S.axisMix + '|' + S.chronoMix;
+function wheelFill(a, j, i) {
+  const o = instPos[i] * STRIDE, ta = thetaOf(arcUA(o)), tb = thetaOf(arcUB(o));
+  const x0 = Math.cos(ta), y0 = Math.sin(ta), x3 = Math.cos(tb), y3 = Math.sin(tb);
+  const s = Math.min(1, 0.5 * Math.hypot(x3 - x0, y3 - y0));
+  a[j] = x0; a[j + 1] = y0; a[j + 2] = x3; a[j + 3] = y3; a[j + 4] = 0.1 + 0.9 * (1 - s) * (1 - s);   // pull, as the shader's wheelPull
+}
+function wheelTable() {
+  const key = wheelKey();
+  if (wheelTab.key === key) return wheelTab.a;
+  const a = wheelTab.a || new Float32Array(N * 5);
+  for (let i = 0; i < N; i++) wheelFill(a, i * 5, i);
+  wheelTab = { key, a };
+  return a;
+}
+function wheelGeom(i) {
+  // in the middle of a morph the table is stale (and not worth rebuilding every frame): work out just this arc
+  if (wheelTab.key !== wheelKey()) { const a = []; wheelFill(a, 0, i); return a; }
+  const a = wheelTab.a, j = i * 5;
+  return [a[j], a[j + 1], a[j + 2], a[j + 3], a[j + 4]];
+}
+function pickWheelArc(mx, my) {
+  const w = wheelNow(), R = w.r0, px = (mx - w.cx) / R, py = (my - w.cy) / R;
+  if (px * px + py * py > 1.02) return -1;
+  const tol = 4 / R, minV = S.minVotes, STEPS = 24, T = wheelTable();
+  let best = -1, bestV = -1e9, bestD = 1e9;
+  const test = i => {
+    if (aVotes[i] < minV || !bookPassCode(inst[instPos[i] * STRIDE + 7])) return;
+    const j = i * 5, x0 = T[j], y0 = T[j + 1], x3 = T[j + 2], y3 = T[j + 3], k = T[j + 4], x1 = x0 * k, y1 = y0 * k, x2 = x3 * k, y2 = y3 * k;
+    // the curve lies inside the box around its control points
+    if (px < Math.min(x0, x1, x2, x3) - tol || px > Math.max(x0, x1, x2, x3) + tol || py < Math.min(y0, y1, y2, y3) - tol || py > Math.max(y0, y1, y2, y3) + tol) return;
+    let d = 1e9, qx = x0, qy = y0;
+    for (let j = 1; j <= STEPS; j++) {
+      const t = j / STEPS, it = 1 - t, a = it * it * it, b = 3 * it * it * t, c = 3 * it * t * t, e = t * t * t;
+      const nx = a * x0 + b * x1 + c * x2 + e * x3, ny = a * y0 + b * y1 + c * y2 + e * y3;
+      const sx = nx - qx, sy = ny - qy, l2 = sx * sx + sy * sy;
+      const u = l2 > 0 ? clamp(((px - qx) * sx + (py - qy) * sy) / l2, 0, 1) : 0;
+      d = Math.min(d, Math.hypot(px - qx - u * sx, py - qy - u * sy));
+      qx = nx; qy = ny;
+    }
+    if (d > tol) return;
+    const v = aVotes[i];
+    if (v > bestV || (v === bestV && d < bestD)) { bestV = v; bestD = d; best = i; }
+  };
+  if (sel && activeList) for (const i of activeList) test(i);
+  else for (let i = 0; i < N; i++) test(i);
+  return best;
+}
 function arcGeom(i) {
-  const o = instPos[i] * STRIDE, m = S.axisMix;
-  const xa = xOfU(inst[o] + (inst[o + 2] - inst[o]) * m), xb = xOfU(inst[o + 1] + (inst[o + 3] - inst[o + 1]) * m);
+  const o = instPos[i] * STRIDE;
+  const xa = xOfU(arcUA(o)), xb = xOfU(arcUB(o));
   return { xa, xb, cx: (xa + xb) / 2, r: Math.abs(xb - xa) / 2 };
 }
 
 // ---------------------------------------------------------------- render loop
 let raf = 0, needAccum = true, needFrame = true;
+const zoomOutBtn = $('#zoomOut'); let zoomOutShown = false;
 function invalidate(accum) { if (accum) needAccum = true; needFrame = true; if (!raf) raf = requestAnimationFrame(frame); }
 let introT0 = 0;
 function frame(now) {
   raf = 0;
   let again = false;
+  // morphs advance by elapsed time (not frames), so they take as long on a slow or throttled screen as a fast one
+  const dt = clamp(now - (frame.last || now), 8, 60); frame.last = now;
+  const stepOf = ms => reduceMotion ? 1 : dt / ms;
   if (S.grow < 1) {
     if (!introT0) introT0 = now;
     const t = clamp((now - introT0) / 1700, 0, 1);
     S.grow = 1 - Math.pow(1 - t, 3); needAccum = true; again = t < 1;
   }
   if (S.axisMix !== S.axis) {
-    const step = reduceMotion ? 1 : 0.07;
+    const step = stepOf(230);
     S.axisMix = S.axis ? Math.min(1, S.axisMix + step) : Math.max(0, S.axisMix - step);
     needAccum = needFrame = true; again = true;
   }
+  if (S.layoutMix !== S.layout) {
+    const step = stepOf(1100);
+    S.layoutMix = S.layout ? Math.min(1, S.layoutMix + step) : Math.max(0, S.layoutMix - step);
+    needAccum = true; again = true;
+  }
+  if (S.chronoMix !== S.chrono) {
+    const step = stepOf(1400);
+    S.chronoMix = S.chrono ? Math.min(1, S.chronoMix + step) : Math.max(0, S.chronoMix - step);
+    needAccum = true; again = true;
+  }
+  if (S.colorMix < 1) {
+    S.colorMix = Math.min(1, S.colorMix + stepOf(700));
+    needAccum = true; again = true;
+  }
   if (tween) {
-    const t = clamp((now - tween.t0) / tween.dur, 0, 1), e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    view.z = Math.exp(Math.log(tween.from.z) + (Math.log(tween.to.z) - Math.log(tween.from.z)) * e);
-    view.uc = tween.from.uc + (tween.to.uc - tween.from.uc) * e;
-    clampView(); computeView(); needAccum = true;
+    const t = clamp((now - tween.t0) / tween.dur, 0, 1), e = ease(t);
+    const f = tween.from, to = tween.to;
+    const z = Math.exp(Math.log(f.z) + (Math.log(to.z) - Math.log(f.z)) * e);
+    if (tween.wheel) {
+      // move the point at the centre of the screen in a straight line while zooming
+      const fx = f.ox / f.z + (to.ox / to.z - f.ox / f.z) * e, fy = f.oy / f.z + (to.oy / to.z - f.oy / f.z) * e;
+      V2.z = z; V2.ox = fx * z; V2.oy = fy * z; clampV2();
+    } else {
+      view.z = z; view.uc = f.uc + (to.uc - f.uc) * e;
+      clampView(); computeView();
+    }
+    needAccum = true;
     if (t >= 1) tween = null; else again = true;
   }
+  // the Zoom out button shows whenever the current layout is zoomed in; only touch the page when that flips
+  const zoomed = (S.layout ? V2.z : view.z) > 1.001;
+  if (zoomed !== zoomOutShown) { zoomOutShown = zoomed; zoomOutBtn.classList.toggle('show', zoomed); }
   if (needAccum) { renderAccum(); needFrame = true; }
   if (needFrame) { renderFrame(); drawOverlay(); }
   needAccum = needFrame = false;
-  if (again) raf = requestAnimationFrame(frame);
+  if (again) raf = requestAnimationFrame(frame); else frame.last = 0;
 }
 
 // ---------------------------------------------------------------- selection
 let activeList = null;
 function arcsOfChapter(c) { return chArcs.subarray(chOff[c], chOff[c + 1]); }
+// every arc touching chapters c0 … c1-1, each once
+const arcSeen = new Uint8Array(N);
+function arcsOfChapters(c0, c1) {
+  const out = [];
+  for (const i of chArcs.subarray(chOff[c0], chOff[c1])) if (!arcSeen[i]) { arcSeen[i] = 1; out.push(i); }
+  for (const i of out) arcSeen[i] = 0;
+  return out;
+}
 function arcsOfVerse(g) {
   const out = [], list = arcsOfChapter(verseCh[g]);
   for (const i of list) if (aFrom[i] === g || (g >= aTo[i] && g <= aTo[i] + aSpan[i])) out.push(i);
@@ -945,6 +1463,8 @@ function refreshActive() {
   let list = null, key = '';
   if (sel) { list = sel.kind === 'chapter' ? arcsOfChapter(sel.ch) : arcsOfVerse(sel.g); key = sel.kind + (sel.ch ?? sel.g); }
   else if (hoverCh >= 0) { list = arcsOfChapter(hoverCh); key = 'h' + hoverCh; }
+  else if (hoverBook >= 0) { list = arcsOfChapters(bookCh0[hoverBook], bookCh0[hoverBook + 1]); key = 'b' + hoverBook; }
+  else if (hoverSec >= 0) { const bs = CATS[hoverSec].books; list = arcsOfChapters(bookCh0[bs[0]], bookCh0[bs[bs.length - 1] + 1]); key = 's' + hoverSec; }
   activeList = list;
   if (key !== activeKey) { activeKey = key; uploadActive(list); }
 }
@@ -1123,8 +1643,21 @@ panel.addEventListener('click', e => {
   if (t.dataset.ch) return select({ kind: 'chapter', ch: +t.dataset.ch });
   if (t.dataset.zoombook) zoomToBook(+t.dataset.zoombook);
 });
-function zoomToBook(b) {
-  const u0 = chU0(bookCh0[b]), u1 = chU0(bookCh0[b + 1]);
+// zoom to books b0 … b1; in chronological order, to the longest stretch they fill
+function zoomToBook(b0, b1 = b0) {
+  let u0 = uCan(chStart[bookCh0[b0]]), u1 = uCan(chStart[bookCh0[b1 + 1]]);
+  if (S.chrono) {
+    let best = null;
+    for (const r of runs().books) if (r.id >= b0 && r.id <= b1 && (!best || r.k1 - r.k0 > best.k1 - best.k0)) best = r;
+    if (best) { u0 = best.k0 / NV; u1 = best.k1 / NV; }
+  }
+  if (S.layout) {
+    // bring the book's stretch of the rim to the middle of the screen, big enough to read its chapters
+    const th0 = thetaOf(u0), th1 = thetaOf(u1), mid = (th0 + th1) / 2, rm = (L.R0 + L.R1 + L.cBar) / 2;
+    const z = clamp(Math.min(L.SW, L.SH) * 0.55 / Math.max((th1 - th0) * rm, 1), 1.6, 40);   // never less than 1.6, so a big book or a whole section visibly zooms toward you
+    flyWheel(z, -Math.cos(mid) * rm * z, -Math.sin(mid) * rm * z);
+    return;
+  }
   const span = Math.max(u1 - u0, 1e-4);
   const z = clamp((L.SW * 0.8) / (L.W * span), 1, 250);
   flyTo(z, (u0 + u1) / 2);
@@ -1142,12 +1675,12 @@ function placeTip(mx, my) {
 }
 function pickArc(mx, my) {
   if (my > L.y0 + 2) return -1;
-  const dy = L.y0 - my, k = L.k, ox = L.ox, m = S.axisMix, minV = S.minVotes, tol = 4;
+  const dy = L.y0 - my, k = L.k, ox = L.ox, minV = S.minVotes, tol = 4;
   let best = -1, bestV = -1e9, bestD = 1e9;
   const test = (p) => {
     const o = p * STRIDE;
     if (inst[o + 6] < minV || !bookPassCode(inst[o + 7])) return;
-    const xa = ox + k * (inst[o] + (inst[o + 2] - inst[o]) * m), xb = ox + k * (inst[o + 1] + (inst[o + 3] - inst[o + 1]) * m);
+    const xa = ox + k * arcUA(o), xb = ox + k * arcUB(o);
     const r = Math.abs(xb - xa) * 0.5;
     if (dy > r + tol) return;
     const dx = mx - (xa + xb) * 0.5;
@@ -1161,24 +1694,40 @@ function pickArc(mx, my) {
   else for (let p = 0; p < N; p++) test(p);
   return best < 0 ? -1 : instArc[best];
 }
+// A book's or section's link count only changes when the filters do (filterVer counts those), so keep it while the pointer moves within it
+let tipCount = { key: '', n: 0 }, filterVer = 0;
+function linksIn(kind, id, c0, c1) {
+  const key = kind + id + '|' + filterVer;
+  if (tipCount.key !== key) { let n = 0; for (const i of arcsOfChapters(c0, c1)) if (arcVisible(i)) n++; tipCount = { key, n }; }
+  return tipCount.n;
+}
 let pendingHover = null;
 function hover(mx, my) {
   pendingHover = [mx, my];
   if (hover.raf) return;
   hover.raf = requestAnimationFrame(() => {
     hover.raf = 0; const [x, y] = pendingHover;
-    let ch = -1, arc = -1;
-    if (S.grow >= 1) {
-      if (y > L.y0) ch = chapterAtX(x);
-      else arc = pickArc(x, y);
+    let ch = -1, arc = -1, bk = -1, sc = -1;
+    if (S.grow >= 1 && S.layoutMix === S.layout && S.chronoMix === S.chrono) {
+      const z = zoneAt(x, y);
+      if (z.kind === 'ch') ch = z.id; else if (z.kind === 'book') bk = z.id; else if (z.kind === 'sec') sc = z.id;
+      else if (z.kind === 'arcs') arc = S.layout ? pickWheelArc(x, y) : pickArc(x, y);
     }
-    const chChanged = ch !== hoverCh;
-    if (chChanged || arc !== hoverArc) {
-      hoverCh = ch; hoverArc = arc;
-      if (chChanged && !sel) refreshActive();
+    const zChanged = ch !== hoverCh || bk !== hoverBook || sc !== hoverSec;
+    if (zChanged || arc !== hoverArc) {
+      hoverCh = ch; hoverArc = arc; hoverBook = bk; hoverSec = sc;
+      if (zChanged && !sel) refreshActive();
       invalidate(false);
     }
-    if (ch >= 0) {
+    if (bk >= 0) {
+      const nch = bookCh0[bk + 1] - bookCh0[bk];
+      tip.innerHTML = `<div class="tip-refs">${esc(BOOKS[bk].name)}</div><div class="tip-meta">${nch} chapter${nch > 1 ? 's' : ''} · ${fmt(linksIn('book', bk, bookCh0[bk], bookCh0[bk + 1]))} links · click to zoom in</div>`;
+      placeTip(x, y); stage.classList.add('on-arc');
+    } else if (sc >= 0) {
+      const bs = CATS[sc].books, b0 = bs[0], b1 = bs[bs.length - 1];
+      tip.innerHTML = `<div class="tip-refs">${esc(CATS[sc].name)}</div><div class="tip-meta">${esc(BOOKS[b0].name)}${b1 > b0 ? '–' + esc(BOOKS[b1].name) : ''} · ${bs.length} book${bs.length > 1 ? 's' : ''} · ${fmt(linksIn('sec', sc, bookCh0[b0], bookCh0[b1 + 1]))} links</div>`;
+      placeTip(x, y); stage.classList.add('on-arc');
+    } else if (ch >= 0) {
       let links = 0; for (const i of arcsOfChapter(ch)) if (arcVisible(i)) links++;
       tip.innerHTML = `<div class="tip-refs">${esc(BOOKS[chBook[ch]].name)} ${chNum[ch]}</div><div class="tip-meta">${chCount[ch]} verses · ${fmt(links)} links</div>`;
       placeTip(x, y); stage.classList.add('on-arc');
@@ -1198,27 +1747,32 @@ const pointers = new Map();
 let drag = null, pinch = null;
 const local = e => { const r = stage.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
 stage.addEventListener('pointerdown', e => {
-  if (e.target.closest('.key, .title-block form')) return;
+  if (e.target.closest('.key, .title-block form, .zoom-out')) return;
   stage.setPointerCapture(e.pointerId);
   const [x, y] = local(e);
   pointers.set(e.pointerId, [x, y]);
   if (pointers.size === 2) {
     const [a, b] = [...pointers.values()];
     pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) }; drag = null;
-  } else drag = { x, y, uc: view.uc, moved: false };
+  } else drag = { x, y, uc: view.uc, ox: V2.ox, oy: V2.oy, moved: false };
 });
 stage.addEventListener('pointermove', e => {
   const [x, y] = local(e);
   if (pointers.has(e.pointerId)) pointers.set(e.pointerId, [x, y]);
   if (pinch && pointers.size === 2) {
     const [a, b] = [...pointers.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
-    if (pinch.d > 0) zoomAt((a[0] + b[0]) / 2, d / pinch.d);
+    if (pinch.d > 0) { if (S.layout) zoomWheelAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / pinch.d); else zoomAt((a[0] + b[0]) / 2, d / pinch.d); }
     pinch.d = d; return;
   }
   if (drag) {
     const dx = x - drag.x;
     if (!drag.moved && Math.hypot(dx, y - drag.y) > 4) { drag.moved = true; stage.classList.add('dragging'); hideTip(); hoverArc = -1; }
-    if (drag.moved) { tween = null; view.uc = drag.uc - dx / L.k; clampView(); computeView(); invalidate(true); return; }
+    if (drag.moved) {
+      tween = null;
+      if (S.layout) { V2.ox = drag.ox + dx; V2.oy = drag.oy + (y - drag.y); clampV2(); }
+      else { view.uc = drag.uc - dx / L.k; clampView(); computeView(); }
+      invalidate(true); return;
+    }
   }
   if (e.pointerType === 'mouse' || !drag) hover(x, y);
 });
@@ -1231,34 +1785,42 @@ function endPointer(e) {
 }
 stage.addEventListener('pointerup', endPointer);
 stage.addEventListener('pointercancel', endPointer);
-stage.addEventListener('pointerleave', () => { if (!drag) { hoverCh = -1; hoverArc = -1; hideTip(); if (!sel) refreshActive(); invalidate(false); } });
+stage.addEventListener('pointerleave', () => { if (!drag) { hoverCh = -1; hoverArc = -1; hoverBook = -1; hoverSec = -1; hideTip(); if (!sel) refreshActive(); invalidate(false); } });
 stage.addEventListener('wheel', e => {
   e.preventDefault(); tween = null;
-  const [x] = local(e);
+  const [x, y] = local(e);
   const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+  if (S.layout) { zoomWheelAt(x, y, Math.exp(-dy * 0.0016)); return; }
   if (Math.abs(e.deltaX) > Math.abs(dy) && view.z > 1) { view.uc += e.deltaX / L.k; clampView(); computeView(); invalidate(true); return; }
   zoomAt(x, Math.exp(-dy * 0.0016));
 }, { passive: false });
 function click(x, y) {
-  if (S.grow < 1) return;
-  if (y > L.y0) { const c = chapterAtX(x); if (c >= 0) select({ kind: 'chapter', ch: c }); return; }
-  const arc = pickArc(x, y);
+  if (S.grow < 1 || S.layoutMix !== S.layout || S.chronoMix !== S.chrono) return;
+  const z = zoneAt(x, y);
+  if (z.kind === 'ch') return select({ kind: 'chapter', ch: z.id });
+  if (z.kind === 'book') return zoomToBook(z.id);
+  if (z.kind === 'sec') { const bs = CATS[z.id].books; return zoomToBook(bs[0], bs[bs.length - 1]); }
+  if (z.kind !== 'arcs') return;
+  const arc = S.layout ? pickWheelArc(x, y) : pickArc(x, y);
   if (arc >= 0) select({ kind: 'verse', g: aFrom[arc] });
   else if (sel) select(null);
 }
 
 // ---------------------------------------------------------------- controls
 document.querySelectorAll('input[name=color]').forEach(r => r.addEventListener('change', () => {
+  S.colorFrom = shaderColorMode(); S.colorMix = reduceMotion ? 1 : 0;   // the arcs fade from the old colours to the new
   S.colorMode = +r.value; $('#datingCtl').hidden = S.colorMode !== 2;
   drawKey(); if (sel) renderPanel(); invalidate(true);
 }));
 document.querySelectorAll('input[name=dating]').forEach(r => r.addEventListener('change', () => {
+  S.colorFrom = shaderColorMode(); S.colorMix = reduceMotion ? 1 : 0;
   S.dating = +r.value; drawKey(); if (sel) renderPanel(); invalidate(true);
 }));
 if (!hasYears) document.querySelector('input[name=color][value="2"]').closest('label').hidden = true;
 document.querySelectorAll('input[name=axis]').forEach(r => r.addEventListener('change', () => { S.axis = +r.value; invalidate(true); }));
 const rel = $('#rel'), relOut = $('#relOut');
 function applyRel() {
+  filterVer++;   // the tooltip's link counts depend on these filters
   S.relIdx = +rel.value; S.minVotes = REL_STOPS[S.relIdx];
   const n = visibleCount();
   relOut.textContent = S.relIdx === 0 ? 'All references' : `${S.minVotes}+ votes`;
@@ -1311,30 +1873,99 @@ $('#ctlToggle').addEventListener('click', e => {
 });
 const ink = $('#ink');
 ink.addEventListener('input', () => { S.ink = +ink.value / 100; invalidate(!floatOK); });
-$('#zin').addEventListener('click', () => { tween = null; zoomAt(L.SW / 2, 1.6); });
-$('#zout').addEventListener('click', () => { tween = null; zoomAt(L.SW / 2, 1 / 1.6); });
-$('#zfit').addEventListener('click', () => flyTo(1, 0.5));
+$('#zin').addEventListener('click', () => zoomBy(1.6));
+$('#zout').addEventListener('click', () => zoomBy(1 / 1.6));
+$('#zfit').addEventListener('click', fitView);
+zoomOutBtn.addEventListener('click', fitView);
+
+// layout: arcs or wheel; not remembered: every visit opens on the Rainbow unless the link says ?layout=wheel (kept in the address so a link opens the same view)
+const TITLE = {};
+for (const id of ['title', 'eyebrow', 'dek', 'hint']) TITLE[id] = $('#' + id).innerHTML;
+const WHEEL_TITLE = {
+  title: 'Wheel <em>within a Wheel</em>',
+  eyebrow: 'After Ezekiel 1:16 · a companion to the Rainbow',
+  dek: 'Every cross-reference in the Treasury of Scripture Knowledge, drawn as a curve across the circle between the two verses it joins. Around the rim are the 1,189 chapters, Genesis at the top running clockwise to Revelation, each bar as long as its verse count. The colored band names the sections of the Bible.',
+  hint: 'Click a chapter bar or a curve. Scroll to zoom, drag to pan. Press <b>?</b> for help.',
+};
+function setLayout(v, animate = true) {
+  S.layout = v ? 1 : 0;
+  document.querySelectorAll('input[name=layout]').forEach(r => { r.checked = +r.value === S.layout; });
+  // start both views from the whole picture so the morph runs between the two complete diagrams
+  tween = null; view.z = 1; view.uc = 0.5; computeView(); V2.z = 1; V2.ox = V2.oy = 0;
+  if (!animate || reduceMotion) S.layoutMix = S.layout;
+  hoverCh = -1; hoverArc = -1; hoverBook = -1; hoverSec = -1; hideTip(); if (!sel) refreshActive();
+  for (const id in TITLE) $('#' + id).innerHTML = S.layout ? WHEEL_TITLE[id] : TITLE[id];
+  document.title = S.layout ? 'Wheel within a Wheel · Reference Rainbow' : 'Reference Rainbow';
+  stage.setAttribute('aria-label', S.layout ? 'Wheel diagram of Bible cross-references' : 'Arc diagram of Bible cross-references');
+  try {
+    const q = new URLSearchParams(location.search);
+    if (S.layout) q.set('layout', 'wheel'); else q.delete('layout');
+    const qs = q.toString();
+    history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+  } catch (_) { /* sandboxed */ }
+  invalidate(true);
+}
+document.querySelectorAll('input[name=layout]').forEach(r => r.addEventListener('change', () => setLayout(+r.value)));
+
+// order: Bible order or chronological (not remembered: every visit starts in Bible order)
+function setOrder(v) {
+  S.chrono = v && hasChrono ? 1 : 0;
+  document.querySelectorAll('input[name=order]').forEach(r => { r.checked = +r.value === S.chrono; });
+  // chronological positions give every verse the same width, so the Axis choice rests while it is on
+  $('#axisCtl').querySelectorAll('input').forEach(r => { r.disabled = !!S.chrono; });
+  $('#axisCtl').style.opacity = S.chrono ? 0.45 : '';
+  $('#orderNote').hidden = !S.chrono;
+  tween = null; view.z = 1; view.uc = 0.5; computeView(); V2.z = 1; V2.ox = V2.oy = 0;
+  if (reduceMotion) S.chronoMix = S.chrono;
+  hoverCh = -1; hoverArc = -1; hoverBook = -1; hoverSec = -1; hideTip(); if (!sel) refreshActive();
+  invalidate(true);
+}
+document.querySelectorAll('input[name=order]').forEach(r => r.addEventListener('change', () => setOrder(+r.value)));
+$('#orderCtl').hidden = !hasChrono;
 function onThemeChange() { readTokens(); drawKey(); if (sel) renderPanel(); invalidate(true); }
 new MutationObserver(onThemeChange).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', onThemeChange);
 
 // theme: light / dark / system, remembered per device
-const themeRadios = [...document.querySelectorAll('input[name=theme]')];
+let themePref = 'system';
 function applyTheme(pref) {
+  themePref = pref;
   if (pref === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pref);
-  themeRadios.forEach(r => { r.checked = r.value === pref; });
   onThemeChange();
 }
 {
   let saved = null;
   try { saved = localStorage.getItem('reference-rainbow-theme'); } catch (_) { /* storage blocked */ }
   if (saved === 'light' || saved === 'dark' || saved === 'system') applyTheme(saved);
-  else { const stamped = root.getAttribute('data-theme'); themeRadios.forEach(r => { r.checked = r.value === (stamped || 'system'); }); }
+  else { themePref = root.getAttribute('data-theme') || 'system'; }
 }
-themeRadios.forEach(r => r.addEventListener('change', () => {
-  applyTheme(r.value);
-  try { localStorage.setItem('reference-rainbow-theme', r.value); } catch (_) { /* storage blocked */ }
-}));
+
+// quick light/dark switch, top right
+const themeFab = $('#themeFab');
+const THEME_SUN = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.4v1.8M8 12.8v1.8M1.4 8h1.8M12.8 8h1.8M3.5 3.5l1.3 1.3M11.2 11.2l1.3 1.3M12.5 3.5l-1.3 1.3M4.8 11.2l-1.3 1.3"/></svg>';
+const THEME_MOON = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.7 9.7A6 6 0 1 1 6.3 2.3a5 5 0 0 0 7.4 7.4Z"/></svg>';
+const themeIsDark = () => root.getAttribute('data-theme') === 'dark' || (!root.hasAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+function syncThemeFab() {
+  const dark = themeIsDark();
+  themeFab.innerHTML = dark ? THEME_MOON : THEME_SUN;
+  const labels = { light: 'Light', dark: 'Dark', system: `System (${dark ? 'dark' : 'light'})` };
+  themeFab.dataset.tipTitle = 'Theme: ' + labels[themePref];
+  themeFab.dataset.tip = themePref === 'system' ? 'Following your device. Click for Light.' : themePref === 'light' ? 'Light page. Click for Dark.' : 'Dark page. Click to follow your device (System).';
+  themeFab.setAttribute('aria-label', 'Theme: ' + labels[themePref] + '. Click to change.');
+}
+themeFab.addEventListener('click', () => {
+  const order = ['light', 'dark', 'system'];
+  const next = order[(order.indexOf(themePref) + 1) % order.length];
+  applyTheme(next);
+  try { localStorage.setItem('reference-rainbow-theme', next); } catch (_) { /* storage blocked */ }
+  syncThemeFab();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeFab);
+syncThemeFab();
+const themeFabMargin = $('#margin');
+function syncThemeFabVisibility() { themeFab.classList.toggle('is-hidden', themeFabMargin && !themeFabMargin.hidden); }
+new MutationObserver(syncThemeFabVisibility).observe(themeFabMargin, { attributes: true, attributeFilter: ['hidden'] });
+syncThemeFabVisibility();
 
 // control tooltips: every element with data-tip explains itself on hover or keyboard focus;
 // data-more adds a "Learn more" link, and the pop-up stays open while the pointer moves onto it
@@ -1448,9 +2079,9 @@ document.addEventListener('keydown', e => {
   if (sel && sel.kind === 'chapter' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
     e.preventDefault(); select({ kind: 'chapter', ch: clamp(sel.ch + (e.key === 'ArrowRight' ? 1 : -1), 0, NC - 1) });
   }
-  if (e.key === '+' || e.key === '=') zoomAt(L.SW / 2, 1.6);
-  if (e.key === '-') zoomAt(L.SW / 2, 1 / 1.6);
-  if (e.key === '0') flyTo(1, 0.5);
+  if (e.key === '+' || e.key === '=') zoomBy(1.6);
+  if (e.key === '-') zoomBy(1 / 1.6);
+  if (e.key === '0') fitView();
 });
 
 // shareable location
@@ -1470,8 +2101,16 @@ function readHash() {
 // ---------------------------------------------------------------- boot
 readHash();
 window.addEventListener('hashchange', () => { const before = sel; readHash(); if (sel !== before) select(sel); });
-new ResizeObserver(() => { layout(); invalidate(true); }).observe(stage);
+{
+  // the phone layout keeps both diagrams above the search panel, so a change in the panel's height (a search message) re-lays them out too
+  const ro = new ResizeObserver(() => { layout(); invalidate(true); });
+  ro.observe(stage); ro.observe(document.querySelector('.key'));
+}
 layout();
+{
+  try { localStorage.removeItem('reference-rainbow-layout'); } catch (_) { /* storage blocked */ }   // an older version remembered the layout
+  if (new URLSearchParams(location.search).get('layout') === 'wheel') setLayout(1, false);
+}
 if (TX) {
   S.tr = TX.saved();
   $('#trSel').innerHTML = TX.optionsHtml(S.tr);

@@ -44,6 +44,7 @@ python rainbow/build_data.py     # rainbow/data.js: cross-references, KJV text, 
 python rainbow/build_echoes.py   # rainbow/echoes-data.js: repeated phrases, Strong's entries
 python rainbow/build_texts.py    # rainbow/texts/: the 29 English translations offered in the pages
 python rainbow/build_study.py    # rainbow/study/: Hebrew/Greek words, lexicon and concordance for the reader
+python rainbow/build_chrono.py   # rainbow/chrono.js: chronological verse order (downloads Theographic CSVs on first run)
 ```
 
 Run the tests with `python -m unittest discover -s tests -v`.
@@ -64,9 +65,10 @@ rainbow/                      static pages; no build step, work from file://
   translations.js             loads English translations on demand
   bookfilter.js               Books filter (testaments, categories, single books)
   data.js, echoes-data.js     generated data bundles
+  chrono.js                   generated: verses in chronological order (optional; hides the Order control if missing)
   texts/                      generated: manifest.js + one file per translation
   scriptorium-link.js         Scriptorium links: checks it's running, or shows how to start it
-  build_data.py, build_echoes.py, build_texts.py, build_study.py
+  build_data.py, build_echoes.py, build_texts.py, build_study.py, build_chrono.py
   buildutil.py                shared file writer for the build scripts
 bibledb/                      database pipeline and Scriptorium
   download.py                 fetch sources into raw/

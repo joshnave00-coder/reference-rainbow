@@ -14,6 +14,7 @@ These ship in the download so the pages work without building anything.
 | `rainbow/data.js` | OpenBible.info cross-references and vote scores; King James Version text; words-of-Jesus markup; detected words of God; authorship and dating summaries | **CC BY 4.0** (because of the cross-references) | OpenBible.info |
 | `rainbow/echoes-data.js` | Repeated phrases in Hebrew, Aramaic and Greek, with glosses and transliterations from STEPBible; Septuagint words; Strong's dictionary entries (Open Scriptures edition) | **CC BY-SA 4.0** (the Strong's entries are share-alike) | STEPBible.org / Tyndale House; Open Scriptures; OpenBible.info |
 | `rainbow/texts/*.js` | 30 English Bible translations (the KJV is in `data.js`), listed with their licences in the Guide and `texts/manifest.js` | **Each keeps its own licence:** public domain (most); CC BY 4.0 (Orthodox Jewish Bible, Text-Critical English NT); CC BY-SA 4.0 (Literal Standard Version, Free Bible Version, Translation for Translators, Unlocked Literal Bible, Wycliffe) | The copyright holders named in the Guide |
+| `rainbow/chrono.js` | The order of every verse by when its events happened, derived from Theographic Bible Metadata | **CC BY-SA 4.0** | Theographic Bible Metadata (Robert Rouse) |
 | everything else (`*.py`, `*.html`, docs) | Project code, page text, the guide, authorship summaries in `bibledb/book_origins.py` | MIT | — |
 
 The page footers and the guide already carry the attributions below. If you publish these files elsewhere, keep them.
@@ -64,6 +65,7 @@ Copy this wherever the data is shown or shared:
 > Cross-references: OpenBible.info, CC BY 4.0, drawn from the Treasury of Scripture Knowledge.
 > Hebrew, Aramaic and Greek word data and lexicons: STEPBible.org / Tyndale House Cambridge, CC BY 4.0.
 > Strong's dictionaries: Open Scriptures, CC BY-SA.
+> Chronological order: Theographic Bible Metadata, Robert Rouse, CC BY-SA 4.0 (github.com/robertrouse/theographic-bible-metadata).
 > Bible texts: see each text's licence in the `translations` table; public-domain texts from eBible.org and CrossWire (via scrollmapper/bible_databases).
 
 ## 5. Other notes

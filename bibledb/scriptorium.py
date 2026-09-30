@@ -111,7 +111,13 @@ def parse_ref(q):
 def api_meta(_):
     return dict(
         books=BOOKS,
-        translations=rows("SELECT translation_id, title, language, language_code, category, has_ot, has_nt, has_deuterocanon, has_strongs FROM translations ORDER BY category DESC, language, translation_id"),
+        translations=rows("""SELECT translation_id, title, language, language_code, category, has_ot, has_nt, has_deuterocanon, has_strongs,
+                                     CASE WHEN language_code = 'en' THEN 'English'
+                                          WHEN category = 'Original-language text' THEN 'Original languages'
+                                          ELSE category END AS group_label
+                              FROM translations
+                              ORDER BY CASE WHEN language_code = 'en' THEN 0 WHEN category = 'Original-language text' THEN 1 ELSE 2 END,
+                                       category DESC, language, translation_id"""),
         counts=rows("""SELECT (SELECT count(*) FROM translations) translations, (SELECT count(DISTINCT language) FROM translations) languages,
                        (SELECT count(*) FROM verse_text) verse_rows, (SELECT count(*) FROM original_words) original_words,
                        (SELECT count(*) FROM strongs) strongs, (SELECT count(*) FROM cross_references) cross_references,

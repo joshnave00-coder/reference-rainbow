@@ -41,6 +41,9 @@ button{cursor:pointer}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--ribbon);outline-offset:2px}
 .ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.theme-fab{position:fixed;top:14px;right:14px;z-index:38;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--rule);border-radius:50%;background:var(--panel);color:var(--ink);box-shadow:0 6px 20px var(--shadow);transition:opacity .15s,transform .15s}
+.theme-fab:hover{filter:brightness(.94)}
+.theme-fab.is-hidden{opacity:0;transform:scale(.9);pointer-events:none}
 .eyebrow{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
 .page{max-width:1240px;margin:0 auto;padding:22px 28px 70px;display:flex;flex-direction:column;gap:24px}
 
@@ -173,6 +176,7 @@ table.lt{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-numer
 .ctip .wt-id{font-size:11px;font-weight:600;letter-spacing:.04em;opacity:.75}
 .ctip .wt-o{font-family:var(--hebrew);font-size:24px;line-height:1.35;font-weight:400;opacity:1}
 .ctip .wt-o.gr{font-family:var(--greek);font-size:19px}
+.ctip .wt-o.tr{font-size:19px}
 .ctip .wt-t{font-family:var(--serif);font-style:italic;font-size:14px;opacity:1}
 .ctip .wt-g{font-size:12.5px;opacity:1}
 button.ctip-more{background:none;border:0;padding:0;cursor:pointer;font:inherit;font-size:12px;font-weight:600}
@@ -181,6 +185,7 @@ button.ctip-more{background:none;border:0;padding:0;cursor:pointer;font:inherit;
 .drawer .close{position:absolute;top:14px;right:14px;min-height:28px}
 .dr-lemma{margin:0;font-family:var(--hebrew);font-size:44px;line-height:1.15;font-weight:400}
 .dr-lemma.gr{font-family:var(--greek);font-size:36px}
+.dr-lemma.tr{font-size:30px}
 .dr-xlit{margin:0;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--muted)}
 .dr-sec{display:flex;flex-direction:column;gap:5px;padding-top:12px;border-top:1px solid var(--rule)}
 .dr-sec p{margin:0;font-family:var(--serif);font-size:14px;line-height:1.65}
@@ -224,6 +229,7 @@ dialog.help::backdrop{background:rgba(12,11,17,.45)}
 @media (prefers-reduced-motion: reduce){.ctip{transition:none}}
 </style>
 
+<button class="theme-fab" id="themeFab" type="button" aria-label="Theme" data-tip-title="Theme" data-tip="Light, dark, or follow your device."></button>
 <div class="page">
   <header class="top">
     <div class="brand">
@@ -233,13 +239,6 @@ dialog.help::backdrop{background:rgba(12,11,17,.45)}
       <p class="dek">Every run of seven or more words that appears more than once in the Hebrew, Aramaic or Greek text: quotations, refrains, laws and lists repeated word for word, and histories told twice.</p>
     </div>
     <div class="top-tools">
-      <div class="ctl" role="radiogroup" aria-label="Theme">
-        <span class="opts">
-          <label data-tip-title="Light" data-tip="Light page. Shared with the Rainbow on this device."><input type="radio" name="theme" value="light"><span>Light</span></label>
-          <label data-tip-title="Dark" data-tip="Dark page. Shared with the Rainbow on this device."><input type="radio" name="theme" value="dark"><span>Dark</span></label>
-          <label data-tip-title="System" data-tip="Follow your device's setting."><input type="radio" name="theme" value="system" checked><span>System</span></label>
-        </span>
-      </div>
       <a class="btn" href="read.html" data-tip-title="Read" data-more="guide.html#reader" data-tip="The Bible reader: read any chapter and study its words.">Read</a>
       <a class="btn" data-scriptorium data-tip-title="Scriptorium" data-more="guide.html#scriptorium" data-tip="The full database reading room: 152 texts, a Strong's concordance and more. It must be running first: double-click Start Scriptorium in the project folder, then use this link.">Scriptorium</a>
       <a class="btn" href="guide.html#echoes" data-tip-title="Guide" data-tip="The full explanation of Echoes, the counts and the filters." data-more="guide.html#echoes">Guide</a>
@@ -266,8 +265,8 @@ dialog.help::backdrop{background:rgba(12,11,17,.45)}
     <div class="ctl" role="radiogroup" aria-labelledby="lblScript">
       <span class="ctl-label" id="lblScript" data-tip-title="Script" data-tip="Show the phrases in the original Hebrew, Aramaic or Greek letters, or in transliteration: the same words spelled with English letters, as they sound. Hover any word for its Strong's number." data-more="guide.html#echoes-words">Script</span>
       <span class="opts">
-        <label data-tip-title="Original script" data-tip="The words as written: Hebrew and Aramaic right to left, Greek left to right." data-more="guide.html#echoes-words"><input type="radio" name="script" value="orig" checked><span>Original</span></label>
-        <label data-tip-title="Transliteration" data-tip="The same words in English letters, showing how they sound: bereshit bara elohim for בְּרֵאשִׁית בָּרָא אֱלֹהִים." data-more="guide.html#echoes-words"><input type="radio" name="script" value="translit"><span>Transliteration</span></label>
+        <label data-tip-title="Original script" data-tip="The words as written: Hebrew and Aramaic right to left, Greek left to right." data-more="guide.html#echoes-words"><input type="radio" name="script" value="orig"><span>Original</span></label>
+        <label data-tip-title="Transliteration" data-tip="The same words in English letters, showing how they sound: bereshit bara elohim for בְּרֵאשִׁית בָּרָא אֱלֹהִים." data-more="guide.html#echoes-words"><input type="radio" name="script" value="translit" checked><span>Transliteration</span></label>
       </span>
     </div>
     <label class="ctl" data-tip-title="English translation" data-more="guide.html#translations" data-tip="Which English Bible is shown under each place when you open a phrase. Shared with the Reference Rainbow.">
@@ -553,13 +552,18 @@ let bookFilter = null;  // Books checkbox filter, created with the controls
 const ST = {
   corpus: 'ot', mode: 'exact', sort: 'len-desc', count: 'listed',
   q: '', lenMin: 7, lenMax: 7, plMin: 2, plMax: 2, spread: new Set(['single', 'multi']), xref: new Set(['yes', 'no']), bookPlaces: 'any',
-  shown: 50, open: new Set(), hover: -1, script: 'orig',
+  shown: 50, open: new Set(), hover: -1, script: 'translit',
 };
 try {
   const saved = JSON.parse(localStorage.getItem('echoes-state') || '{}');
-  for (const k of ['corpus', 'mode', 'sort', 'count', 'script']) if (typeof saved[k] === 'string') ST[k] = saved[k];
+  for (const k of ['corpus', 'mode', 'sort', 'count']) if (typeof saved[k] === 'string') ST[k] = saved[k];
 } catch (_) { /* storage blocked */ }
-const save = () => { try { localStorage.setItem('echoes-state', JSON.stringify({ corpus: ST.corpus, mode: ST.mode, sort: ST.sort, count: ST.count, script: ST.script })); } catch (_) { /* storage blocked */ } };
+try {
+  const savedScript = localStorage.getItem('echoes-script');
+  if (savedScript === 'orig' || savedScript === 'translit') ST.script = savedScript;
+} catch (_) { /* storage blocked */ }
+const save = () => { try { localStorage.setItem('echoes-state', JSON.stringify({ corpus: ST.corpus, mode: ST.mode, sort: ST.sort, count: ST.count })); } catch (_) { /* storage blocked */ } };
+const saveScript = () => { try { localStorage.setItem('echoes-script', ST.script); } catch (_) { /* storage blocked */ } };
 const setKey = () => `${ST.corpus}/${ST.corpus === 'gk' ? 'exact' : ST.mode}`;
 
 // per-set derived facts: length, places, books, first position, cross-referenced
@@ -871,44 +875,94 @@ $('#more').addEventListener('click', () => { ST.shown += 50; renderList(); });
 const cv = $('#arcs'), cx = cv.getContext('2d');
 let arcGeo = [];
 const axisRange = () => ST.corpus === 'ot' ? [0, bookCh0[39]] : ST.corpus === 'nt' ? [bookCh0[39], NC] : [0, NC];
+// motion: the axis glides between texts; arcs fade out / grow up when the shown phrases change
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+const GLIDE_MS = 900, GROW_MS = 900, STAGGER_MS = 200, FADE_MS = 400;   // stagger + grow = 1.1 s at most
+const easeIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+let view = null, glide = null;         // the range on screen {c0, c1}; glide = {from, to, t0} while it moves
+let shown = null, grow = null, ghosts = null;   // last set drawn {key, list, ids, maxLen}; rising arcs {t0, only}; fading arcs {t0, list, maxLen}
+let animating = false, raf = 0;        // while true, hover and picking are off
+// an arc's ends in chapter units (not pixels), so it rides along with the axis
+const arcU = x => x.u || (x.u = x.r[4].filter(o => o[5] >= 0 && o[0] <= NB).map(o => { const c = verseCh[o[5]]; return c + (o[5] - chStart[c] + 0.5) / chCount[c]; }).sort((a, b) => a - b));
+const arcCol = (x, maxLen) => x.col || (x.col = ramp(Math.sqrt((x.n - MINW) / Math.max(1, maxLen - MINW)), 0.55));
+// notice a new range or a new set of phrases and start the motion for it (resizes and redraws change neither)
+function syncArcs(now) {
+  const to = axisRange(), key = setKey();
+  if (!view || still.matches) { view = { c0: to[0], c1: to[1] }; glide = null; }
+  else if (glide ? glide.to[0] !== to[0] || glide.to[1] !== to[1] : view.c0 !== to[0] || view.c1 !== to[1]) glide = { from: [view.c0, view.c1], to, t0: now };
+  if (shown && shown.key === key && shown.ids.size === filtered.length && filtered.every(x => shown.ids.has(x.i))) return;
+  const prev = shown;
+  shown = { key, list: filtered, ids: new Set(filtered.map(x => x.i)), maxLen: info().maxLen };
+  grow = ghosts = null;
+  if (still.matches) return;
+  const same = prev && prev.key === key;   // inside one text the phrases that stay keep their arcs; only the difference moves
+  const gone = prev ? (same ? prev.list.filter(x => !shown.ids.has(x.i)) : prev.list) : [];
+  const added = same ? new Set(filtered.filter(x => !prev.ids.has(x.i)).map(x => x.i)) : null;
+  if (gone.length) ghosts = { t0: now, list: gone, maxLen: prev.maxLen };
+  if (!added || added.size) grow = { t0: now, only: added };
+  if (grow || ghosts) { ST.hover = -1; atip.hidden = true; cv.style.cursor = 'crosshair'; }
+}
 function drawArcs() {
   const dpr = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight;
   if (!W) return;
-  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-  cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
+  const now = performance.now();
+  syncArcs(now);
+  if (glide) {
+    const p = Math.min(1, (now - glide.t0) / GLIDE_MS), e = easeIO(p), f = glide.from, t = glide.to;
+    view = p >= 1 ? { c0: t[0], c1: t[1] } : { c0: f[0] + (t[0] - f[0]) * e, c1: f[1] + (t[1] - f[1]) * e };
+    if (p >= 1) glide = null;
+  }
+  const growT = grow ? now - grow.t0 : 0, fadeT = ghosts ? now - ghosts.t0 : 0;
+  if (grow && growT >= GROW_MS + STAGGER_MS) grow = null;
+  if (ghosts && fadeT >= FADE_MS) ghosts = null;
+  animating = !!(glide || grow || ghosts);
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H); cx.globalAlpha = 1;
   const ink = cssVar('--ink'), faint = cssVar('--faint'), rule = cssVar('--rule'), muted = cssVar('--muted');
-  const [c0, c1] = axisRange(), padX = 16, base = H - 34, span = c1 - c0;
-  const xOfG = g => padX + ((verseCh[g] - c0) + (g - chStart[verseCh[g]] + 0.5) / chCount[verseCh[g]]) / span * (W - 2 * padX);
+  const { c0, c1 } = view, padX = 16, base = H - 34, span = c1 - c0, xOf = u => padX + (u - c0) / span * (W - 2 * padX);
+  const tgt = axisRange(), tspan = tgt[1] - tgt[0];
   cx.fillStyle = rule; cx.fillRect(padX, base, W - 2 * padX, 1);
   cx.font = '600 9.5px "Schibsted Grotesk", system-ui, sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
   if ('letterSpacing' in cx) cx.letterSpacing = '1px';
   for (let b = 0; b < NB; b++) {
-    if (bookCh0[b] < c0 || bookCh0[b] >= c1) continue;
-    const xs = padX + (bookCh0[b] - c0) / span * (W - 2 * padX), xe = padX + (bookCh0[b + 1] - c0) / span * (W - 2 * padX);
-    cx.fillStyle = rule; cx.fillRect(Math.round(xs), base + 1, 1, 5);
+    if (bookCh0[b + 1] <= c0 || bookCh0[b] >= c1) continue;
+    const xs = xOf(bookCh0[b]), xe = xOf(bookCh0[b + 1]), vs = Math.max(xs, padX), ve = Math.min(xe, W - padX);   // the part on screen
+    if (xs >= padX - 0.5) { cx.fillStyle = rule; cx.fillRect(Math.round(xs), base + 1, 1, 5); }
     for (const label of [BOOKS[b].name.toUpperCase(), BOOKS[b].short.toUpperCase()]) {
-      if (cx.measureText(label).width <= xe - xs - 4) { cx.fillStyle = muted; cx.fillText(label, (xs + xe) / 2, base + 16); break; }
+      if (cx.measureText(label).width <= ve - vs - 4) { cx.fillStyle = muted; cx.fillText(label, (vs + ve) / 2, base + 16); break; }
     }
   }
   if ('letterSpacing' in cx) cx.letterSpacing = '0px';
   const maxLen = info().maxLen;
   arcGeo = [];
-  const hi = new Set(ST.hover >= 0 ? [ST.hover] : []);
+  const hi = new Set(ST.hover >= 0 && !animating ? [ST.hover] : []);
   ST.open.forEach(i => hi.add(i));
-  const draw = (x, strong) => {
-    const t = Math.sqrt((x.n - MINW) / Math.max(1, maxLen - MINW));
-    const pts = x.r[4].filter(o => o[5] >= 0 && o[0] <= NB).map(o => xOfG(o[5])).sort((a, b) => a - b);
-    for (let k = 0; k + 1 < pts.length; k++) {
-      const a = pts[k], b = pts[k + 1], rad = Math.max((b - a) / 2, 0.8), mid = (a + b) / 2;
-      const ry = rad * Math.min(1, (base - 16) / Math.max(rad, 1));
+  // fade: 1 for a normal arc; rise: the arc is growing up from the baseline
+  const draw = (x, strong, ml, fade, rise) => {
+    const u = arcU(x), col = strong ? ink : arcCol(x, ml);
+    for (let k = 0; k + 1 < u.length; k++) {
+      const a = xOf(u[k]), b = xOf(u[k + 1]), rad = Math.max((b - a) / 2, 0.8), mid = (a + b) / 2;
+      if (mid + rad < 0 || mid - rad > W) continue;   // off screen while the axis glides
+      let s = 1;
+      if (rise) {   // short arcs start first, long ones last
+        s = easeOut(clamp((growT - STAGGER_MS * Math.pow(Math.min(1, (u[k + 1] - u[k]) / tspan), 0.4)) / GROW_MS, 0, 1));
+        if (s <= 0) continue;
+      }
+      const ry = rad * Math.min(1, (base - 16) / Math.max(rad, 1)) * s;
+      cx.globalAlpha = s * fade;
       cx.beginPath(); cx.ellipse(mid, base, rad, ry, 0, Math.PI, 2 * Math.PI);
-      cx.strokeStyle = strong ? ink : ramp(t, 0.55); cx.lineWidth = strong ? 2 : 1.1; cx.stroke();
-      if (!strong) arcGeo.push({ i: x.i, mid, rad, ry });
+      cx.strokeStyle = col; cx.lineWidth = strong ? 2 : 1.1; cx.stroke();
+      if (!strong && !animating) arcGeo.push({ i: x.i, mid, rad, ry });
     }
   };
-  for (const x of filtered) if (!hi.has(x.i)) draw(x, false);
-  for (const x of filtered) if (hi.has(x.i)) draw(x, true);
-  if (!filtered.length) { cx.fillStyle = faint; cx.font = 'italic 13px "Libre Baskerville", Georgia, serif'; cx.fillText('No phrases match these filters', W / 2, base / 2); }
+  const rises = x => !!grow && (!grow.only || grow.only.has(x.i));
+  if (ghosts) { const f = 1 - easeIO(fadeT / FADE_MS); for (const x of ghosts.list) draw(x, false, ghosts.maxLen, f, false); }
+  for (const x of filtered) if (!hi.has(x.i)) draw(x, false, maxLen, 1, rises(x));
+  for (const x of filtered) if (hi.has(x.i)) draw(x, true, maxLen, 1, rises(x));
+  cx.globalAlpha = 1;
+  if (!filtered.length && !ghosts) { cx.fillStyle = faint; cx.font = 'italic 13px "Libre Baskerville", Georgia, serif'; cx.fillText('No phrases match these filters', W / 2, base / 2); }
+  if (animating && !raf) raf = requestAnimationFrame(() => { raf = 0; drawArcs(); });
 }
 function pickArc(x, y) {
   const base = cv.clientHeight - 34;
@@ -922,7 +976,7 @@ function pickArc(x, y) {
   return best;
 }
 cv.addEventListener('pointermove', e => {
-  const r = cv.getBoundingClientRect(), i = pickArc(e.clientX - r.left, e.clientY - r.top);
+  const r = cv.getBoundingClientRect(), i = animating ? -1 : pickArc(e.clientX - r.left, e.clientY - r.top);
   if (i !== ST.hover) { ST.hover = i; drawArcs(); }
   if (i >= 0) {
     const x = info().reps[i];
@@ -949,7 +1003,7 @@ new ResizeObserver(() => { drawArcs(); renderChart(info()); }).observe($('#chart
 $$('input[name=corpus]').forEach(x => x.addEventListener('change', () => { ST.corpus = x.value; save(); resetFilters(true); render(); }));
 $$('input[name=mode]').forEach(x => x.addEventListener('change', () => { ST.mode = x.value; save(); resetFilters(true); render(); }));
 $$('input[name=count]').forEach(x => x.addEventListener('change', () => { ST.count = x.value; save(); renderChart(info()); }));
-$$('input[name=script]').forEach(x => x.addEventListener('change', () => { ST.script = x.value; save(); renderList(); }));
+$$('input[name=script]').forEach(x => x.addEventListener('change', () => { ST.script = x.value; saveScript(); renderList(); }));
 $$('input[name=spread]').forEach(x => x.addEventListener('change', () => { if (x.checked) ST.spread.add(x.value); else ST.spread.delete(x.value); ST.shown = 50; render(); }));
 $$('input[name=xref]').forEach(x => x.addEventListener('change', () => { if (x.checked) ST.xref.add(x.value); else ST.xref.delete(x.value); ST.shown = 50; render(); }));
 $$('input[name=bookPlaces]').forEach(x => x.addEventListener('change', () => { ST.bookPlaces = x.value; ST.shown = 50; render(); }));
@@ -981,20 +1035,46 @@ $('#q').addEventListener('input', e => {
 });
 
 // theme (shared with the Rainbow)
-const themeRadios = $$('input[name=theme]');
+let themePref = 'system';
 function applyTheme(pref) {
+  themePref = pref;
   if (pref === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pref);
-  themeRadios.forEach(r => { r.checked = r.value === pref; });
   drawArcs(); renderChart(info());
 }
 {
   let saved = null;
   try { saved = localStorage.getItem('reference-rainbow-theme'); } catch (_) { /* storage blocked */ }
-  if (saved === 'light' || saved === 'dark' || saved === 'system') { if (saved === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', saved); themeRadios.forEach(r => { r.checked = r.value === saved; }); }
-  else { const st = root.getAttribute('data-theme'); themeRadios.forEach(r => { r.checked = r.value === (st || 'system'); }); }
+  if (saved === 'light' || saved === 'dark' || saved === 'system') { themePref = saved; if (saved === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', saved); }
+  else { themePref = root.getAttribute('data-theme') || 'system'; }
 }
-themeRadios.forEach(r => r.addEventListener('change', () => { applyTheme(r.value); try { localStorage.setItem('reference-rainbow-theme', r.value); } catch (_) { /* storage blocked */ } }));
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { drawArcs(); renderChart(info()); });
+
+// quick light/dark switch, top right
+const themeFab = $('#themeFab');
+const THEME_SUN = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.4v1.8M8 12.8v1.8M1.4 8h1.8M12.8 8h1.8M3.5 3.5l1.3 1.3M11.2 11.2l1.3 1.3M12.5 3.5l-1.3 1.3M4.8 11.2l-1.3 1.3"/></svg>';
+const THEME_MOON = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.7 9.7A6 6 0 1 1 6.3 2.3a5 5 0 0 0 7.4 7.4Z"/></svg>';
+const themeIsDark = () => root.getAttribute('data-theme') === 'dark' || (!root.hasAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+function syncThemeFab() {
+  const dark = themeIsDark();
+  themeFab.innerHTML = dark ? THEME_MOON : THEME_SUN;
+  const labels = { light: 'Light', dark: 'Dark', system: `System (${dark ? 'dark' : 'light'})` };
+  themeFab.dataset.tipTitle = 'Theme: ' + labels[themePref];
+  themeFab.dataset.tip = themePref === 'system' ? 'Following your device. Click for Light.' : themePref === 'light' ? 'Light page. Click for Dark.' : 'Dark page. Click to follow your device (System).';
+  themeFab.setAttribute('aria-label', 'Theme: ' + labels[themePref] + '. Click to change.');
+}
+themeFab.addEventListener('click', () => {
+  const order = ['light', 'dark', 'system'];
+  const next = order[(order.indexOf(themePref) + 1) % order.length];
+  applyTheme(next);
+  try { localStorage.setItem('reference-rainbow-theme', next); } catch (_) { /* storage blocked */ }
+  syncThemeFab();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeFab);
+syncThemeFab();
+const themeFabDrawer = $('#drawer');
+function syncThemeFabVisibility() { themeFab.classList.toggle('is-hidden', themeFabDrawer && !themeFabDrawer.hidden); }
+new MutationObserver(syncThemeFabVisibility).observe(themeFabDrawer, { attributes: true, attributeFilter: ['hidden'] });
+syncThemeFabVisibility();
 
 // pop-ups with optional "Learn more" links that stay open while the pointer moves onto them
 const ctip = $('#ctip');
@@ -1002,12 +1082,15 @@ let ctipTimer = 0, ctipHide = 0, ctipFor = null;
 const TIP_SEL = '[data-tip], .w';
 function wordTipHtml(el) {
   const sid = el.dataset.s, e = sid ? LEX[sid] : null, greek = sid ? sid[0] === 'G' : ST.corpus !== 'ot';
-  const orig = `<span class="wt-o${greek ? ' gr' : ''}" lang="${greek ? 'grc' : 'hbo'}">${esc(el.dataset.o)}</span>`;
-  const tr = el.dataset.t ? `<span class="wt-t">${esc(el.dataset.t)}</span>` : '';
+  const useTranslit = ST.script === 'translit' && el.dataset.t;
+  const orig = useTranslit
+    ? `<span class="wt-o tr">${esc(el.dataset.t)}</span>`
+    : `<span class="wt-o${greek ? ' gr' : ''}" lang="${greek ? 'grc' : 'hbo'}">${esc(el.dataset.o)}</span>`;
+  const tr = !useTranslit && el.dataset.t ? `<span class="wt-t">${esc(el.dataset.t)}</span>` : '';
   if (!sid) return `<div class="wt"><span class="wt-id">Septuagint word · no Strong's number in this text</span>${orig}${tr}</div>`;
   const gloss = e ? (e[7] || e[4] || '').split(/[;,]/)[0] : '';
   return `<div class="wt"><span class="wt-id">Strong's ${shortS(sid)}${e ? ' · ' + esc(e[2]) : ''}</span>${orig}${tr}
-    ${e ? `<span class="wt-g">${esc(e[0])}${e[1] ? ' · ' + esc(e[1]) : ''}${gloss ? ' — ' + esc(gloss) : ''}</span>` : ''}</div>
+    ${e ? `<span class="wt-g">${useTranslit ? esc(e[1] || e[0]) : esc(e[0]) + (e[1] ? ' · ' + esc(e[1]) : '')}${gloss ? ' — ' + esc(gloss) : ''}</span>` : ''}</div>
     <button class="ctip-more" type="button" data-open-strongs="${sid}">Open Strong's definition ${ICON.right}</button>`;
 }
 function showCtip(el) {
@@ -1065,12 +1148,20 @@ function openStrongs(sid, wordEl) {
   $$('.w.on').forEach(w => w.classList.remove('on'));
   if (wordEl) wordEl.classList.add('on');
   const greek = sid[0] === 'G';
+  const useTranslit = ST.script === 'translit';
+  const lemmaHtml = e ? (useTranslit
+    ? `<p class="dr-lemma tr">${esc(e[1] || e[0])}</p>${e[6] ? `<p class="dr-xlit">say “${esc(e[6])}”</p>` : ''}`
+    : `<p class="dr-lemma${greek ? ' gr' : ''}" lang="${greek ? 'grc' : 'hbo'}">${esc(e[0])}</p><p class="dr-xlit">${esc(e[1] || '')}${e[6] ? ` · say “${esc(e[6])}”` : ''}</p>`
+  ) : '';
+  const phraseNote = wordEl ? (useTranslit && wordEl.dataset.t
+    ? `<p class="dr-note">In this phrase: ${esc(wordEl.dataset.t)}</p>`
+    : `<p class="dr-note">In this phrase: <span lang="${greek ? 'grc' : 'hbo'}">${esc(wordEl.dataset.o)}</span>${wordEl.dataset.t ? ' (' + esc(wordEl.dataset.t) + ')' : ''}</p>`
+  ) : '';
   const scriptorium = location.protocol.startsWith('http') && location.pathname.startsWith('/rainbow/');
   drawer.innerHTML = `<button class="btn close" type="button" data-close-drawer aria-label="Close">${ICON.x}</button>
     <p class="eyebrow">Strong's ${shortS(sid)}${e ? ' · ' + esc(e[2]) : ''}</p>
-    ${e ? `<p class="dr-lemma${greek ? ' gr' : ''}" lang="${greek ? 'grc' : 'hbo'}">${esc(e[0])}</p>
-      <p class="dr-xlit">${esc(e[1] || '')}${e[6] ? ` · say “${esc(e[6])}”` : ''}</p>
-      ${wordEl ? `<p class="dr-note">In this phrase: <span lang="${greek ? 'grc' : 'hbo'}">${esc(wordEl.dataset.o)}</span>${wordEl.dataset.t ? ' (' + esc(wordEl.dataset.t) + ')' : ''}</p>` : ''}
+    ${e ? `${lemmaHtml}
+      ${phraseNote}
       ${e[7] ? `<div class="dr-sec"><p class="eyebrow">Short meaning</p><p>${esc(e[7])}</p></div>` : ''}
       <div class="dr-sec"><p class="eyebrow">Strong's definition</p><p>${esc(e[3] || '—')}</p></div>
       ${e[4] ? `<div class="dr-sec"><p class="eyebrow">How the King James Version translates it</p><p>${esc(e[4])}</p></div>` : ''}

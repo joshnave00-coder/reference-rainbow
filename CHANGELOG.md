@@ -5,6 +5,31 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+### Reference Rainbow (`rainbow/index.html`, `rainbow/guide.html`)
+- A second way to see the cross-references: **Layout → Wheel** (*Wheel within a Wheel*, after Ezekiel 1:16) bends the 1,189 chapters into a circle (Genesis at the top, clockwise to Revelation), with book names in a ring, chapter bars pointing outward and a colored band naming the sections of the Bible. Each reference is a curve across the middle. The picture morphs between the two layouts; hover, click, search, zoom, filters and colors all work in both. Every visit opens on the Rainbow; a link ending `?layout=wheel` opens the Wheel.
+- The original view is now called **Rainbow** in the Layout control and stays the default.
+- **Order → Chronological** (optional, never the default) lays out every verse in the order its events happened, in either layout: the Gospels' parallel accounts side by side, Chronicles beside Samuel and Kings, prophets beside their kings, letters where they fall in Acts. The picture rearranges itself in place. Built by the new `rainbow/build_chrono.py` from Theographic Bible Metadata (CC BY-SA 4.0) into `rainbow/chrono.js`.
+- Hover a **book name** to light up every cross-reference touching that book, or on the Wheel a **section** of the outer band (Law, Gospels, Paul's Letters…) for the whole section; click either to zoom to it.
+- The book names under the Rainbow are slanted and spread out so none overlap, each as close to its book as possible with a thin leader line when it had to move. All 66 fit on a typical laptop screen; on smaller screens the shortest books appear as you zoom in. A name is shortened only when the full name doesn't fit. The Wheel's book ring uses the same placement.
+- The morphs between layouts and orders run on elapsed time, so they take the same time on a slow or busy computer.
+- A **Zoom out** button appears over the picture whenever you are zoomed in, in either layout.
+- Changing **Color** (Distance, Book, Years) or **Dating** now blends every arc smoothly into its new color instead of switching at once.
+- Fixes found in review: the theme button no longer covers the end of the search box; on phones the Wheel and the Rainbow's bars sit above the search panel instead of behind it; zooming to a long book or a whole section on the Wheel now brings it to the middle; hovering the Wheel stays quick with every reference shown, and zoomed-in Wheels skip curves that are off screen; book names no longer disappear in chronological order on very wide screens; chapter numbers on the Verses axis appear at the same zoom as before.
+
+### Echoes (`rainbow/echoes.html`)
+- Switching between **Hebrew OT**, **Greek NT** and **Septuagint + NT** glides the chapter axis from one range to the other while the old arcs fade and the new ones rise from the baseline. The arcs also rise in when the page opens, and when a filter or search changes the list, only the phrases that come or go animate.
+
+### Build (`rainbow/build_chrono.py`)
+- Downloads go to a temporary file first, so an interrupted download is never mistaken for a complete one, and the verse order is checked reference by reference against `data.js` rather than by count alone.
+
+## [0.2.0] - 2026-09-19
+
+### Scriptorium (`bibledb/`)
+- The "Choose translations" picker in Read now groups texts as English first, original-language texts (Hebrew, Aramaic and Greek) second, then every other translation and ancient version below, instead of a single alphabetical-by-category order.
+
+### Scriptorium and Reference Rainbow (`bibledb/web/index.html`, `rainbow/*.html`)
+- Replaced the Light/Dark/System control on every screen (Scriptorium, Reference Rainbow, Echoes, Read and Guide) with a single one-click switch pinned to the top right. It cycles Light → Dark → System, remembers your choice the same way as before, and steps out of the way while a side drawer or panel is open.
+
 ## [0.1.0] - 2026-09-13
 
 First public release.
@@ -52,5 +77,6 @@ First public release.
 - A **Data & setup** view: how to start, stop and restart Scriptorium, the database's status and licence mix, and buttons to refresh the pages' data, rebuild, get the latest data, or make a shareable copy, with a live log.
 - The **Scriptorium** link on the Rainbow, Echoes, Read and Guide pages checks whether it is running, and if not shows step-by-step instructions to start it, with the project folder's location.
 
-[Unreleased]: https://github.com/joshnave00-coder/reference-rainbow/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/joshnave00-coder/reference-rainbow/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/joshnave00-coder/reference-rainbow/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/joshnave00-coder/reference-rainbow/releases/tag/v0.1.0

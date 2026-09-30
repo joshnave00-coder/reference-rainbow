@@ -42,6 +42,9 @@ button{cursor:pointer}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--ribbon);outline-offset:2px}
 .ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.theme-fab{position:fixed;top:14px;right:14px;z-index:38;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--rule);border-radius:50%;background:var(--panel);color:var(--ink);box-shadow:0 6px 20px var(--shadow);transition:opacity .15s,transform .15s}
+.theme-fab:hover{filter:brightness(.94)}
+.theme-fab.is-hidden{opacity:0;transform:scale(.9);pointer-events:none}
 .eyebrow{margin:0;font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
 
 /* ---------- bar ---------- */
@@ -222,6 +225,7 @@ dialog.help::backdrop{background:rgba(12,11,17,.45)}
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
 </style>
 
+<button class="theme-fab" id="themeFab" type="button" aria-label="Theme" data-tip-title="Theme" data-tip="Light, dark, or follow your device."></button>
 <header class="bar">
   <div class="bar-in">
     <div class="brand"><b>Read</b>
@@ -248,11 +252,6 @@ dialog.help::backdrop{background:rgba(12,11,17,.45)}
     <button class="btn icon" id="smaller" type="button" aria-label="Smaller text" data-tip-title="Smaller text" data-tip="Make the Bible text smaller.">A−</button>
     <button class="btn icon" id="larger" type="button" aria-label="Larger text" data-tip-title="Larger text" data-tip="Make the Bible text larger.">A+</button>
     <label class="toggle" data-tip-title="Red letters" data-more="guide.html#red-letters" data-tip="Words of Jesus in red; words of God (found automatically) in dark red. Marked in the KJV and WEB."><input type="checkbox" id="redToggle" checked> Red letters</label>
-    <span class="opts" role="radiogroup" aria-label="Theme" data-tip-title="Theme" data-tip="Light, dark, or follow your device.">
-      <label><input type="radio" name="theme" value="light"><span>Light</span></label>
-      <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
-      <label><input type="radio" name="theme" value="system" checked><span>System</span></label>
-    </span>
     <button class="btn" id="helpBtn" type="button" data-tip-title="Help" data-tip="How to read and study with this page." data-kbd="?">? Help</button>
   </div>
 </header>
@@ -860,14 +859,36 @@ $('#chapPop').addEventListener('click', e => { e.stopPropagation(); const c = e.
 document.addEventListener('click', e => { if (!e.target.closest('.pop')) closePops(); });
 
 // theme
-const themeRadios = $$('input[name=theme]');
-function applyTheme(p) { if (p === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', p); themeRadios.forEach(r => { r.checked = r.value === p; }); }
+let themePref = 'system';
+function applyTheme(p) { themePref = p; if (p === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', p); }
 {
   let saved = null;
   try { saved = localStorage.getItem('reference-rainbow-theme'); } catch (_) { /* storage blocked */ }
-  if (saved) applyTheme(saved);
+  if (saved) applyTheme(saved); else themePref = root.getAttribute('data-theme') || 'system';
 }
-themeRadios.forEach(r => r.addEventListener('change', () => { applyTheme(r.value); try { localStorage.setItem('reference-rainbow-theme', r.value); } catch (_) { /* storage blocked */ } }));
+
+// quick light/dark switch, top right
+const themeFab = $('#themeFab');
+const THEME_SUN = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.4v1.8M8 12.8v1.8M1.4 8h1.8M12.8 8h1.8M3.5 3.5l1.3 1.3M11.2 11.2l1.3 1.3M12.5 3.5l-1.3 1.3M4.8 11.2l-1.3 1.3"/></svg>';
+const THEME_MOON = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.7 9.7A6 6 0 1 1 6.3 2.3a5 5 0 0 0 7.4 7.4Z"/></svg>';
+const themeIsDark = () => root.getAttribute('data-theme') === 'dark' || (!root.hasAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+function syncThemeFab() {
+  const dark = themeIsDark();
+  themeFab.innerHTML = dark ? THEME_MOON : THEME_SUN;
+  const labels = { light: 'Light', dark: 'Dark', system: `System (${dark ? 'dark' : 'light'})` };
+  themeFab.dataset.tipTitle = 'Theme: ' + labels[themePref];
+  themeFab.dataset.tip = themePref === 'system' ? 'Following your device. Click for Light.' : themePref === 'light' ? 'Light page. Click for Dark.' : 'Dark page. Click to follow your device (System).';
+  themeFab.setAttribute('aria-label', 'Theme: ' + labels[themePref] + '. Click to change.');
+}
+themeFab.addEventListener('click', () => {
+  const order = ['light', 'dark', 'system'];
+  const next = order[(order.indexOf(themePref) + 1) % order.length];
+  applyTheme(next);
+  try { localStorage.setItem('reference-rainbow-theme', next); } catch (_) { /* storage blocked */ }
+  syncThemeFab();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeFab);
+syncThemeFab();
 
 // tooltips
 const ctip = $('#ctip');

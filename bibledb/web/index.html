@@ -54,6 +54,9 @@ button{cursor:pointer}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .ico{width:1em;height:1em;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.theme-fab{position:fixed;top:14px;right:14px;z-index:38;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--rule);border-radius:50%;background:var(--panel);color:var(--ink);box-shadow:0 6px 20px var(--shadow);transition:opacity .15s,transform .15s}
+.theme-fab:hover{filter:brightness(.94)}
+.theme-fab.is-hidden{opacity:0;transform:scale(.9);pointer-events:none}
 
 .app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
 /* rail */
@@ -300,6 +303,7 @@ dialog.help::backdrop{background:rgba(10,12,20,.45)}
 </style>
 </head>
 <body>
+<button class="theme-fab" id="themeFab" type="button" aria-label="Theme" data-tip-title="Theme" data-tip="Light, dark, or follow your device."></button>
 <div class="app">
   <nav class="rail" aria-label="Scriptorium">
     <a class="brand" href="#read"><b>Scriptorium</b><span>Bible data room</span></a>
@@ -317,11 +321,6 @@ dialog.help::backdrop{background:rgba(10,12,20,.45)}
       <a class="rail-link" href="/rainbow/read.html" target="_blank" rel="noopener" data-tip-title="Read" data-tip="The simple Bible reader with verse study (opens in a new tab).">Read <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
       <a class="rail-link" href="/rainbow/echoes.html" target="_blank" rel="noopener" data-tip-title="Echoes" data-tip="Phrases of 7+ words repeated in the original Hebrew, Aramaic and Greek (opens in a new tab).">Echoes <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
       <a class="rail-link" href="/rainbow/guide.html" target="_blank" rel="noopener" data-tip-title="Guide" data-tip="How every page and control works (opens in a new tab).">Guide <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6.5V10M12.5 3.5 4 12"/></svg></a>
-      <div role="radiogroup" aria-label="Theme" class="opts" data-tip-title="Theme" data-tip="Light, dark, or follow your device. Remembered on this device.">
-        <label><input type="radio" name="theme" value="light"><span>Light</span></label>
-        <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
-        <label><input type="radio" name="theme" value="system" checked><span>System</span></label>
-      </div>
       <button class="btn" id="helpBtn" type="button" data-tip-title="Help" data-tip="What each part of Scriptorium does. Shortcut: ?">? Help</button>
       <p class="rail-stats" id="railStats"></p>
     </div>
@@ -581,7 +580,7 @@ function togglePicker() {
     const rows = META.translations.filter(t => !q || `${t.translation_id} ${t.title} ${t.language}`.toLowerCase().includes(q));
     let grp = '', h = `<li><button data-add="ORIG"><span>${RS.trs.includes('ORIG') ? ICON.check : ''}</span><b>Original</b><span class="t">Hebrew/Aramaic (OT) or Greek (NT), switches by book</span></button></li>`;
     for (const t of rows) {
-      if (t.category !== grp) { grp = t.category; h += `<li class="grp">${esc(grp)}</li>`; }
+      if (t.group_label !== grp) { grp = t.group_label; h += `<li class="grp">${esc(grp)}</li>`; }
       h += `<li><button data-add="${esc(t.translation_id)}"><span>${RS.trs.includes(t.translation_id) ? ICON.check : ''}</span><b>${esc(t.translation_id)}</b><span class="t">${esc(t.language)} · ${esc(t.title)}</span></button></li>`;
     }
     list.innerHTML = h;
@@ -943,10 +942,36 @@ async function runSql() {
 }
 
 // ------------------------------------------------------------------ theme, tooltips, help, keys
-const themeRadios = $$('input[name=theme]');
-function applyTheme(pref) { if (pref === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', pref); themeRadios.forEach(r => { r.checked = r.value === pref; }); }
+let themePref = 'system';
+function applyTheme(pref) { themePref = pref; if (pref === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', pref); }
 applyTheme(store.get('theme', 'system'));
-themeRadios.forEach(r => r.addEventListener('change', () => { applyTheme(r.value); store.set('theme', r.value); }));
+
+// quick light/dark switch, top right
+const themeFab = $('#themeFab');
+const THEME_SUN = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.4v1.8M8 12.8v1.8M1.4 8h1.8M12.8 8h1.8M3.5 3.5l1.3 1.3M11.2 11.2l1.3 1.3M12.5 3.5l-1.3 1.3M4.8 11.2l-1.3 1.3"/></svg>';
+const THEME_MOON = '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.7 9.7A6 6 0 1 1 6.3 2.3a5 5 0 0 0 7.4 7.4Z"/></svg>';
+const themeIsDark = () => document.documentElement.getAttribute('data-theme') === 'dark' || (!document.documentElement.hasAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+function syncThemeFab() {
+  const dark = themeIsDark();
+  themeFab.innerHTML = dark ? THEME_MOON : THEME_SUN;
+  const labels = { light: 'Light', dark: 'Dark', system: `System (${dark ? 'dark' : 'light'})` };
+  themeFab.dataset.tipTitle = 'Theme: ' + labels[themePref];
+  themeFab.dataset.tip = themePref === 'system' ? 'Following your device. Click for Light.' : themePref === 'light' ? 'Light page. Click for Dark.' : 'Dark page. Click to follow your device (System).';
+  themeFab.setAttribute('aria-label', 'Theme: ' + labels[themePref] + '. Click to change.');
+}
+themeFab.addEventListener('click', () => {
+  const order = ['light', 'dark', 'system'];
+  const next = order[(order.indexOf(themePref) + 1) % order.length];
+  applyTheme(next);
+  store.set('theme', next);
+  syncThemeFab();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeFab);
+syncThemeFab();
+const themeFabDrawer = $('#drawer');
+function syncThemeFabVisibility() { themeFab.classList.toggle('is-hidden', themeFabDrawer && !themeFabDrawer.hidden); }
+new MutationObserver(syncThemeFabVisibility).observe(themeFabDrawer, { attributes: true, attributeFilter: ['hidden'] });
+syncThemeFabVisibility();
 
 const ctip = $('#ctip');
 let ctipTimer = 0, ctipFor = null;
