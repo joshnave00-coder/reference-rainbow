@@ -3,7 +3,7 @@ message: "If you use this software or its derived data, please cite it as below,
 type: software
 title: "Reference Rainbow: Bible cross-references, repeated phrases and a local Bible database"
 version: 0.2.0
-date-released: 2026-09-19
+date-released: 2026-09-29
 license: MIT
 authors:
   - given-names: Josh

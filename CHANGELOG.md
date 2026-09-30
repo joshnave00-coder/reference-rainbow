@@ -5,6 +5,8 @@ All notable changes to this project are recorded here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-29
+
 ### Reference Rainbow (`rainbow/index.html`, `rainbow/guide.html`)
 - A second way to see the cross-references: **Layout → Wheel** (*Wheel within a Wheel*, after Ezekiel 1:16) bends the 1,189 chapters into a circle (Genesis at the top, clockwise to Revelation), with book names in a ring, chapter bars pointing outward and a colored band naming the sections of the Bible. Each reference is a curve across the middle. The picture morphs between the two layouts; hover, click, search, zoom, filters and colors all work in both. Every visit opens on the Rainbow; a link ending `?layout=wheel` opens the Wheel.
 - The original view is now called **Rainbow** in the Layout control and stays the default.
@@ -19,16 +21,14 @@ All notable changes to this project are recorded here. The format follows
 ### Echoes (`rainbow/echoes.html`)
 - Switching between **Hebrew OT**, **Greek NT** and **Septuagint + NT** glides the chapter axis from one range to the other while the old arcs fade and the new ones rise from the baseline. The arcs also rise in when the page opens, and when a filter or search changes the list, only the phrases that come or go animate.
 
-### Build (`rainbow/build_chrono.py`)
-- Downloads go to a temporary file first, so an interrupted download is never mistaken for a complete one, and the verse order is checked reference by reference against `data.js` rather than by count alone.
-
-## [0.2.0] - 2026-09-19
-
 ### Scriptorium (`bibledb/`)
 - The "Choose translations" picker in Read now groups texts as English first, original-language texts (Hebrew, Aramaic and Greek) second, then every other translation and ancient version below, instead of a single alphabetical-by-category order.
 
 ### Scriptorium and Reference Rainbow (`bibledb/web/index.html`, `rainbow/*.html`)
 - Replaced the Light/Dark/System control on every screen (Scriptorium, Reference Rainbow, Echoes, Read and Guide) with a single one-click switch pinned to the top right. It cycles Light → Dark → System, remembers your choice the same way as before, and steps out of the way while a side drawer or panel is open.
+
+### Build (`rainbow/build_chrono.py`)
+- Downloads go to a temporary file first, so an interrupted download is never mistaken for a complete one, and the verse order is checked reference by reference against `data.js` rather than by count alone.
 
 ## [0.1.0] - 2026-09-13
 
